@@ -20,6 +20,8 @@ int errorCount = 0;
 progr :  declarations main {if (errorCount == 0) cout<< "The program is correct!" << endl;}
       ;
 
+     \* aaa *\
+
 declarations : decl           
 	      |  declarations decl    
 	      ;
