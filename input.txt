@@ -38,7 +38,7 @@ end
 
 main 
 begin
-    x = 10;
+    int x = a;
     y[0] = 3.14;
     is_active = true;
 

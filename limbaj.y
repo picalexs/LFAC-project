@@ -42,7 +42,8 @@ var_declarations : var_declarations var_declaration
                  ;
 
 var_declaration : TYPE ID ';' 
-                | TYPE ID '[' NR ']' ';'
+                | TYPE ID '[' expression ']' ';'
+                | TYPE ID ASSIGN expression ';'
                 ;
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
@@ -178,10 +179,10 @@ void yyerror(const char * s) {
 
 int main(int argc, char** argv) {
     yyin = fopen(argv[1], "r");
-    current = new SymTable("global");
+    //current = new SymTable("global");
     yyparse();
-    std::cout << "Variables:" << std::endl;
-    current->printVars();
-    delete current;
+    //std::cout << "Variables:" << std::endl;
+    //current->printVars();
+    //delete current;
     return 0;
 }

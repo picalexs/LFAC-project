@@ -821,7 +821,7 @@ YY_RULE_SETUP
 case 4:
 YY_RULE_SETUP
 #line 13 "limbaj.l"
-{ return FUNC; }  /* New function keyword */
+{ return FUNC; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
