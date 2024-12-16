@@ -1,152 +1,179 @@
 %{
-#include <iostream>
-#include <vector>
-#include "SymTable.h"
-extern FILE* yyin;
-extern char* yytext;
-extern int yylineno;
-extern int yylex();
-void yyerror(const char * s);
-class SymTable* current;
-int errorCount = 0;
+    #include <iostream>
+    #include <vector>
+    #include "SymTable.h"
+    extern FILE* yyin;
+    extern char* yytext;
+    extern int yylineno;
+    extern int yylex();
+    void yyerror(const char * s);
+    class SymTable* current;
+    int errorCount = 0;
 %}
+
+%left '+' '-'
+%left '*' '/'
+%right '='
 
 %union {
     char* string;
-    int intval;
-    float floatval;
 }
 
-%token  BGIN END ASSIGN NR IF FOR WHILE PRINT TYPEOF CLASS
-%token<string> ID TYPE
-
-%type<string> param list_param
-%type<int> boolean_expression arithmetic_expression
+%token BGIN END ASSIGN NR
+%token EQ NEQ AND OR
+%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
 
 %start progr
 
 %%
-progr : class_section global_section func_section main {
-            if (errorCount == 0) 
-                std::cout << "The program is correct!" << std::endl;
-        };
 
-class_section : /* clase */
-      | class_section class_def
+progr : var_section func_section class_section main_function {
+           if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
+       }
       ;
 
-class_def : CLASS ID '{' class_body '}' {
-                if (!current->existsId($2)) {
-                    current->addClass($2);
-                } else {
-                    errorCount++;
-                    yyerror("Class already defined");
-                }
-            };
+ /* 1) Global Variable Section_______________________________________________________________________________*/
+var_section : var_declarations
+            | /* epsilon */
+            ;
 
-class_body : decl
-           | class_body decl
-           ;
+var_declarations : var_declarations var_declaration
+                 | var_declaration
+                 ;
 
-global_section : /* variabile globale */
-      | global_section decl
-      ;
+var_declaration : TYPE ID ';' 
+                | TYPE ID '[' NR ']' ';'
+                ;
 
-declarations : decl
-              | declarations decl
-              ;
-
-decl : TYPE ID ';' {
-                if (!current->existsId($2)) {
-                    current->addVar($1, $2);
-                } else {
-                    errorCount++;
-                    yyerror("Variable already defined");
-                }
-            }
-     | TYPE ID '(' list_param ')' ';' {
-                if (!current->existsId($2)) {
-                    current->addFunc($1, $2);
-                } else {
-                    errorCount++;
-                    yyerror("Function already defined");
-                }
-            };
-
-list_param : param
-           | list_param ',' param
-           ;
-
-param : TYPE ID {
-                if (current->existsId($2)) {
-                    errorCount++;
-                    yyerror("Parameter already defined");
-                }
-            };
-
-func_section : func_def
-             | func_section func_def
+ /* 2) Function Definitions Section___________________________________________________________________________*/
+func_section : func_definitions
+             | /* epsilon */
              ;
 
-func_def : TYPE ID '(' list_param ')' '{' list '}' {
-                if (!current->existsId($2)) {
-                    current->addFunc($1, $2);
-                } else {
-                    errorCount++;
-                    yyerror("Function already defined");
-                }
-            };
+func_definitions : func_definitions func_definition
+                 | func_definition
+                 ;
 
-main : BGIN list END;
+func_definition : FUNC TYPE ID '(' parameter_list ')' BGIN statement_list END
+                ;
 
-list : statement ';'
-     | list statement ';'
-     ;
+ /* 3) Class Section _______________________________________________________________________________________*/
+class_section : class_definitions
+              | /* epsilon */
+              ;
 
-statement : ID ASSIGN arithmetic_expression {
-                if (!current->existsId($1)) {
-                    errorCount++;
-                    yyerror("Variable not defined");
-                }
-            }
-          | ID '(' call_list ')' {
-                if (!current->existsId($1)) {
-                    errorCount++;
-                    yyerror("Function not defined");
-                }
-            }
-          | IF '(' boolean_expression ')' '{' list '}'
-          | WHILE '(' boolean_expression ')' '{' list '}'
-          | PRINT '(' arithmetic_expression ')'
-          | TYPEOF '(' ID ')'
+class_definitions : class_definitions class_definition
+                  | class_definition
+                  ;
+
+class_definition : CLASS ID BGIN class_body END
+                 ;
+
+class_body : class_body class_member
+           | class_member
+           ;
+
+class_member : variable_declaration
+             | func_definition
+             ;
+
+variable_declaration : TYPE ID ';'
+                     | TYPE ID '[' NR ']' ';'
+                     ;
+
+parameter_list : parameter
+               | parameter_list ',' parameter
+               | /* epsilon */
+               ;
+
+parameter : TYPE ID
           ;
 
-boolean_expression : arithmetic_expression '<' arithmetic_expression
-                   | arithmetic_expression '>' arithmetic_expression
-                   | arithmetic_expression EQ arithmetic_expression
+ /* 4) Entry Point Main Function______________________________________________________________________________*/
+main_function : MAIN BGIN statement_list END
+              ;
+
+ /* Statements and Control Flow______________________________________________________________________________*/
+statement_list : statement_list statement_with_semicolon ';'
+               | statement_with_semicolon ';'
+               | statement_list statement_without_semicolon
+               | statement_without_semicolon
+               ;
+
+statement_with_semicolon : assignment
+                         | function_call
+                         | print_statement
+                         | return_statement
+                         ;
+
+statement_without_semicolon : if_statement
+                            | while_statement
+                            | for_statement
+                            | func_definition
+                            | class_definition
+
+                            ;
+
+assignment : ID ASSIGN expression
+           | ID ASSIGN boolean_expression
+           | ID '[' expression ']' ASSIGN expression
+           | ID '[' expression ']' ASSIGN boolean_expression
+           ;
+
+if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
+             | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
+             ;
+
+while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
+                ;
+
+for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END //trb modificat, la ultimu nu e assignment ci trb modificat (i++)
+              ;
+
+function_call : ID '(' argument_list ')'
+              ;
+
+print_statement : PRINT '(' STRING ')'
+                | PRINT '(' expression ')'
+                ;
+
+return_statement : RETURN expression
+                 | RETURN
+                 ;
+
+argument_list : argument_list ',' expression
+              | expression
+              | argument_list ',' boolean_expression
+              | boolean_expression
+              | /* epsilon */
+              ;
+
+ /* Expressions_____________________________________________________________________________________________*/
+expression : expression '+' expression
+           | expression '-' expression
+           | expression '*' expression
+           | expression '/' expression
+           | '(' expression ')'
+           | ID
+           | NR
+           | function_call
+           ;
+
+ /* Boolean Expressions______________________________________________________________________________________*/
+boolean_expression : TRUE
+                   | FALSE
+                   | expression '>' expression
+                   | expression '<' expression
+                   | expression EQ expression
+                   | expression NEQ expression
+                   | expression AND expression
+                   | expression OR expression
                    ;
-
-arithmetic_expression : ID {
-                            if (!current->existsId($1)) {
-                                errorCount++;
-                                yyerror("Variable not defined");
-                            }
-                        }
-                      | NR
-                      | arithmetic_expression '+' arithmetic_expression
-                      | arithmetic_expression '-' arithmetic_expression
-                      | arithmetic_expression '*' arithmetic_expression
-                      | arithmetic_expression '/' arithmetic_expression
-                      ;
-
-call_list : NR
-          | call_list ',' NR
-          ;
 
 %%
 
 void yyerror(const char * s) {
-    std::cout << "error: " << s << " at line: " << yylineno << std::endl;
+    std::cout << "Error: " << s << " at line: " << yylineno << std::endl;
 }
 
 int main(int argc, char** argv) {
