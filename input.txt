@@ -1,0 +1,55 @@
+int x;
+float y[5];
+bool is_active;
+
+func int add(int a, int b) 
+begin
+    return a + b;
+end
+
+func int printmessage() 
+begin
+    Print("This is a message");
+    return 0;
+end
+
+func float compute_average(int total, int count) 
+begin
+    if (count != 0) 
+    begin
+        return total / count;
+    end
+    else 
+    begin
+        return 0;
+    end
+end
+
+class Person 
+{
+    int age;
+    string name;
+
+    func void introduce() 
+    begin
+        Print("Hello, my name is " + name);
+    end
+}
+
+main 
+begin
+    x = 10;
+    y[0] = 3.14;
+    is_active = true;
+
+    int sum = add(5, 15);
+    print_message();
+
+    float avg = compute_average(100, 5);
+    Print("Average is: " + TypeOf(avg));
+
+    Person p;
+    p.name = "John Doe";
+    p.age = 30;
+    p.introduce();
+end

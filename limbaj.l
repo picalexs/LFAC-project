@@ -10,8 +10,10 @@
 
 "class" { return CLASS; }
 "main" { return MAIN; }
-"BEGIN" { return BGIN; }
-"END" { return END; }
+"func" { return FUNC; }  /* New function keyword */
+"begin" { return BGIN; }
+"end" { return END; }
+"return" { return RETURN; }
 
 "if" { return IF; }
 "while" { return WHILE; }
@@ -46,8 +48,11 @@
 "}" { return '}'; }
 "." { return '.'; }
 
-[a-zA-Z_][a-zA-Z0-9_]* { yylval.string = strdup(yytext); return ID; }
-[0-9]+ { return NR; }
+[a-zA-Z_][a-zA-Z0-9_]* {
+    yylval.string = strdup(yytext);
+    return ID;
+}
+[1-9][0-9]* { return NR; }
 
 [ \t] ;
 \n { yylineno++; }

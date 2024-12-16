@@ -1,14 +1,14 @@
 %{
-#include <iostream>
-#include <vector>
-#include "SymTable.h"
-extern FILE* yyin;
-extern char* yytext;
-extern int yylineno;
-extern int yylex();
-void yyerror(const char * s);
-class SymTable* current;
-int errorCount = 0;
+    #include <iostream>
+    #include <vector>
+    #include "SymTable.h"
+    extern FILE* yyin;
+    extern char* yytext;
+    extern int yylineno;
+    extern int yylex();
+    void yyerror(const char * s);
+    class SymTable* current;
+    int errorCount = 0;
 %}
 
 %left '+' '-'
@@ -21,23 +21,50 @@ int errorCount = 0;
 
 %token BGIN END ASSIGN NR
 %token EQ NEQ AND OR
-%token<string> ID TYPE CLASS MAIN IF WHILE FOR PRINT TYPEOF TRUE FALSE
+%token<string> ID TYPE CLASS MAIN IF WHILE FOR PRINT TYPEOF TRUE FALSE FUNC RETURN
+
 %start progr
+
 %%
 
-progr : class_section var_section func_section main_function {
+progr : var_section func_section class_section main_function {
            if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
        }
       ;
 
- /* 1) Class Section _______________________________________________________________________________________*/
+ /* 1) Global Variable Section_______________________________________________________________________________*/
+var_section : var_declarations
+            | /* epsilon */
+            ;
+
+var_declarations : var_declarations var_declaration
+                 | var_declaration
+                 ;
+
+var_declaration : TYPE ID ';' 
+                | TYPE ID '[' NR ']' ';'
+                ;
+
+ /* 2) Function Definitions Section___________________________________________________________________________*/
+func_section : func_definitions
+             | /* epsilon */
+             ;
+
+func_definitions : func_definitions func_definition
+                 | func_definition
+                 ;
+
+func_definition : FUNC TYPE ID '(' parameter_list ')' BGIN statement_list END
+                ;
+
+ /* 3) Class Section _______________________________________________________________________________________*/
 class_section : class_definitions
               | /* epsilon */
               ;
 
 class_definitions : class_definitions class_definition
-                   | class_definition
-                   ;
+                  | class_definition
+                  ;
 
 class_definition : CLASS ID '{' class_body '}'
                  ;
@@ -54,40 +81,16 @@ variable_declaration : TYPE ID ';'
                      | TYPE ID '[' NR ']' ';'
                      ;
 
-function_declaration : TYPE ID '(' parameter_list ')' ';'
+function_declaration : FUNC TYPE ID '(' parameter_list ')' ';'
                      ;
 
 parameter_list : parameter
                | parameter_list ',' parameter
+               | /* epsilon */
                ;
 
 parameter : TYPE ID
           ;
-
- /* 2) Global Variable Section________________________________________________________________________________*/
-var_section : declarations
-            | /* epsilon */
-            ;
-
-declarations : declarations declaration
-             | declaration
-             ;
-
-declaration : TYPE ID ';' 
-            | TYPE ID '[' NR ']' ';'
-            ;
-
- /* 3) Function Definitions Section___________________________________________________________________________*/
-func_section : function_definitions
-             | /* epsilon */
-             ;
-
-function_definitions : function_definitions function_definition
-                     | function_definition
-                     ;
-
-function_definition : TYPE ID '(' parameter_list ')' BGIN statement_list END
-                    ;
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
 main_function : MAIN BGIN statement_list END
@@ -103,6 +106,7 @@ statement : assignment
           | while_statement
           | for_statement
           | function_call
+          | return_statement
           ;
 
 assignment : ID ASSIGN expression
@@ -121,12 +125,9 @@ for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGI
 function_call : ID '(' argument_list ')'
               ;
 
-argument_list : argument
-              | argument_list ',' argument
+argument_list : expression
+              | argument_list ',' expression
               ;
-
-argument : expression
-         ;
 
  /* Expressions_____________________________________________________________________________________________*/
 expression : expression '+' expression
@@ -148,6 +149,9 @@ boolean_expression : TRUE
                    | expression AND expression
                    | expression OR expression
                    ;
+
+return_statement : RETURN expression
+                 ;
 
 %%
 

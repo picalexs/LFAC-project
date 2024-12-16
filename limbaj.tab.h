@@ -72,7 +72,9 @@ extern int yydebug;
     PRINT = 273,                   /* PRINT  */
     TYPEOF = 274,                  /* TYPEOF  */
     TRUE = 275,                    /* TRUE  */
-    FALSE = 276                    /* FALSE  */
+    FALSE = 276,                   /* FALSE  */
+    FUNC = 277,                    /* FUNC  */
+    RETURN = 278                   /* RETURN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -81,11 +83,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 19 "limbaj.y"
+#line 18 "limbaj.y"
 
     char* string;
 
-#line 89 "limbaj.tab.h"
+#line 91 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
