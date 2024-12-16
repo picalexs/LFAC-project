@@ -204,7 +204,7 @@ boolean_expression : TRUE
  /*____________________________________________________________________________________________________________*/
 
 void yyerror(const char * s) {
-    std::cout << "Error: " << s << " at line: " << yylineno << std::endl;
+    std::cout << "Error: " << s << " at line: " << yylineno <<std::endl;
 }
 
 int main(int argc, char** argv) {
