@@ -32,7 +32,7 @@ begin
 
     func int introduce() 
     begin
-        Print("Hello, my name is " + name);
+        Print("Hello, my name is Michel Jackson");
     end
 end
 
@@ -42,14 +42,7 @@ begin
     y[0] = 3.14;
     is_active = true;
 
-    int sum = add(5, 15);
-    print_message();
-
-    float avg = compute_average(100, 5);
-    Print("Average is: " + TypeOf(avg));
-
-    Person p;
-    p.name = "John Doe";
-    p.age = 30;
-    p.introduce();
+    sum = add(5, 15);
+    
+    avg = compute_average(100, 5);
 end

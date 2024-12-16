@@ -74,14 +74,11 @@ class_body : class_body class_member
            ;
 
 class_member : variable_declaration
-             | function_declaration
+             | func_definition
              ;
 
 variable_declaration : TYPE ID ';'
                      | TYPE ID '[' NR ']' ';'
-                     ;
-
-function_declaration : FUNC TYPE ID '(' parameter_list ')' ';'
                      ;
 
 parameter_list : parameter
@@ -114,10 +111,13 @@ statement_without_semicolon : if_statement
                             | for_statement
                             | func_definition
                             | class_definition
+
                             ;
 
 assignment : ID ASSIGN expression
+           | ID ASSIGN boolean_expression
            | ID '[' expression ']' ASSIGN expression
+           | ID '[' expression ']' ASSIGN boolean_expression
            ;
 
 if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
@@ -127,7 +127,7 @@ if_statement : IF '(' boolean_expression ')' BGIN statement_list END
 while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
                 ;
 
-for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
+for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END //trb modificat, la ultimu nu e assignment ci trb modificat (i++)
               ;
 
 function_call : ID '(' argument_list ')'
@@ -141,8 +141,11 @@ return_statement : RETURN expression
                  | RETURN
                  ;
 
-argument_list : expression
-              | argument_list ',' expression
+argument_list : argument_list ',' expression
+              | expression
+              | argument_list ',' boolean_expression
+              | boolean_expression
+              | /* epsilon */
               ;
 
  /* Expressions_____________________________________________________________________________________________*/
@@ -153,6 +156,7 @@ expression : expression '+' expression
            | '(' expression ')'
            | ID
            | NR
+           | function_call
            ;
 
  /* Boolean Expressions______________________________________________________________________________________*/

@@ -53,7 +53,7 @@
     yylval.string = strdup(yytext);
     return ID;
 }
-[0]|[1-9][0-9]* { return NR; }
+[-]?(0|[1-9][0-9]*)(\.[0-9]*)? { return NR; }
 \"[^\"]*\" { yylval.string = strdup(yytext); return STRING; }
 
 
