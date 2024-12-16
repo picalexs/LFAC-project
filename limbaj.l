@@ -11,8 +11,8 @@
 "class" { return CLASS; }
 "main" { return MAIN; }
 "func" { return FUNC; }
-"begin" { return BGIN; }
-"end" { return END; }
+"{" { return BGIN; }
+"}" { return END; }
 "return" { return RETURN; }
 
 "if" { return IF; }
@@ -30,8 +30,13 @@
 "-" { return '-'; }
 "*" { return '*'; }
 "/" { return '/'; }
+"%" { return '%'; }
+"^" { return '^'; }
+
 ">" { return '>'; }
 "<" { return '<'; }
+">=" { return GE; }
+"<=" { return LE; }
 "==" { return EQ; }
 "!=" { return NEQ; }
 "&&" { return AND; }
@@ -45,8 +50,6 @@
 ")" { return ')'; }
 "[" { return '['; }
 "]" { return ']'; }
-"{" { return '{'; }
-"}" { return '}'; }
 "." { return '.'; }
 
 [a-zA-Z_][a-zA-Z0-9_]* {
@@ -55,7 +58,6 @@
 }
 [-]?(0|[1-9][0-9]*)(\.[0-9]*)? { return NR; }
 \"[^\"]*\" { yylval.string = strdup(yytext); return STRING; }
-
 
 [ \t] ;
 \n { yylineno++; }
