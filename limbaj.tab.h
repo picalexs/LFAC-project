@@ -58,8 +58,21 @@ extern int yydebug;
     END = 259,                     /* END  */
     ASSIGN = 260,                  /* ASSIGN  */
     NR = 261,                      /* NR  */
-    ID = 262,                      /* ID  */
-    TYPE = 263                     /* TYPE  */
+    EQ = 262,                      /* EQ  */
+    NEQ = 263,                     /* NEQ  */
+    AND = 264,                     /* AND  */
+    OR = 265,                      /* OR  */
+    ID = 266,                      /* ID  */
+    TYPE = 267,                    /* TYPE  */
+    CLASS = 268,                   /* CLASS  */
+    MAIN = 269,                    /* MAIN  */
+    IF = 270,                      /* IF  */
+    WHILE = 271,                   /* WHILE  */
+    FOR = 272,                     /* FOR  */
+    PRINT = 273,                   /* PRINT  */
+    TYPEOF = 274,                  /* TYPEOF  */
+    TRUE = 275,                    /* TRUE  */
+    FALSE = 276                    /* FALSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -68,11 +81,11 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 13 "limbaj.y"
+#line 19 "limbaj.y"
 
-     char* string;
+    char* string;
 
-#line 76 "limbaj.tab.h"
+#line 89 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
