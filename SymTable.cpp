@@ -4,8 +4,10 @@ using namespace std;
 void SymTable::addVar(const char *type, const char *name)
 {
     if (!existsId(name))
+    {
         IdInfo var(type, name, "var");
         ids[name] = var;
+    }
     else
         cerr << "Error: Variable '" << name << "' already exists." << endl;
 }
@@ -33,7 +35,9 @@ void SymTable::addClass(const char *name)
 }
 
 bool SymTable::existsId(const char *var)
+{
     return ids.find(var) != ids.end();
+}
 
 string SymTable::getType(const char *id)
 {
@@ -50,4 +54,6 @@ void SymTable::printVars()
 }
 
 SymTable::~SymTable()
+{
     ids.clear();
+}
