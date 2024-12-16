@@ -10,7 +10,7 @@
 
 "class" { return CLASS; }
 "main" { return MAIN; }
-"func" { return FUNC; }  /* New function keyword */
+"func" { return FUNC; }
 "begin" { return BGIN; }
 "end" { return END; }
 "return" { return RETURN; }
