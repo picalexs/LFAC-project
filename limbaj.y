@@ -47,6 +47,7 @@ var_declarations : var_declarations var_declaration
                  | TYPE ID '[' boolean_expression ']' ';'
                  | TYPE ID ASSIGN expression ';'
                  | TYPE ID ASSIGN boolean_expression ';'
+                 | ID ASSIGN expression ';' //pt clase  (MyClass obj = MyClass();)
                 ;
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
@@ -77,13 +78,13 @@ class_body : class_body class_member
            | class_member
            ;
 
-class_member : variable_declaration
+class_member : var_declaration
              | func_definition
+             | constructor_definition
              ;
 
-variable_declaration : TYPE ID ';'
-                     | TYPE ID '[' NR ']' ';'
-                     ;
+constructor_definition : ID '(' parameter_list ')' BGIN statement_list END
+                       ;
 
 parameter_list : parameter
                | parameter_list ',' parameter
@@ -106,8 +107,9 @@ statement_list : statement_list statement_with_semicolon ';'
 
 statement_with_semicolon : assignment
                          | function_call
-                         | print_statement
+                         | predefined_function_call
                          | return_statement
+                         | object_access
                          ;
 
 statement_without_semicolon : if_statement
@@ -125,7 +127,12 @@ left_value : ID
            | ID '[' expression ']'
            | TYPE ID
            | TYPE ID '[' expression ']'
+           | object_access
            ;
+
+object_access : ID '.' ID
+              | ID '.' ID '(' argument_list ')'
+              ;
 
 if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
              | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
@@ -135,14 +142,26 @@ while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
                 ;
 
 for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
-              ;
+
+predefined_function_call : print_statement
+                         | type_of_statement
+                         ;
 
 function_call : ID '(' argument_list ')'
               ;
 
+ //aceste doua de jos trb schimbat sa fie ca un apel de functie, gen sa fie de forma function (argument_list)
 print_statement : PRINT '(' STRING ')'
                 | PRINT '(' expression ')'
+                | PRINT '(' boolean_expression ')'
+                | PRINT '(' object_access ')'
+                | PRINT '(' type_of_statement ')'
                 ;
+
+type_of_statement : TYPEOF '(' expression ')'
+                  | TYPEOF '(' boolean_expression ')'
+                  | TYPEOF '(' object_access ')'
+                  ;
 
 return_statement : RETURN expression
                  | RETURN
@@ -173,11 +192,14 @@ boolean_expression : TRUE
                    | FALSE
                    | expression '>' expression
                    | expression '<' expression
+                   | expression GE expression
+                   | expression LE expression
                    | expression EQ expression
                    | expression NEQ expression
                    | expression AND expression
                    | expression OR expression
                    ;
+
 %%
  /*____________________________________________________________________________________________________________*/
 
@@ -187,10 +209,6 @@ void yyerror(const char * s) {
 
 int main(int argc, char** argv) {
     yyin = fopen(argv[1], "r");
-    //current = new SymTable("global");
     yyparse();
-    //std::cout << "Variables:" << std::endl;
-    //current->printVars();
-    //delete current;
     return 0;
 }

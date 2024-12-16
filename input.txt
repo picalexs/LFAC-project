@@ -8,6 +8,11 @@ func int add(int a, int b)
 {
     if(a!=b)
     {
+        while(1<=-8)
+        {
+            Print("nu va intra aici niciodata");
+        }
+
         return a + b;
     }
     else
@@ -26,17 +31,23 @@ func int print_message()
             Print("This is a message");
         }
     }
+    Print(TypeOf(nume));
     return 0;
 }
 
-class Person 
-{
-    int age;
-    string name;
-
-    func int introduce() 
-    {
-        Print("Hello, my name is Michel Jackson");
+class MyClass {
+    int x;
+    float y;
+    
+    MyClass() {
+        x = 10;
+        y = 20.5;
+    }
+    
+    func int setValues(int a, float b) {
+        x = a;
+        y = b;
+        return 0;
     }
 }
 
@@ -45,8 +56,7 @@ main
     int x = -(a^2 + 10%3)*add(1,3);
     y[0] = 3.14;
     is_active = true;
-
-    sum = add(5, 15);
-    
-    avg = compute_average(100, 5);
+    obj.x=1;
+    obj.setValues(5, 3.14);
+    Print(obj.x);
 }
