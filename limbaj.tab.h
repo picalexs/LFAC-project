@@ -67,14 +67,16 @@ extern int yydebug;
     CLASS = 268,                   /* CLASS  */
     MAIN = 269,                    /* MAIN  */
     IF = 270,                      /* IF  */
-    WHILE = 271,                   /* WHILE  */
-    FOR = 272,                     /* FOR  */
-    PRINT = 273,                   /* PRINT  */
-    TYPEOF = 274,                  /* TYPEOF  */
-    TRUE = 275,                    /* TRUE  */
-    FALSE = 276,                   /* FALSE  */
-    FUNC = 277,                    /* FUNC  */
-    RETURN = 278                   /* RETURN  */
+    ELSE = 271,                    /* ELSE  */
+    WHILE = 272,                   /* WHILE  */
+    FOR = 273,                     /* FOR  */
+    PRINT = 274,                   /* PRINT  */
+    TYPEOF = 275,                  /* TYPEOF  */
+    TRUE = 276,                    /* TRUE  */
+    FALSE = 277,                   /* FALSE  */
+    FUNC = 278,                    /* FUNC  */
+    STRING = 279,                  /* STRING  */
+    RETURN = 280                   /* RETURN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -87,7 +89,7 @@ union YYSTYPE
 
     char* string;
 
-#line 91 "limbaj.tab.h"
+#line 93 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

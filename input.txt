@@ -7,7 +7,7 @@ begin
     return a + b;
 end
 
-func int printmessage() 
+func int print_message() 
 begin
     Print("This is a message");
     return 0;
@@ -26,15 +26,15 @@ begin
 end
 
 class Person 
-{
+begin
     int age;
     string name;
 
-    func void introduce() 
+    func int introduce() 
     begin
         Print("Hello, my name is " + name);
     end
-}
+end
 
 main 
 begin

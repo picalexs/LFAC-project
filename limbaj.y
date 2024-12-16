@@ -21,7 +21,7 @@
 
 %token BGIN END ASSIGN NR
 %token EQ NEQ AND OR
-%token<string> ID TYPE CLASS MAIN IF WHILE FOR PRINT TYPEOF TRUE FALSE FUNC RETURN
+%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
 
 %start progr
 
@@ -66,7 +66,7 @@ class_definitions : class_definitions class_definition
                   | class_definition
                   ;
 
-class_definition : CLASS ID '{' class_body '}'
+class_definition : CLASS ID BGIN class_body END
                  ;
 
 class_body : class_body class_member
@@ -97,23 +97,31 @@ main_function : MAIN BGIN statement_list END
               ;
 
  /* Statements and Control Flow______________________________________________________________________________*/
-statement_list : statement_list statement ';'
-               | statement ';'
+statement_list : statement_list statement_with_semicolon ';'
+               | statement_with_semicolon ';'
+               | statement_list statement_without_semicolon
+               | statement_without_semicolon
                ;
 
-statement : assignment
-          | if_statement
-          | while_statement
-          | for_statement
-          | function_call
-          | return_statement
-          ;
+statement_with_semicolon : assignment
+                         | function_call
+                         | print_statement
+                         | return_statement
+                         ;
+
+statement_without_semicolon : if_statement
+                            | while_statement
+                            | for_statement
+                            | func_definition
+                            | class_definition
+                            ;
 
 assignment : ID ASSIGN expression
            | ID '[' expression ']' ASSIGN expression
            ;
 
-if_statement : IF '(' boolean_expression ')' BGIN statement_list END
+if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
+             | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
              ;
 
 while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
@@ -124,6 +132,14 @@ for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGI
 
 function_call : ID '(' argument_list ')'
               ;
+
+print_statement : PRINT '(' STRING ')'
+                | PRINT '(' expression ')'
+                ;
+
+return_statement : RETURN expression
+                 | RETURN
+                 ;
 
 argument_list : expression
               | argument_list ',' expression
@@ -149,9 +165,6 @@ boolean_expression : TRUE
                    | expression AND expression
                    | expression OR expression
                    ;
-
-return_statement : RETURN expression
-                 ;
 
 %%
 
