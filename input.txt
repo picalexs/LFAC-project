@@ -1,48 +1,52 @@
-int x;
+int x=123;
 float y[5];
-bool is_active;
+bool is_active=false;
+char ch;
+string nume;
 
 func int add(int a, int b) 
-begin
-    return a + b;
-end
+{
+    if(a!=b)
+    {
+        return a + b;
+    }
+    else
+    {
+        return a/2+x;
+    }
+}
 
 func int print_message() 
-begin
-    Print("This is a message");
+{
+    for(int i=0;i<x;i=i*2)
+    {
+        int cnt=0;
+        while(cnt<add(1,9)){
+            cnt=cnt+1;
+            Print("This is a message");
+        }
+    }
     return 0;
-end
-
-func float compute_average(int total, int count) 
-begin
-    if (count != 0) 
-    begin
-        return total / count;
-    end
-    else 
-    begin
-        return 0;
-    end
-end
+}
 
 class Person 
-begin
+{
     int age;
     string name;
 
     func int introduce() 
-    begin
+    {
         Print("Hello, my name is Michel Jackson");
-    end
-end
+    }
+}
 
 main 
-begin
-    int x = a;
+{
+    int x = -(a^2 + 10%3)*add(1,3);
     y[0] = 3.14;
     is_active = true;
 
     sum = add(5, 15);
     
     avg = compute_average(100, 5);
-end
+}

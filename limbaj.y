@@ -12,7 +12,8 @@
 %}
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
+%right '^'
 %right '='
 
 %union {
@@ -20,14 +21,14 @@
 }
 
 %token BGIN END ASSIGN NR
-%token EQ NEQ AND OR
+%token EQ NEQ AND OR LE GE
 %token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
 
-%start progr
+%start PROGRAM
 
 %%
 
-progr : var_section func_section class_section main_function {
+PROGRAM : var_section func_section class_section main_function {
            if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
        }
       ;
@@ -41,9 +42,11 @@ var_declarations : var_declarations var_declaration
                  | var_declaration
                  ;
 
-var_declaration : TYPE ID ';' 
-                | TYPE ID '[' expression ']' ';'
-                | TYPE ID ASSIGN expression ';'
+ var_declaration : TYPE ID ';' 
+                 | TYPE ID '[' expression ']' ';'
+                 | TYPE ID '[' boolean_expression ']' ';'
+                 | TYPE ID ASSIGN expression ';'
+                 | TYPE ID ASSIGN boolean_expression ';'
                 ;
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
@@ -112,13 +115,16 @@ statement_without_semicolon : if_statement
                             | for_statement
                             | func_definition
                             | class_definition
-
                             ;
 
-assignment : ID ASSIGN expression
-           | ID ASSIGN boolean_expression
-           | ID '[' expression ']' ASSIGN expression
-           | ID '[' expression ']' ASSIGN boolean_expression
+assignment : left_value ASSIGN expression
+           | left_value ASSIGN boolean_expression
+           ;
+
+left_value : ID
+           | ID '[' expression ']'
+           | TYPE ID
+           | TYPE ID '[' expression ']'
            ;
 
 if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
@@ -128,7 +134,7 @@ if_statement : IF '(' boolean_expression ')' BGIN statement_list END
 while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
                 ;
 
-for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END //trb modificat, la ultimu nu e assignment ci trb modificat (i++)
+for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
               ;
 
 function_call : ID '(' argument_list ')'
@@ -154,13 +160,15 @@ expression : expression '+' expression
            | expression '-' expression
            | expression '*' expression
            | expression '/' expression
+           | expression '%' expression
+           | expression '^' expression
+           | '-' expression %prec '-'
            | '(' expression ')'
            | ID
            | NR
            | function_call
            ;
 
- /* Boolean Expressions______________________________________________________________________________________*/
 boolean_expression : TRUE
                    | FALSE
                    | expression '>' expression
@@ -170,8 +178,8 @@ boolean_expression : TRUE
                    | expression AND expression
                    | expression OR expression
                    ;
-
 %%
+ /*____________________________________________________________________________________________________________*/
 
 void yyerror(const char * s) {
     std::cout << "Error: " << s << " at line: " << yylineno << std::endl;
