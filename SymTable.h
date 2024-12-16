@@ -1,38 +1,44 @@
+#ifndef SYMTABLE_H
+#define SYMTABLE_H
+
 #include <iostream>
 #include <map>
 #include <string>
-
-using namespace std;
+#include <vector>
 
 class ParamList {
-    //todo
+    std::vector<std::string> types; // Tip parametri
+    std::vector<std::string> names; // Nume parametri
+public:
+    void addParam(const std::string& type, const std::string& name);
+    std::string toString() const; // Pentru debug
 };
 
 class IdInfo {
-    public:
-    string idType;
-    string type;
-    string name;
-    ParamList params; //for functions
+public:
+    std::string idType; // Variab, fct, clasa
+    std::string type;   // Tip simbol
+    std::string name;
+    ParamList params;   // pt fct
     IdInfo() {}
-    IdInfo(const char* type, const char* name, const char* idType) : type(type),name(name),idType(type) {}
+    IdInfo(const std::string& type, const std::string& name, const std::string& idType)
+        : idType(idType), type(type), name(name) {}
 };
-
-
 
 class SymTable {
-    map<string, IdInfo> ids;
-    string name;
-    public:
-    SymTable(const char* name) :  name(name){}
-    bool existsId(const char* s);
-    void addVar(const char* type, const char* name );
-    void printVars();
+    std::map<std::string, IdInfo> ids;
+    std::string name;
+public:
+    SymTable(const char* name);
     ~SymTable();
+
+    bool existsId(const char* id);
+    void addVar(const char* type, const char* name);
+    void addFunc(const char* returnType, const char* name);
+    void addClass(const char* name);
+
+    std::string getType(const char* id);
+    void printVars();
 };
 
-
-
-
-
-
+#endif
