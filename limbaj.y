@@ -22,7 +22,7 @@
     float floatval;
 }
 
-%token BGIN END ASSIGN NR
+%token BGIN END ASSIGN NR CHAR
 %token EQ NEQ AND OR LE GE
 %token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
 
@@ -49,6 +49,8 @@ var_declarations : var_declarations var_declaration
                  | TYPE ID '[' boolean_expression ']' ';'
                  | TYPE ID ASSIGN expression ';'
                  | TYPE ID ASSIGN boolean_expression ';'
+                 | TYPE ID ASSIGN CHAR ';'
+                 | TYPE ID ASSIGN STRING ';'
                  ;
 
 
@@ -132,6 +134,8 @@ left_value : ID
            | TYPE ID
            | TYPE ID '[' expression ']'
            | object_access
+           | CHAR
+           | STRING
            ;
 
 object_access : ID '.' ID
@@ -156,7 +160,8 @@ function_call : ID '(' argument_list ')'
 
  //aceste doua de jos trb schimbat sa fie ca un apel de functie, gen sa fie de forma function (argument_list)
  //in cerinta zicea doar de expr, dar dorim mai multe tipuri de argumente
-print_statement : PRINT '(' STRING ')'
+print_statement : PRINT '(' CHAR ')'
+                | PRINT '(' STRING ')'
                 | PRINT '(' expression ')'
                 | PRINT '(' boolean_expression ')'
                 | PRINT '(' object_access ')'

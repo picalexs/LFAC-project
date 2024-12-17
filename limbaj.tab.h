@@ -58,27 +58,28 @@ extern int yydebug;
     END = 259,                     /* END  */
     ASSIGN = 260,                  /* ASSIGN  */
     NR = 261,                      /* NR  */
-    EQ = 262,                      /* EQ  */
-    NEQ = 263,                     /* NEQ  */
-    AND = 264,                     /* AND  */
-    OR = 265,                      /* OR  */
-    LE = 266,                      /* LE  */
-    GE = 267,                      /* GE  */
-    ID = 268,                      /* ID  */
-    TYPE = 269,                    /* TYPE  */
-    CLASS = 270,                   /* CLASS  */
-    MAIN = 271,                    /* MAIN  */
-    IF = 272,                      /* IF  */
-    ELSE = 273,                    /* ELSE  */
-    WHILE = 274,                   /* WHILE  */
-    FOR = 275,                     /* FOR  */
-    PRINT = 276,                   /* PRINT  */
-    TYPEOF = 277,                  /* TYPEOF  */
-    TRUE = 278,                    /* TRUE  */
-    FALSE = 279,                   /* FALSE  */
-    FUNC = 280,                    /* FUNC  */
-    STRING = 281,                  /* STRING  */
-    RETURN = 282                   /* RETURN  */
+    CHAR = 262,                    /* CHAR  */
+    EQ = 263,                      /* EQ  */
+    NEQ = 264,                     /* NEQ  */
+    AND = 265,                     /* AND  */
+    OR = 266,                      /* OR  */
+    LE = 267,                      /* LE  */
+    GE = 268,                      /* GE  */
+    ID = 269,                      /* ID  */
+    TYPE = 270,                    /* TYPE  */
+    CLASS = 271,                   /* CLASS  */
+    MAIN = 272,                    /* MAIN  */
+    IF = 273,                      /* IF  */
+    ELSE = 274,                    /* ELSE  */
+    WHILE = 275,                   /* WHILE  */
+    FOR = 276,                     /* FOR  */
+    PRINT = 277,                   /* PRINT  */
+    TYPEOF = 278,                  /* TYPEOF  */
+    TRUE = 279,                    /* TRUE  */
+    FALSE = 280,                   /* FALSE  */
+    FUNC = 281,                    /* FUNC  */
+    STRING = 282,                  /* STRING  */
+    RETURN = 283                   /* RETURN  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -93,7 +94,7 @@ union YYSTYPE
     int intval;
     float floatval;
 
-#line 97 "limbaj.tab.h"
+#line 98 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -67,6 +67,11 @@
     return NR;
 }
 
+\'[^\']\' {
+    yylval.intval = yytext[1];
+    return CHAR;
+}
+
 \"[^\"]*\" {
     yylval.string = strdup(yytext);
     return STRING;
