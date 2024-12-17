@@ -1,6 +1,6 @@
 %{
-#include <stdio.h>
-#include "limbaj.tab.h"
+    #include <stdio.h>
+    #include "limbaj.tab.h"
 %}
 
 %option noyywrap
@@ -23,8 +23,8 @@
 "Print" { return PRINT; }
 "TypeOf" { return TYPEOF; }
 
-"true" { return TRUE; }
-"false" { return FALSE; }
+"true" { yylval.intval = 1; return TRUE; }
+"false" { yylval.intval = 0; return FALSE; }
 
 "+" { return '+'; }
 "-" { return '-'; }
@@ -56,8 +56,21 @@
     yylval.string = strdup(yytext);
     return ID;
 }
-[-]?(0|[1-9][0-9]*)(\.[0-9]*)? { return NR; }
-\"[^\"]*\" { yylval.string = strdup(yytext); return STRING; }
+
+[-]?(0|[1-9][0-9]*) {
+    yylval.intval = atoi(yytext);
+    return NR;
+}
+
+[-]?(0|[1-9][0-9]*)(\.[0-9]*) {
+    yylval.floatval = atof(yytext);
+    return NR;
+}
+
+\"[^\"]*\" {
+    yylval.string = strdup(yytext);
+    return STRING;
+}
 
 [ \t] ;
 \n { yylineno++; }

@@ -18,6 +18,8 @@
 
 %union {
     char* string;
+    int intval;
+    float floatval;
 }
 
 %token BGIN END ASSIGN NR
@@ -30,8 +32,8 @@
 
 PROGRAM : var_section func_section class_section main_function {
            if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
-       }
-      ;
+        }
+        ;
 
  /* 1) Global Variable Section_______________________________________________________________________________*/
 var_section : var_declarations
@@ -47,7 +49,9 @@ var_declarations : var_declarations var_declaration
                  | TYPE ID '[' boolean_expression ']' ';'
                  | TYPE ID ASSIGN expression ';'
                  | TYPE ID ASSIGN boolean_expression ';'
-                ;
+                 ;
+
+
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
 func_section : func_definitions
@@ -85,6 +89,8 @@ class_member : var_declaration
 constructor_definition : ID '(' parameter_list ')' BGIN statement_list END
                        ;
 
+
+ /*__________________________________________*/
 parameter_list : parameter
                | parameter_list ',' parameter
                | /* epsilon */
@@ -92,6 +98,7 @@ parameter_list : parameter
 
 parameter : TYPE ID
           ;
+
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
 main_function : MAIN BGIN statement_list END
@@ -114,8 +121,6 @@ statement_with_semicolon : assignment
 statement_without_semicolon : if_statement
                             | while_statement
                             | for_statement
-                            | func_definition
-                            | class_definition
                             ;
 
 assignment : left_value ASSIGN expression
@@ -150,6 +155,7 @@ function_call : ID '(' argument_list ')'
               ;
 
  //aceste doua de jos trb schimbat sa fie ca un apel de functie, gen sa fie de forma function (argument_list)
+ //in cerinta zicea doar de expr, dar dorim mai multe tipuri de argumente
 print_statement : PRINT '(' STRING ')'
                 | PRINT '(' expression ')'
                 | PRINT '(' boolean_expression ')'
@@ -162,8 +168,7 @@ type_of_statement : TYPEOF '(' expression ')'
                   | TYPEOF '(' object_access ')'
                   ;
 
-return_statement : RETURN expression
-                 | RETURN
+return_statement : RETURN expression //momentan nu avem tipul 'void' ca sa avem nevoie si de 'return;'
                  ;
 
 argument_list : argument_list ',' expression

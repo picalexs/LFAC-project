@@ -90,8 +90,10 @@ union YYSTYPE
 #line 19 "limbaj.y"
 
     char* string;
+    int intval;
+    float floatval;
 
-#line 95 "limbaj.tab.h"
+#line 97 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
