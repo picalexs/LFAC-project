@@ -47,7 +47,6 @@ var_declarations : var_declarations var_declaration
                  | TYPE ID '[' boolean_expression ']' ';'
                  | TYPE ID ASSIGN expression ';'
                  | TYPE ID ASSIGN boolean_expression ';'
-                 | ID ASSIGN expression ';' //pt clase  (MyClass obj = MyClass();)
                 ;
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
