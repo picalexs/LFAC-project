@@ -17,7 +17,10 @@ func int add(int a, int b)
     }
     else
     {
-        return a/2+x;
+        if((f(10)==x && y<4) && (y==1))
+        {
+            return a/2+x;
+        }
     }
 }
 

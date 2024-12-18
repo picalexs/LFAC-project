@@ -15,6 +15,8 @@
 %left '*' '/' '%'
 %right '^'
 %right '='
+%left OR
+%left AND
 
 %union {
     char* string;
@@ -199,14 +201,15 @@ expression : expression '+' expression
 
 boolean_expression : TRUE
                    | FALSE
+                   | '(' boolean_expression ')'
                    | expression '>' expression
                    | expression '<' expression
                    | expression GE expression
                    | expression LE expression
                    | expression EQ expression
                    | expression NEQ expression
-                   | expression AND expression
-                   | expression OR expression
+                   | boolean_expression AND boolean_expression
+                   | boolean_expression OR boolean_expression
                    ;
 
 %%
