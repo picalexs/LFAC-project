@@ -526,8 +526,9 @@ char *yytext;
 #line 2 "limbaj.l"
     #include <stdio.h>
     #include "limbaj.tab.h"
-#line 530 "lex.yy.c"
+    #include <string.h>
 #line 531 "lex.yy.c"
+#line 532 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -744,8 +745,7 @@ YY_DECL
 		}
 
 	{
-#line 7 "limbaj.l"
-
+#line 8 "limbaj.l"
 
 #line 751 "lex.yy.c"
 

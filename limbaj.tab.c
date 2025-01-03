@@ -80,7 +80,30 @@
     class SymTable* current;
     int errorCount = 0;
 
-#line 84 "limbaj.tab.c"
+    SymTable globalSymTable("global");
+    SymTable* currentSymTable = &globalSymTable;
+
+    void printSymbolTables() 
+    {
+        std::cout << "=== Symbol Table ===" << std::endl;
+        globalSymTable.printVars();
+        globalSymTable.printFuncs();
+    }
+    void SymTable::printAll() {
+    std::cout << "=== Full Symbol Table ===" << std::endl;
+    std::stack<std::unordered_map<std::string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty()) {
+        std::unordered_map<std::string, IdInfo> currentScope = tempStack.top();
+        tempStack.pop();
+
+        for (const auto& entry : currentScope) {
+            std::cout << entry.second.name << " (" << entry.second.idType
+                      << " : " << entry.second.type << ")" << std::endl;
+        }
+    }
+}
+
+#line 107 "limbaj.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -575,17 +598,17 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    35,    35,    41,    42,    45,    46,    49,    50,    51,
-      52,    53,    54,    55,    61,    62,    65,    66,    69,    73,
-      74,    77,    78,    81,    84,    85,    88,    89,    90,    93,
-      98,    99,   100,   103,   108,   112,   113,   114,   115,   118,
-     119,   120,   121,   122,   125,   126,   127,   130,   131,   134,
-     135,   136,   137,   138,   139,   140,   143,   144,   147,   148,
-     151,   154,   156,   157,   160,   165,   166,   167,   168,   169,
-     170,   173,   174,   175,   178,   181,   182,   183,   184,   185,
-     189,   190,   191,   192,   193,   194,   195,   196,   197,   198,
-     199,   202,   203,   204,   205,   206,   207,   208,   209,   210,
-     211,   212
+       0,    58,    58,    69,    70,    73,    74,    77,    78,    79,
+      80,    81,    82,    83,    89,    90,    93,    94,    97,   101,
+     102,   105,   106,   109,   112,   113,   116,   117,   118,   121,
+     126,   127,   128,   131,   136,   140,   141,   142,   143,   146,
+     147,   148,   149,   150,   153,   154,   155,   158,   159,   162,
+     163,   164,   165,   166,   167,   168,   171,   172,   175,   176,
+     179,   182,   184,   185,   188,   193,   194,   195,   196,   197,
+     198,   201,   202,   203,   206,   209,   210,   211,   212,   213,
+     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
+     227,   230,   231,   232,   233,   234,   235,   236,   237,   238,
+     239,   240
 };
 #endif
 
@@ -1342,15 +1365,20 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* PROGRAM: class_section var_section func_section main_function  */
-#line 35 "limbaj.y"
+#line 58 "limbaj.y"
                                                                {
-           if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
+            if (errorCount == 0) 
+            {
+                std::cout << "The program is correct!" << std::endl;
+            printSymbolTables();
+            printAll();
+            }
         }
-#line 1350 "limbaj.tab.c"
+#line 1378 "limbaj.tab.c"
     break;
 
 
-#line 1354 "limbaj.tab.c"
+#line 1382 "limbaj.tab.c"
 
       default: break;
     }
@@ -1543,16 +1571,27 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 215 "limbaj.y"
+#line 243 "limbaj.y"
 
  /*____________________________________________________________________________________________________________*/
 
 void yyerror(const char * s) {
     std::cout << "Error: " << s << " at line: " << yylineno <<std::endl;
+    errorCount++;
 }
 
 int main(int argc, char** argv) {
+    current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
+
+SymTable symTable("global");
+
+    symTable.addVar("int", "x");
+    symTable.addFunc("void", "foo");
+    symTable.printVars();
+    symTable.printFuncs();
+
     yyparse();
+    delete current;
     return 0;
 }

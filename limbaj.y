@@ -9,7 +9,18 @@
     void yyerror(const char * s);
     class SymTable* current;
     int errorCount = 0;
-%}
+
+    SymTable globalSymTable("global");
+    SymTable* currentSymTable = &globalSymTable;
+
+    void printSymbolTables() 
+    {
+        std::cout << "=== Symbol Table ===" << std::endl;
+        globalSymTable.printVars();
+        globalSymTable.printFuncs();
+    }
+}
+%} 
 
 %left '+' '-'
 %left '*' '/' '%'
@@ -33,7 +44,12 @@
 %%
 
 PROGRAM : class_section var_section func_section main_function {
-           if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
+            if (errorCount == 0) 
+            {
+                std::cout << "The program is correct!" << std::endl;
+            printSymbolTables();
+            printAll();
+            }
         }
         ;
 
@@ -217,10 +233,21 @@ boolean_expression : TRUE
 
 void yyerror(const char * s) {
     std::cout << "Error: " << s << " at line: " << yylineno <<std::endl;
+    errorCount++;
 }
 
 int main(int argc, char** argv) {
+    current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
+
+SymTable symTable("global");
+
+    symTable.addVar("int", "x");
+    symTable.addFunc("void", "foo");
+    symTable.printVars();
+    symTable.printFuncs();
+
     yyparse();
+    delete current;
     return 0;
 }

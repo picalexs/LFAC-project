@@ -1,11 +1,11 @@
 %{
     #include <stdio.h>
     #include "limbaj.tab.h"
+    #include <string.h>
 %}
 
 %option noyywrap
 %%
-
 "int"|"float"|"char"|"string"|"bool" { yylval.string = strdup(yytext); return TYPE; }
 
 "class" { return CLASS; }

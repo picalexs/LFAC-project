@@ -1,59 +1,114 @@
 #include "SymTable.h"
-using namespace std;
+#include <iostream>
+#include <unordered_map>
 
-void SymTable::addVar(const char *type, const char *name)
+SymTable::SymTable(const char *scopeName) : name(scopeName) {}
+
+SymTable::~SymTable() {}
+
+bool SymTable::existsId(const std::string &id)
 {
-    if (!existsId(name))  // amongus
-    { 
-        IdInfo var(type, name, "var");
-        ids[name] = var;
-    }
-    else
-        cerr << "Error: Variable '" << name << "' already exists." << endl;
+    return ids.find(id) != ids.end();
 }
 
-void SymTable::addFunc(const char *returnType, const char *name)
+void SymTable::addVar(const std::string &type, const std::string &name)
 {
-    if (!existsId(name))
-    {
-        IdInfo func(returnType, name, "func");
-        ids[name] = func;
-    }
-    else
-        cerr << "Error: Function '" << name << "' already exists." << endl;
+    IdInfo varInfo("variable", type, name);
+    ids[name] = varInfo;
 }
 
-void SymTable::addClass(const char *name)
+void SymTable::addFunc(const std::string &returnType, const std::string &name)
 {
-    if (!existsId(name))
-    {
-        IdInfo cls("class", name, "class");
-        ids[name] = cls;
-    }
-    else
-        cerr << "Error: Class '" << name << "' already exists." << endl;
+    IdInfo funcInfo("function", returnType, name);
+    ids[name] = funcInfo;
 }
 
-bool SymTable::existsId(const char *var)
+void SymTable::addClass(const std::string &name)
 {
-    return ids.find(var) != ids.end();
+    IdInfo classInfo("class", "", name);
+    ids[name] = classInfo;
 }
 
-string SymTable::getType(const char *id)
+std::string SymTable::getType(const std::string &id)
 {
     if (existsId(id))
+    {
         return ids[id].type;
-    else
-        return "undefined";
+    }
+    return ""; // Returnează un șir gol dacă simbolul nu există
+}
+
+bool SymTable::removeId(const std::string &id)
+{
+    if (existsId(id))
+    {
+        ids.erase(id);
+        return true;
+    }
+    return false;
 }
 
 void SymTable::printVars()
 {
-    for (const pair<string, IdInfo> &v : ids)
-        cout << "Name: " << v.first << ", Type: " << v.second.type << ", ID Type: " << v.second.idType << endl;
+    std::cout << "Variables in " << name << " scope: " << std::endl;
+    for (auto &entry : ids)
+    {
+        if (entry.second.idType == "variable")
+        {
+            std::cout << entry.second.name << " : " << entry.second.type << std::endl;
+        }
+    }
 }
 
-SymTable::~SymTable()
+void SymTable::printFuncs() {
+    std::cout << "Functions in " << name << " scope:" << std::endl;
+    // Parcurgerea fiecărei intrări din tabelă pentru a afișa doar funcțiile
+    for (auto &entry : ids) {
+        if (entry.second.idType == "function") { // Verifică dacă simbolul este funcție
+            // Afisare funcție și eventual tipul returnat și parametrii funcției
+            std::cout << "Function Name: " << entry.second.name 
+                      << ", Return Type: " << entry.second.type << std::endl;
+
+            // Afișează parametrii funcției, dacă sunt
+            std::cout << "Parameters: ";
+            if (entry.second.params.toString() != "") {
+                std::cout << entry.second.params.toString() << std::endl;
+            } else {
+                std::cout << "None" << std::endl;
+            }
+        }
+    }
+}
+
+void SymTable::enterScope()
 {
-    ids.clear();
+    std::unordered_map<std::string, IdInfo> newScope;
+    scopeStack.push(newScope); // Crează un nou scop pe stivă
+}
+
+void SymTable::leaveScope()
+{
+    if (!scopeStack.empty())
+    {
+        scopeStack.pop(); // Ieși din scope, eliminând ultimul element din stack
+    }
+}
+
+void ParamList::addParam(const std::string &type, const std::string &name)
+{
+    types.push_back(type);  // Adaugă tipul
+    names.push_back(name);  // Adaugă numele
+}
+
+// Conversie la string pentru a vizualiza parametrii
+std::string ParamList::toString() const
+{
+    std::string result = "";
+    for (size_t i = 0; i < types.size(); ++i) {
+        result += types[i] + " " + names[i]; // Concatenează tipul și numele fiecărui parametru
+        if (i != types.size() - 1) {
+            result += ", ";  // Adaugă separator doar între parametrii (nu după ultimul parametru)
+        }
+    }
+    return result;  // Returnează șirul de caractere rezultat
 }
