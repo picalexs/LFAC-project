@@ -89,21 +89,8 @@
         globalSymTable.printVars();
         globalSymTable.printFuncs();
     }
-    void SymTable::printAll() {
-    std::cout << "=== Full Symbol Table ===" << std::endl;
-    std::stack<std::unordered_map<std::string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty()) {
-        std::unordered_map<std::string, IdInfo> currentScope = tempStack.top();
-        tempStack.pop();
 
-        for (const auto& entry : currentScope) {
-            std::cout << entry.second.name << " (" << entry.second.idType
-                      << " : " << entry.second.type << ")" << std::endl;
-        }
-    }
-}
-
-#line 107 "limbaj.tab.c"
+#line 94 "limbaj.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -598,17 +585,17 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    58,    58,    69,    70,    73,    74,    77,    78,    79,
-      80,    81,    82,    83,    89,    90,    93,    94,    97,   101,
-     102,   105,   106,   109,   112,   113,   116,   117,   118,   121,
-     126,   127,   128,   131,   136,   140,   141,   142,   143,   146,
-     147,   148,   149,   150,   153,   154,   155,   158,   159,   162,
-     163,   164,   165,   166,   167,   168,   171,   172,   175,   176,
-     179,   182,   184,   185,   188,   193,   194,   195,   196,   197,
-     198,   201,   202,   203,   206,   209,   210,   211,   212,   213,
-     217,   218,   219,   220,   221,   222,   223,   224,   225,   226,
-     227,   230,   231,   232,   233,   234,   235,   236,   237,   238,
-     239,   240
+       0,    45,    45,    55,    56,    59,    60,    63,    64,    65,
+      66,    67,    68,    69,    75,    76,    79,    80,    83,    87,
+      88,    91,    92,    95,    98,    99,   102,   103,   104,   107,
+     112,   113,   114,   117,   122,   126,   127,   128,   129,   132,
+     133,   134,   135,   136,   139,   140,   141,   144,   145,   148,
+     149,   150,   151,   152,   153,   154,   157,   158,   161,   162,
+     165,   168,   170,   171,   174,   179,   180,   181,   182,   183,
+     184,   187,   188,   189,   192,   195,   196,   197,   198,   199,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   212,
+     213,   216,   217,   218,   219,   220,   221,   222,   223,   224,
+     225,   226
 };
 #endif
 
@@ -1365,20 +1352,19 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* PROGRAM: class_section var_section func_section main_function  */
-#line 58 "limbaj.y"
+#line 45 "limbaj.y"
                                                                {
             if (errorCount == 0) 
             {
                 std::cout << "The program is correct!" << std::endl;
             printSymbolTables();
-            printAll();
             }
         }
-#line 1378 "limbaj.tab.c"
+#line 1364 "limbaj.tab.c"
     break;
 
 
-#line 1382 "limbaj.tab.c"
+#line 1368 "limbaj.tab.c"
 
       default: break;
     }
@@ -1571,7 +1557,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 243 "limbaj.y"
+#line 229 "limbaj.y"
 
  /*____________________________________________________________________________________________________________*/
 

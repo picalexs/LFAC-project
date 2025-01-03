@@ -19,7 +19,6 @@
         globalSymTable.printVars();
         globalSymTable.printFuncs();
     }
-}
 %} 
 
 %left '+' '-'
@@ -48,7 +47,6 @@ PROGRAM : class_section var_section func_section main_function {
             {
                 std::cout << "The program is correct!" << std::endl;
             printSymbolTables();
-            printAll();
             }
         }
         ;
