@@ -19,7 +19,7 @@
         globalSymTable.printVars();
         globalSymTable.printFuncs();
     }
-%} 
+%}  
 
 %left '+' '-'
 %left '*' '/' '%'

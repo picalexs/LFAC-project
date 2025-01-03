@@ -1025,7 +1025,7 @@ YY_RULE_SETUP
 {
     yylval.intval = yytext[1];
     return CHAR;
-}
+} 
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */

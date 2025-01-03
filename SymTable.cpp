@@ -57,7 +57,7 @@ void SymTable::printVars()
         {
             std::cout << entry.second.name << " : " << entry.second.type << std::endl;
         }
-    }
+    } 
 }
 
 void SymTable::printFuncs() {

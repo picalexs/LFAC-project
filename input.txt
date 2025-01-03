@@ -47,7 +47,7 @@ func int print_message()
         while(cnt<add(1,9)){
             cnt=cnt+1;
             Print("This is a message");
-        }
+        } 
     }
     Print(TypeOf(nume));
     return 0;

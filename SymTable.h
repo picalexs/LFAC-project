@@ -28,7 +28,7 @@ public:
         : idType(idType), type(type), name(name) {}
 };
 
-class SymTable
+class SymTable 
 {
     std::unordered_map<std::string, IdInfo> ids;
     std::string name;                                               // Numele tabelei
