@@ -8,7 +8,7 @@
 
 class ParamList {
     std::vector<std::string> types; // Tip parametri
-    std::vector<std::string> names; // Nume parametri
+    std::vector<std::string> names; // Nume parametri 
 public:
     void addParam(const std::string& type, const std::string& name);
     std::string toString() const; // Pentru debug

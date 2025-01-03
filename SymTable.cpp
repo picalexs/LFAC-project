@@ -4,7 +4,7 @@ using namespace std;
 void SymTable::addVar(const char *type, const char *name)
 {
     if (!existsId(name))
-    {
+    { 
         IdInfo var(type, name, "var");
         ids[name] = var;
     }
