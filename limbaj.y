@@ -32,7 +32,7 @@
 
 %%
 
-PROGRAM : var_section func_section class_section main_function {
+PROGRAM : class_section var_section func_section main_function {
            if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
         }
         ;
