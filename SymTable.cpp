@@ -24,7 +24,7 @@ string ParamList::toString() const
 
 void SymTable::enterScope(const string &scopeName)
 {
-    scopeNames.push(scopeName); // Push the scope name
+    scopeNames.push(scopeName);
     cout << "+Entering scope: " << scopeName << "\n";
     scopeStack.push(currentVars);
     currentVars.clear();
@@ -35,7 +35,7 @@ void SymTable::leaveScope()
     if (!scopeStack.empty() && !scopeNames.empty())
     {
         cout << "-Leaving scope: " << scopeNames.top() << "\n";
-        scopeNames.pop(); // Pop the scope name
+        scopeNames.pop();
         currentVars = scopeStack.top();
         scopeStack.pop();
     }
