@@ -1,11 +1,11 @@
 %{
     #include <stdio.h>
     #include "limbaj.tab.h"
+    #include <string.h>
 %}
 
 %option noyywrap
 %%
-
 "int"|"float"|"char"|"string"|"bool" { yylval.string = strdup(yytext); return TYPE; }
 
 "class" { return CLASS; }
@@ -57,12 +57,12 @@
     return ID;
 }
 
-[-]?(0|[1-9][0-9]*) {
+(0|[1-9][0-9]*) {
     yylval.intval = atoi(yytext);
     return NR;
 }
 
-[-]?(0|[1-9][0-9]*)(\.[0-9]*) {
+(0|[1-9][0-9]*)(\.[0-9]*) {
     yylval.floatval = atof(yytext);
     return NR;
 }
@@ -70,7 +70,7 @@
 \'[^\']\' {
     yylval.intval = yytext[1];
     return CHAR;
-}
+} 
 
 \"[^\"]*\" {
     yylval.string = strdup(yytext);

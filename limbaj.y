@@ -2,6 +2,7 @@
     #include <iostream>
     #include <vector>
     #include "SymTable.h"
+    using namespace std;
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
@@ -9,31 +10,53 @@
     void yyerror(const char * s);
     class SymTable* current;
     int errorCount = 0;
+
+    SymTable globalSymTable("global");
+    SymTable* currentSymTable = &globalSymTable;
+
+    void printSymbolTables() 
+    {
+        cout<<"\nPrinting all scopes:\n";
+        globalSymTable.printAllScopes();
+    }
 %}
 
+%right '='
 %left '+' '-'
 %left '*' '/' '%'
+%right UMINUS
 %right '^'
-%right '='
 %left OR
 %left AND
 
 %union {
-    char* string;
     int intval;
     float floatval;
+    bool boolval;
+    char charval;
+    char* string;
 }
 
-%token BGIN END ASSIGN NR CHAR
+%token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
+%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+
+%token<intval> NR
+%token<charval> CHAR
+%token<string> STRING
+%token<boolval> TRUE FALSE
+
 
 %start PROGRAM
 
 %%
 
 PROGRAM : class_section var_section func_section main_function {
-           if (errorCount == 0) std::cout << "The program is correct!" << std::endl;
+            if (errorCount == 0) 
+            {
+                cout << "The program is correct!" << endl;
+                printSymbolTables();
+            }
         }
         ;
 
@@ -46,16 +69,43 @@ var_declarations : var_declarations var_declaration
                  | var_declaration
                  ;
 
- var_declaration : TYPE ID ';' 
-                 | TYPE ID '[' expression ']' ';'
-                 | TYPE ID '[' boolean_expression ']' ';'
-                 | TYPE ID ASSIGN expression ';'
-                 | TYPE ID ASSIGN boolean_expression ';'
-                 | TYPE ID ASSIGN CHAR ';'
-                 | TYPE ID ASSIGN STRING ';'
-                 ;
-
-
+var_declaration : TYPE ID ';' {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
+                    currentSymTable->addVar($1, $2);
+                }
+                | TYPE ID '[' expression ']' ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 5 ])\n";
+                    vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
+                    currentSymTable->addVar($1, $2, tmp);
+                }
+                | TYPE ID '[' expression ']' ASSIGN expression ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 3 ]=tmp value 100)\n";
+                    vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
+                    currentSymTable->addVar($1, $2, tmp);
+                }
+                | TYPE ID ASSIGN expression ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
+                    currentSymTable->addVar($1, $2, 101);
+                }
+                | TYPE ID ASSIGN boolean_expression ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
+                    currentSymTable->addVar($1, $2, 1);
+                }
+                | TYPE ID ASSIGN CHAR ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
+                    currentSymTable->addVar($1, $2, $4);
+                }
+                | TYPE ID ASSIGN STRING ';'
+                {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
+                    currentSymTable->addVar($1, $2, $4);
+                }
+                ;
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
 func_section : func_definitions
@@ -66,8 +116,19 @@ func_definitions : func_definitions func_definition
                  | func_definition
                  ;
 
-func_definition : FUNC TYPE ID '(' parameter_list ')' BGIN statement_list END
-                ;
+func_definition:
+    FUNC TYPE ID '(' parameter_list ')' 
+    {
+        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
+        currentSymTable->addFunc($2, $3);
+        currentSymTable->enterScope($3);
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
  /* 3) Class Section _______________________________________________________________________________________*/
 class_section : class_definitions
@@ -78,8 +139,21 @@ class_definitions : class_definitions class_definition
                   | class_definition
                   ;
 
-class_definition : CLASS ID BGIN class_body END
-                 ;
+class_definition:
+    CLASS ID 
+    {
+        cout << "Class " << $2 << " defined." << endl;
+        currentSymTable->addClass($2);
+        currentSymTable->enterScope($2);
+    }
+    BGIN
+    class_body 
+    END
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
 class_body : class_body class_member
            | class_member
@@ -90,8 +164,18 @@ class_member : var_declaration
              | constructor_definition
              ;
 
-constructor_definition : ID '(' parameter_list ')' BGIN statement_list END
-                       ;
+constructor_definition: 
+    ID '(' parameter_list ')' 
+    {
+        cout << "  ("<<currentSymTable->getScope() << "): +constructor: " << $1 << "\n";
+        currentSymTable->addFunc("constructor", $1);
+        currentSymTable->enterScope($1); 
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
 
 
  /*__________________________________________*/
@@ -103,10 +187,18 @@ parameter_list : parameter
 parameter : TYPE ID
           ;
 
-
  /* 4) Entry Point Main Function______________________________________________________________________________*/
-main_function : MAIN BGIN statement_list END
-              ;
+main_function:
+    MAIN BGIN
+    {
+        cout << "Main function defined." << endl;
+        currentSymTable->enterScope("main");
+    }
+    statement_list END
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
 
  /* Statements and Control Flow______________________________________________________________________________*/
 statement_list : statement_list statement_with_semicolon ';'
@@ -115,14 +207,17 @@ statement_list : statement_list statement_with_semicolon ';'
                | statement_without_semicolon
                ;
 
-statement_with_semicolon : assignment
-                         | function_call
-                         | predefined_function_call
-                         | return_statement
-                         | object_access
-                         ;
+statement_with_semicolon:
+                        assignment
+                        | function_call
+                        | predefined_function_call
+                        | return_statement
+                        | object_access
+                        ;
 
-statement_without_semicolon : if_statement
+statement_without_semicolon :
+                            var_declaration
+                            | if_statement
                             | while_statement
                             | for_statement
                             ;
@@ -133,8 +228,6 @@ assignment : left_value ASSIGN expression
 
 left_value : ID
            | ID '[' expression ']'
-           | TYPE ID
-           | TYPE ID '[' expression ']'
            | object_access
            | CHAR
            | STRING
@@ -144,14 +237,52 @@ object_access : ID '.' ID
               | ID '.' ID '(' argument_list ')'
               ;
 
-if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
-             | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
-             ;
+if_statement:
+    IF '(' boolean_expression ')' 
+    {
+        currentSymTable->enterScope("IF");
+    } 
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    else_statement
+    ;
 
-while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
-                ;
+else_statement : 
+    /* epsilon */
+    | ELSE 
+    {
+        currentSymTable->enterScope("ELSE");                
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
 
-for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
+while_statement:
+    WHILE '(' boolean_expression ')' 
+    {
+        currentSymTable->enterScope("WHILE");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
+for_statement:
+    FOR '(' var_declaration boolean_expression ';' assignment ')' 
+    {
+        currentSymTable->enterScope("FOR");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
 predefined_function_call : print_statement
                          | type_of_statement
@@ -160,8 +291,6 @@ predefined_function_call : print_statement
 function_call : ID '(' argument_list ')'
               ;
 
- //aceste doua de jos trb schimbat sa fie ca un apel de functie, gen sa fie de forma function (argument_list)
- //in cerinta zicea doar de expr, dar dorim mai multe tipuri de argumente
 print_statement : PRINT '(' CHAR ')'
                 | PRINT '(' STRING ')'
                 | PRINT '(' expression ')'
@@ -175,7 +304,7 @@ type_of_statement : TYPEOF '(' expression ')'
                   | TYPEOF '(' object_access ')'
                   ;
 
-return_statement : RETURN expression //momentan nu avem tipul 'void' ca sa avem nevoie si de 'return;'
+return_statement : RETURN expression
                  ;
 
 argument_list : argument_list ',' expression
@@ -192,7 +321,7 @@ expression : expression '+' expression
            | expression '/' expression
            | expression '%' expression
            | expression '^' expression
-           | '-' expression %prec '-'
+           | '-' expression %prec UMINUS
            | '(' expression ')'
            | ID
            | NR
@@ -216,11 +345,17 @@ boolean_expression : TRUE
  /*____________________________________________________________________________________________________________*/
 
 void yyerror(const char * s) {
-    std::cout << "Error: " << s << " at line: " << yylineno <<std::endl;
+    cout << "Error: " << s << " at line: " << yylineno <<endl;
+    errorCount++;
 }
 
 int main(int argc, char** argv) {
+    current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
+
+    currentSymTable = &globalSymTable;
+    
     yyparse();
+    delete current;
     return 0;
 }

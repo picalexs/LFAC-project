@@ -2,43 +2,64 @@
 #define SYMTABLE_H
 
 #include <iostream>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
+#include <stack>
+#include <variant>
+using namespace std;
+
+using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
 
 class ParamList {
-    std::vector<std::string> types; // Tip parametri
-    std::vector<std::string> names; // Nume parametri 
+    vector<string> types;
+    vector<string> names;
+
 public:
-    void addParam(const std::string& type, const std::string& name);
-    std::string toString() const; // Pentru debug
+    void addParam(const string &type, const string &name);
+    string toString() const;
 };
 
 class IdInfo {
 public:
-    std::string idType; // Variab, fct, clasa
-    std::string type;   // Tip simbol
-    std::string name;
-    ParamList params;   // pt fct
+    string idType;
+    string type;
+    string name;
+    Value value;
+    ParamList params;
+
     IdInfo() {}
-    IdInfo(const std::string& type, const std::string& name, const std::string& idType)
-        : idType(idType), type(type), name(name) {}
+    IdInfo(const string &idType, const string &type, const string &name, const Value &value = {})
+        : idType(idType), type(type), name(name), value(value) {}
 };
 
 class SymTable {
-    std::map<std::string, IdInfo> ids;
-    std::string name;
+    unordered_map<string, IdInfo> currentVars;
+    stack<unordered_map<string, IdInfo>> scopeStack;
+    stack<string> scopeNames;
+    string tableName;
+
 public:
-    SymTable(const char* name);
-    ~SymTable();
+    SymTable(const string &name) : tableName(name) {}
+    ~SymTable() {}
 
-    bool existsId(const char* id);
-    void addVar(const char* type, const char* name);
-    void addFunc(const char* returnType, const char* name);
-    void addClass(const char* name);
+    void enterScope(const string &tableName);
+    void leaveScope();
+    string getScope();
 
-    std::string getType(const char* id);
-    void printVars();
+    bool existsId(const string &id);
+    void addVar(const string &type, const string &name, const Value &value = {});
+    void addFunc(const string &returnType, const string &name);
+    void addClass(const string &name);
+
+    string getType(const string &id);
+
+    bool removeId(const string &id);
+
+    void printVars() const;
+    void printFuncs() const;
+    void printClasses() const;
+    void printGlobalScopes() const;
+    void printAllScopes() const;
 };
-
 #endif

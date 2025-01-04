@@ -1,31 +1,42 @@
-
 class MyClass {
     int x;
-    float y;
+    int y;
     MyClass() {
         x = 10;
         y = 20.5;
+        if(x>y){
+            x=x+1;
+        }
+        else{
+            x=1-1;
+        }
     }
     
     func int setValues(int a, float b) {
         x = a;
         y = b;
+        string times[100]=12;
         return 0;
     }
 }
 
-int x=123;
-float y[5];
+int n1=65;
+float n2[5];
+int n3[10]=4;
+bool n4[10];
 bool is_active=false;
-char ch;
-string nume;
+char ch='x';
+string nume="Mihai";
 
 func int add(int a, int b) 
 {
+    int test=123;
+    bool val[10]=12;
     if(a!=b)
     {
         while(1<=-8)
         {
+            int testvalue=1023;
             Print("nu va intra aici niciodata");
         }
 
@@ -48,16 +59,15 @@ func int print_message()
         while(cnt<add(1,9)){
             cnt=cnt+1;
             Print("This is a message");
-        }
+        } 
     }
     Print(TypeOf(nume));
     return 0;
 }
 
-
 main 
 {
-    int x = -(a^2 + 10%3)*add(1,add(5,7));
+    int number = -(a^2 + 10%3)*add(1,add(5,7));
     y[0] = 3.14;
     is_active = true;
     obj=MyClass();
