@@ -1357,7 +1357,7 @@ yyreduce:
             if (errorCount == 0) 
             {
                 std::cout << "The program is correct!" << std::endl;
-            printSymbolTables();
+                printSymbolTables();
             }
         }
 #line 1364 "limbaj.tab.c"
@@ -1570,10 +1570,10 @@ int main(int argc, char** argv) {
     current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
 
-SymTable symTable("global");
+    SymTable symTable("global");
 
     symTable.addVar("int", "x");
-    symTable.addFunc("void", "foo");
+    symTable.addFunc("string", "foo");
     symTable.printVars();
     symTable.printFuncs();
 

@@ -5,34 +5,36 @@
 #include <unordered_map>
 #include <string>
 #include <vector>
-#include <stack> // Pentru gestionarea scopurilor (optional)
+#include <stack>
 
 class ParamList
 {
-    std::vector<std::string> types; // Tipurile parametrilor
-    std::vector<std::string> names; // Numele parametrilor
+    std::vector<std::string> types;
+    std::vector<std::string> names;
+
 public:
     void addParam(const std::string &type, const std::string &name);
-    std::string toString() const; // Conversie la string pentru debug
+    std::string toString() const;
 };
 
 class IdInfo
 {
 public:
-    std::string idType; // Tipul simbolului (variabilă, funcție, clasă, etc.)
-    std::string type;   // Tipul simbolului (e.g., int, string)
-    std::string name;   // Numele simbolului
-    ParamList params;   // Lista de parametri pentru funcții
+    std::string idType;
+    std::string type;
+    std::string name;
+    ParamList params;
     IdInfo() {}
     IdInfo(const std::string &idType, const std::string &type, const std::string &name)
         : idType(idType), type(type), name(name) {}
 };
 
-class SymTable 
+class SymTable
 {
     std::unordered_map<std::string, IdInfo> ids;
-    std::string name;                                               // Numele tabelei
-    std::stack<std::unordered_map<std::string, IdInfo>> scopeStack; // Stack pentru gestionarea scopurilor
+    std::string name;
+    std::stack<std::unordered_map<std::string, IdInfo>> scopeStack;
+
 public:
     SymTable(const char *name);
     ~SymTable();
@@ -42,7 +44,6 @@ public:
     void addFunc(const std::string &returnType, const std::string &name);
     void addClass(const std::string &name);
 
-    // Accesarea tipului unui simbol
     std::string getType(const std::string &id);
 
     bool removeId(const std::string &id);

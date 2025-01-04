@@ -35,7 +35,7 @@ std::string SymTable::getType(const std::string &id)
     {
         return ids[id].type;
     }
-    return ""; // Returnează un șir gol dacă simbolul nu există
+    return "";
 }
 
 bool SymTable::removeId(const std::string &id)
@@ -57,23 +57,24 @@ void SymTable::printVars()
         {
             std::cout << entry.second.name << " : " << entry.second.type << std::endl;
         }
-    } 
+    }
 }
 
-void SymTable::printFuncs() {
+void SymTable::printFuncs()
+{
     std::cout << "Functions in " << name << " scope:" << std::endl;
-    // Parcurgerea fiecărei intrări din tabelă pentru a afișa doar funcțiile
-    for (auto &entry : ids) {
-        if (entry.second.idType == "function") { // Verifică dacă simbolul este funcție
-            // Afisare funcție și eventual tipul returnat și parametrii funcției
-            std::cout << "Function Name: " << entry.second.name 
-                      << ", Return Type: " << entry.second.type << std::endl;
-
-            // Afișează parametrii funcției, dacă sunt
+    for (auto &entry : ids)
+    {
+        if (entry.second.idType == "function")
+        {
+            std::cout << "Function Name: " << entry.second.name << ", Return Type: " << entry.second.type << std::endl;
             std::cout << "Parameters: ";
-            if (entry.second.params.toString() != "") {
+            if (entry.second.params.toString() != "")
+            {
                 std::cout << entry.second.params.toString() << std::endl;
-            } else {
+            }
+            else
+            {
                 std::cout << "None" << std::endl;
             }
         }
@@ -83,32 +84,33 @@ void SymTable::printFuncs() {
 void SymTable::enterScope()
 {
     std::unordered_map<std::string, IdInfo> newScope;
-    scopeStack.push(newScope); // Crează un nou scop pe stivă
+    scopeStack.push(newScope);
 }
 
 void SymTable::leaveScope()
 {
     if (!scopeStack.empty())
     {
-        scopeStack.pop(); // Ieși din scope, eliminând ultimul element din stack
+        scopeStack.pop();
     }
 }
 
 void ParamList::addParam(const std::string &type, const std::string &name)
 {
-    types.push_back(type);  // Adaugă tipul
-    names.push_back(name);  // Adaugă numele
+    types.push_back(type);
+    names.push_back(name);
 }
 
-// Conversie la string pentru a vizualiza parametrii
 std::string ParamList::toString() const
 {
     std::string result = "";
-    for (size_t i = 0; i < types.size(); ++i) {
-        result += types[i] + " " + names[i]; // Concatenează tipul și numele fiecărui parametru
-        if (i != types.size() - 1) {
-            result += ", ";  // Adaugă separator doar între parametrii (nu după ultimul parametru)
+    for (size_t i = 0; i < types.size(); ++i)
+    {
+        result += types[i] + " " + names[i];
+        if (i != types.size() - 1)
+        {
+            result += ", ";
         }
     }
-    return result;  // Returnează șirul de caractere rezultat
+    return result;
 }
