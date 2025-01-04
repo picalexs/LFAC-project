@@ -16,9 +16,8 @@
 
     void printSymbolTables() 
     {
-        cout << "\n=== Symbol Table ===\n";
-        globalSymTable.printVars();
-        //globalSymTable.printFuncs();
+        cout<<"\nPrinting all scopes:\n";
+        globalSymTable.printAllScopes();
     }
 %}  
 
@@ -71,39 +70,39 @@ var_declarations : var_declarations var_declaration
 
  var_declaration : TYPE ID ';' {
                     cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
-                    globalSymTable.addVar($1, $2);
+                    currentSymTable->addVar($1, $2);
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
                     cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
-                    vector<int> tmp= {0,0,0,0,0}; //exemplu de vector de dimensiunea 5 (trb sa fie de dim exprs)
-                    globalSymTable.addVar($1, $2, tmp);
+                    vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
+                    currentSymTable->addVar($1, $2, tmp);
                 }
-                | TYPE ID '[' expression ']' ASSIGN expression';'
+                | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 100" <<endl;
-                    vector<int> tmp= {100,100,100};//exemplu de vector de dimensiunea 3 (trb sa fie de dim exprs) = 100;
-                    globalSymTable.addVar($1, $2, tmp);
+                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
+                    vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
+                    currentSymTable->addVar($1, $2, tmp);
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
                     cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 101" <<endl;
-                    globalSymTable.addVar($1, $2, 101);
+                    currentSymTable->addVar($1, $2, 101);
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
                     cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 1" <<endl;
-                    globalSymTable.addVar($1, $2, 1);
+                    currentSymTable->addVar($1, $2, 1);
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
                     cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
-                    globalSymTable.addVar($1, $2, $4);
+                    currentSymTable->addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
                     cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
-                    globalSymTable.addVar($1, $2, $4);
+                    currentSymTable->addVar($1, $2, $4);
                 }
                 ;
 
@@ -117,6 +116,14 @@ func_definitions : func_definitions func_definition
                  ;
 
 func_definition : FUNC TYPE ID '(' parameter_list ')' BGIN statement_list END
+                {
+                    cout << "Function " << $3 << " defined with return type: " << $2 << endl;
+                    currentSymTable->addFunc($2, $3);
+                    currentSymTable->enterScope($3);
+                }
+                {
+                    currentSymTable->leaveScope();
+                }
                 ;
 
  /* 3) Class Section _______________________________________________________________________________________*/
@@ -129,6 +136,14 @@ class_definitions : class_definitions class_definition
                   ;
 
 class_definition : CLASS ID BGIN class_body END
+                 {
+                    cout << "Class " << $2 << " defined." << endl;
+                    currentSymTable->addClass($2);
+                    currentSymTable->enterScope($2);
+                 }
+                 {
+                    currentSymTable->leaveScope();
+                 }
                  ;
 
 class_body : class_body class_member
@@ -143,7 +158,6 @@ class_member : var_declaration
 constructor_definition : ID '(' parameter_list ')' BGIN statement_list END
                        ;
 
-
  /*__________________________________________*/
 parameter_list : parameter
                | parameter_list ',' parameter
@@ -152,7 +166,6 @@ parameter_list : parameter
 
 parameter : TYPE ID
           ;
-
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
 main_function : MAIN BGIN statement_list END
@@ -195,13 +208,37 @@ object_access : ID '.' ID
               ;
 
 if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
+             {
+                currentSymTable->enterScope("IF");
+             }
+             {
+                currentSymTable->leaveScope();
+             }
              | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
+             {
+                currentSymTable->enterScope("IF-ELSE"); //aici probabil trb 2 scopuri separate pt if/else
+             }
+             {
+                currentSymTable->leaveScope();
+             }
              ;
 
 while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
+                {
+                    currentSymTable->enterScope("WHILE");
+                }
+                {
+                    currentSymTable->leaveScope();
+                }
                 ;
 
 for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
+              {
+                    currentSymTable->enterScope("FOR");
+              }
+              {
+                    currentSymTable->leaveScope();
+              }
 
 predefined_function_call : print_statement
                          | type_of_statement
@@ -210,8 +247,6 @@ predefined_function_call : print_statement
 function_call : ID '(' argument_list ')'
               ;
 
- //aceste doua de jos trb schimbat sa fie ca un apel de functie, gen sa fie de forma function (argument_list)
- //in cerinta zicea doar de expr, dar dorim mai multe tipuri de argumente
 print_statement : PRINT '(' CHAR ')'
                 | PRINT '(' STRING ')'
                 | PRINT '(' expression ')'
@@ -225,7 +260,7 @@ type_of_statement : TYPEOF '(' expression ')'
                   | TYPEOF '(' object_access ')'
                   ;
 
-return_statement : RETURN expression //momentan nu avem tipul 'void' ca sa avem nevoie si de 'return;'
+return_statement : RETURN expression
                  ;
 
 argument_list : argument_list ',' expression
@@ -274,12 +309,8 @@ int main(int argc, char** argv) {
     current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
 
-    SymTable symTable("global");
-
-    //symTable.addVar("int", "x");
-    //symTable.addFunc("string", "foo");
-    symTable.printVars();
-    //symTable.printFuncs();
+    // Initialize global scope
+    currentSymTable = &globalSymTable;
 
     yyparse();
     delete current;

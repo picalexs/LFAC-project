@@ -7,57 +7,58 @@
 #include <vector>
 #include <stack>
 #include <variant>
+using namespace std;
 
-using Value = std::variant<int, float, bool, std::string, char, std::vector<int>, std::vector<float>, std::vector<bool>, std::vector<char>, std::vector<std::string>>;
+using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
 
-class ParamList
-{
-    std::vector<std::string> types;
-    std::vector<std::string> names;
+class ParamList {
+    vector<string> types;
+    vector<string> names;
 
 public:
-    void addParam(const std::string &type, const std::string &name);
-    std::string toString() const;
+    void addParam(const string &type, const string &name);
+    string toString() const;
 };
 
-class IdInfo
-{
+class IdInfo {
 public:
-    std::string idType;
-    std::string type;
-    std::string name;
+    string idType;
+    string type;
+    string name;
     Value value;
     ParamList params;
 
     IdInfo() {}
-    IdInfo(const std::string &idType, const std::string &type, const std::string &name, const Value &value = {})
+    IdInfo(const string &idType, const string &type, const string &name, const Value &value = {})
         : idType(idType), type(type), name(name), value(value) {}
 };
 
-class SymTable
-{
-    std::unordered_map<std::string, IdInfo> ids;
-    std::string name;
-    std::stack<std::unordered_map<std::string, IdInfo>> scopeStack;
+class SymTable {
+    unordered_map<string, IdInfo> currentVars;
+    stack<unordered_map<string, IdInfo>> scopeStack;
+    stack<string> scopeNames;
+    string tableName;
 
 public:
-    SymTable(const char *name);
-    ~SymTable();
+    SymTable(const string &name) : tableName(name) {}
+    ~SymTable() {}
 
-    bool existsId(const std::string &id);
-    void addVar(const std::string &type, const std::string &name, const Value &value = {});
-    void addFunc(const std::string &returnType, const std::string &name);
-    void addClass(const std::string &name);
-
-    std::string getType(const std::string &id);
-
-    bool removeId(const std::string &id);
-
-    void printFuncs();
-    void printVars();
-
-    void enterScope();
+    void enterScope(const string &tableName);
     void leaveScope();
-};
 
+    bool existsId(const string &id);
+    void addVar(const string &type, const string &name, const Value &value = {});
+    void addFunc(const string &returnType, const string &name);
+    void addClass(const string &name);
+
+    string getType(const string &id);
+
+    bool removeId(const string &id);
+
+    void printVars() const;
+    void printFuncs() const;
+    void printClasses() const;
+    void printGlobalScopes() const;
+    void printAllScopes() const;
+};
 #endif

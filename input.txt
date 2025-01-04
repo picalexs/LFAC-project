@@ -29,6 +29,7 @@ func int add(int a, int b)
     {
         while(1<=-8)
         {
+            int testvalue=1023;
             Print("nu va intra aici niciodata");
         }
 
