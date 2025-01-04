@@ -13,14 +13,18 @@ class MyClass {
     }
 }
 
-int x=123;
-float y[5];
+int n1=65;
+float n2[5];
+int n3[10]=4;
+bool n4[10];
 bool is_active=false;
 char ch='x';
 string nume="Mihai";
 
 func int add(int a, int b) 
 {
+    int test=123;
+    bool val[10]=false;
     if(a!=b)
     {
         while(1<=-8)
@@ -55,7 +59,7 @@ func int print_message()
 
 main 
 {
-    int x = -(a^2 + 10%3)*add(1,add(5,7));
+    int number = -(a^2 + 10%3)*add(1,add(5,7));
     y[0] = 3.14;
     is_active = true;
     obj=MyClass();

@@ -2,6 +2,7 @@
     #include <iostream>
     #include <vector>
     #include "SymTable.h"
+    using namespace std;
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
@@ -15,7 +16,7 @@
 
     void printSymbolTables() 
     {
-        std::cout << "=== Symbol Table ===" << std::endl;
+        cout << "\n=== Symbol Table ===\n";
         globalSymTable.printVars();
         //globalSymTable.printFuncs();
     }
@@ -53,7 +54,7 @@
 PROGRAM : class_section var_section func_section main_function {
             if (errorCount == 0) 
             {
-                std::cout << "The program is correct!" << std::endl;
+                cout << "The program is correct!" << endl;
                 printSymbolTables();
             }
         }
@@ -69,26 +70,42 @@ var_declarations : var_declarations var_declaration
                  ;
 
  var_declaration : TYPE ID ';' {
-                    std::cout << "Adding var: " << $2 << " of type: " << $1 <<std::endl;
+                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
                     globalSymTable.addVar($1, $2);
                 }
                 | TYPE ID '[' expression ']' ';'
-                | TYPE ID '[' boolean_expression ']' ';'
+                {
+                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
+                    vector<int> tmp= {0,0,0,0,0}; //exemplu de vector de dimensiunea 5 (trb sa fie de dim exprs)
+                    globalSymTable.addVar($1, $2, tmp);
+                }
+                | TYPE ID '[' expression ']' ASSIGN expression';'
+                {
+                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 100" <<endl;
+                    vector<int> tmp= {100,100,100};//exemplu de vector de dimensiunea 3 (trb sa fie de dim exprs) = 100;
+                    globalSymTable.addVar($1, $2, tmp);
+                }
                 | TYPE ID ASSIGN expression ';'
+                {
+                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 101" <<endl;
+                    globalSymTable.addVar($1, $2, 101);
+                }
                 | TYPE ID ASSIGN boolean_expression ';'
+                {
+                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 1" <<endl;
+                    globalSymTable.addVar($1, $2, 1);
+                }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    std::cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<std::endl;
+                    cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
                     globalSymTable.addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    std::cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<std::endl;
+                    cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
                     globalSymTable.addVar($1, $2, $4);
                 }
                 ;
-
-
 
  /* 2) Function Definitions Section___________________________________________________________________________*/
 func_section : func_definitions
@@ -249,7 +266,7 @@ boolean_expression : TRUE
  /*____________________________________________________________________________________________________________*/
 
 void yyerror(const char * s) {
-    std::cout << "Error: " << s << " at line: " << yylineno <<std::endl;
+    cout << "Error: " << s << " at line: " << yylineno <<endl;
     errorCount++;
 }
 

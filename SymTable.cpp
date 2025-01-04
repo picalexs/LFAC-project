@@ -56,6 +56,7 @@ void SymTable::printVars()
         if (entry.second.idType == "variable")
         {
             std::cout << entry.second.name << " : " << entry.second.type << " = ";
+
             try {
                 if (std::holds_alternative<int>(entry.second.value)) {
                     std::cout << std::get<int>(entry.second.value);
@@ -67,6 +68,39 @@ void SymTable::printVars()
                     std::cout << std::get<std::string>(entry.second.value);
                 } else if (std::holds_alternative<char>(entry.second.value)) {
                     std::cout << std::get<char>(entry.second.value);
+                }
+                else if (std::holds_alternative<std::vector<int>>(entry.second.value)) {
+                    std::cout << "[ ";
+                    for (auto val : std::get<std::vector<int>>(entry.second.value)) {
+                        std::cout << val << " ";
+                    }
+                    std::cout << "]";
+                } else if (std::holds_alternative<std::vector<float>>(entry.second.value)) {
+                    std::cout << "[ ";
+                    for (auto val : std::get<std::vector<float>>(entry.second.value)) {
+                        std::cout << val << " ";
+                    }
+                    std::cout << "]";
+                } else if (std::holds_alternative<std::vector<bool>>(entry.second.value)) {
+                    std::cout << "[ ";
+                    for (auto val : std::get<std::vector<bool>>(entry.second.value)) {
+                        std::cout << (val ? "true" : "false") << " ";
+                    }
+                    std::cout << "]";
+                } else if (std::holds_alternative<std::vector<char>>(entry.second.value)) {
+                    std::cout << "[ ";
+                    for (auto val : std::get<std::vector<char>>(entry.second.value)) {
+                        std::cout << val << " ";
+                    }
+                    std::cout << "]";
+                } else if (std::holds_alternative<std::vector<std::string>>(entry.second.value)) {
+                    std::cout << "[ ";
+                    for (auto val : std::get<std::vector<std::string>>(entry.second.value)) {
+                        std::cout << val << " ";
+                    }
+                    std::cout << "]";
+                } else {
+                    std::cout << "undefined";
                 }
             } catch (...) {
                 std::cout << "undefined";
