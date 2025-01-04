@@ -25,7 +25,7 @@ string ParamList::toString() const
 void SymTable::enterScope(const string &scopeName)
 {
     scopeNames.push(scopeName); // Push the scope name
-    cout << "Entering " << scopeName << " scope." << endl;
+    cout << "+Entering scope: " << scopeName << "\n";
     scopeStack.push(currentVars);
     currentVars.clear();
 }
@@ -34,11 +34,20 @@ void SymTable::leaveScope()
 {
     if (!scopeStack.empty() && !scopeNames.empty())
     {
-        cout << "Leaving " << scopeNames.top() << " scope." << endl;
+        cout << "-Leaving scope: " << scopeNames.top() << "\n";
         scopeNames.pop(); // Pop the scope name
         currentVars = scopeStack.top();
         scopeStack.pop();
     }
+}
+
+string SymTable::getScope()
+{
+    if (!scopeNames.empty())
+    {
+        return scopeNames.top();
+    }
+    return "Global";
 }
 
 bool SymTable::existsId(const string &id)

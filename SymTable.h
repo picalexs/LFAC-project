@@ -45,6 +45,7 @@ public:
 
     void enterScope(const string &tableName);
     void leaveScope();
+    string getScope();
 
     bool existsId(const string &id);
     void addVar(const string &type, const string &name, const Value &value = {});

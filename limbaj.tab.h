@@ -54,32 +54,33 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    BGIN = 258,                    /* BGIN  */
-    END = 259,                     /* END  */
-    ASSIGN = 260,                  /* ASSIGN  */
-    EQ = 261,                      /* EQ  */
-    NEQ = 262,                     /* NEQ  */
-    AND = 263,                     /* AND  */
-    OR = 264,                      /* OR  */
-    LE = 265,                      /* LE  */
-    GE = 266,                      /* GE  */
-    ID = 267,                      /* ID  */
-    TYPE = 268,                    /* TYPE  */
-    CLASS = 269,                   /* CLASS  */
-    MAIN = 270,                    /* MAIN  */
-    IF = 271,                      /* IF  */
-    ELSE = 272,                    /* ELSE  */
-    WHILE = 273,                   /* WHILE  */
-    FOR = 274,                     /* FOR  */
-    PRINT = 275,                   /* PRINT  */
-    TYPEOF = 276,                  /* TYPEOF  */
-    FUNC = 277,                    /* FUNC  */
-    RETURN = 278,                  /* RETURN  */
-    NR = 279,                      /* NR  */
-    CHAR = 280,                    /* CHAR  */
-    STRING = 281,                  /* STRING  */
-    TRUE = 282,                    /* TRUE  */
-    FALSE = 283                    /* FALSE  */
+    UMINUS = 258,                  /* UMINUS  */
+    BGIN = 259,                    /* BGIN  */
+    END = 260,                     /* END  */
+    ASSIGN = 261,                  /* ASSIGN  */
+    EQ = 262,                      /* EQ  */
+    NEQ = 263,                     /* NEQ  */
+    AND = 264,                     /* AND  */
+    OR = 265,                      /* OR  */
+    LE = 266,                      /* LE  */
+    GE = 267,                      /* GE  */
+    ID = 268,                      /* ID  */
+    TYPE = 269,                    /* TYPE  */
+    CLASS = 270,                   /* CLASS  */
+    MAIN = 271,                    /* MAIN  */
+    IF = 272,                      /* IF  */
+    ELSE = 273,                    /* ELSE  */
+    WHILE = 274,                   /* WHILE  */
+    FOR = 275,                     /* FOR  */
+    PRINT = 276,                   /* PRINT  */
+    TYPEOF = 277,                  /* TYPEOF  */
+    FUNC = 278,                    /* FUNC  */
+    RETURN = 279,                  /* RETURN  */
+    NR = 280,                      /* NR  */
+    CHAR = 281,                    /* CHAR  */
+    STRING = 282,                  /* STRING  */
+    TRUE = 283,                    /* TRUE  */
+    FALSE = 284                    /* FALSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -88,7 +89,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 31 "limbaj.y"
+#line 32 "limbaj.y"
 
     int intval;
     float floatval;
@@ -96,7 +97,7 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 100 "limbaj.tab.h"
+#line 101 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

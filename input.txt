@@ -1,14 +1,21 @@
 class MyClass {
     int x;
-    float y;
+    int y;
     MyClass() {
         x = 10;
         y = 20.5;
+        if(x>y){
+            x=x+1;
+        }
+        else{
+            x=1-1;
+        }
     }
     
     func int setValues(int a, float b) {
         x = a;
         y = b;
+        string times[100]=12;
         return 0;
     }
 }
@@ -24,7 +31,7 @@ string nume="Mihai";
 func int add(int a, int b) 
 {
     int test=123;
-    bool val[10]=false;
+    bool val[10]=12;
     if(a!=b)
     {
         while(1<=-8)

@@ -19,12 +19,13 @@
         cout<<"\nPrinting all scopes:\n";
         globalSymTable.printAllScopes();
     }
-%}  
+%}
 
+%right '='
 %left '+' '-'
 %left '*' '/' '%'
+%right UMINUS
 %right '^'
-%right '='
 %left OR
 %left AND
 
@@ -68,40 +69,40 @@ var_declarations : var_declarations var_declaration
                  | var_declaration
                  ;
 
- var_declaration : TYPE ID ';' {
-                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
+var_declaration : TYPE ID ';' {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
                     currentSymTable->addVar($1, $2);
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 5 ])\n";
                     vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
                     currentSymTable->addVar($1, $2, tmp);
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 3 ]=tmp value 100)\n";
                     vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
                     currentSymTable->addVar($1, $2, tmp);
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 101" <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
                     currentSymTable->addVar($1, $2, 101);
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 << " with TEMP TEST value: 1" <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
                     currentSymTable->addVar($1, $2, 1);
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<endl;
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 ;
@@ -115,16 +116,19 @@ func_definitions : func_definitions func_definition
                  | func_definition
                  ;
 
-func_definition : FUNC TYPE ID '(' parameter_list ')' BGIN statement_list END
-                {
-                    cout << "Function " << $3 << " defined with return type: " << $2 << endl;
-                    currentSymTable->addFunc($2, $3);
-                    currentSymTable->enterScope($3);
-                }
-                {
-                    currentSymTable->leaveScope();
-                }
-                ;
+func_definition:
+    FUNC TYPE ID '(' parameter_list ')' 
+    {
+        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
+        currentSymTable->addFunc($2, $3);
+        currentSymTable->enterScope($3);
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
  /* 3) Class Section _______________________________________________________________________________________*/
 class_section : class_definitions
@@ -135,16 +139,21 @@ class_definitions : class_definitions class_definition
                   | class_definition
                   ;
 
-class_definition : CLASS ID BGIN class_body END
-                 {
-                    cout << "Class " << $2 << " defined." << endl;
-                    currentSymTable->addClass($2);
-                    currentSymTable->enterScope($2);
-                 }
-                 {
-                    currentSymTable->leaveScope();
-                 }
-                 ;
+class_definition:
+    CLASS ID 
+    {
+        cout << "Class " << $2 << " defined." << endl;
+        currentSymTable->addClass($2);
+        currentSymTable->enterScope($2);
+    }
+    BGIN
+    class_body 
+    END
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
 class_body : class_body class_member
            | class_member
@@ -155,8 +164,19 @@ class_member : var_declaration
              | constructor_definition
              ;
 
-constructor_definition : ID '(' parameter_list ')' BGIN statement_list END
-                       ;
+constructor_definition: 
+    ID '(' parameter_list ')' 
+    {
+        cout << "  ("<<currentSymTable->getScope() << "): +constructor: " << $1 << "\n";
+        currentSymTable->addFunc("constructor", $1);
+        currentSymTable->enterScope($1); 
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
  /*__________________________________________*/
 parameter_list : parameter
@@ -168,8 +188,17 @@ parameter : TYPE ID
           ;
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
-main_function : MAIN BGIN statement_list END
-              ;
+main_function:
+    MAIN BGIN
+    {
+        cout << "Main function defined." << endl;
+        currentSymTable->enterScope("main");
+    }
+    statement_list END
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
 
  /* Statements and Control Flow______________________________________________________________________________*/
 statement_list : statement_list statement_with_semicolon ';'
@@ -178,14 +207,17 @@ statement_list : statement_list statement_with_semicolon ';'
                | statement_without_semicolon
                ;
 
-statement_with_semicolon : assignment
-                         | function_call
-                         | predefined_function_call
-                         | return_statement
-                         | object_access
-                         ;
+statement_with_semicolon:
+                        assignment
+                        | function_call
+                        | predefined_function_call
+                        | return_statement
+                        | object_access
+                        ;
 
-statement_without_semicolon : if_statement
+statement_without_semicolon :
+                            var_declaration
+                            | if_statement
                             | while_statement
                             | for_statement
                             ;
@@ -196,8 +228,6 @@ assignment : left_value ASSIGN expression
 
 left_value : ID
            | ID '[' expression ']'
-           | TYPE ID
-           | TYPE ID '[' expression ']'
            | object_access
            | CHAR
            | STRING
@@ -207,38 +237,52 @@ object_access : ID '.' ID
               | ID '.' ID '(' argument_list ')'
               ;
 
-if_statement : IF '(' boolean_expression ')' BGIN statement_list END 
-             {
-                currentSymTable->enterScope("IF");
-             }
-             {
-                currentSymTable->leaveScope();
-             }
-             | IF '(' boolean_expression ')' BGIN statement_list END ELSE BGIN statement_list END
-             {
-                currentSymTable->enterScope("IF-ELSE"); //aici probabil trb 2 scopuri separate pt if/else
-             }
-             {
-                currentSymTable->leaveScope();
-             }
-             ;
+if_statement:
+    IF '(' boolean_expression ')' 
+    {
+        currentSymTable->enterScope("IF");
+    } 
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    else_statement
+    ;
 
-while_statement : WHILE '(' boolean_expression ')' BGIN statement_list END
-                {
-                    currentSymTable->enterScope("WHILE");
-                }
-                {
-                    currentSymTable->leaveScope();
-                }
-                ;
+else_statement : 
+    /* epsilon */
+    | ELSE 
+    {
+        currentSymTable->enterScope("ELSE");                
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
 
-for_statement : FOR '(' assignment ';' boolean_expression ';' assignment ')' BGIN statement_list END
-              {
-                    currentSymTable->enterScope("FOR");
-              }
-              {
-                    currentSymTable->leaveScope();
-              }
+while_statement:
+    WHILE '(' boolean_expression ')' 
+    {
+        currentSymTable->enterScope("WHILE");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
+for_statement:
+    FOR '(' var_declaration boolean_expression ';' assignment ')' 
+    {
+        currentSymTable->enterScope("FOR");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
 
 predefined_function_call : print_statement
                          | type_of_statement
@@ -277,7 +321,7 @@ expression : expression '+' expression
            | expression '/' expression
            | expression '%' expression
            | expression '^' expression
-           | '-' expression %prec '-'
+           | '-' expression %prec UMINUS
            | '(' expression ')'
            | ID
            | NR
@@ -309,9 +353,8 @@ int main(int argc, char** argv) {
     current = new SymTable("Global");
     yyin = fopen(argv[1], "r");
 
-    // Initialize global scope
     currentSymTable = &globalSymTable;
-
+    
     yyparse();
     delete current;
     return 0;

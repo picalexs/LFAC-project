@@ -57,12 +57,12 @@
     return ID;
 }
 
-[-]?(0|[1-9][0-9]*) {
+(0|[1-9][0-9]*) {
     yylval.intval = atoi(yytext);
     return NR;
 }
 
-[-]?(0|[1-9][0-9]*)(\.[0-9]*) {
+(0|[1-9][0-9]*)(\.[0-9]*) {
     yylval.floatval = atof(yytext);
     return NR;
 }
