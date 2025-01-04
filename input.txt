@@ -16,8 +16,8 @@ class MyClass {
 int x=123;
 float y[5];
 bool is_active=false;
-char ch;
-string nume;
+char ch='x';
+string nume="Mihai";
 
 func int add(int a, int b) 
 {
@@ -52,7 +52,6 @@ func int print_message()
     Print(TypeOf(nume));
     return 0;
 }
-
 
 main 
 {

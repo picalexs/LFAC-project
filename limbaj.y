@@ -17,7 +17,7 @@
     {
         std::cout << "=== Symbol Table ===" << std::endl;
         globalSymTable.printVars();
-        globalSymTable.printFuncs();
+        //globalSymTable.printFuncs();
     }
 %}  
 
@@ -29,14 +29,22 @@
 %left AND
 
 %union {
-    char* string;
     int intval;
     float floatval;
+    bool boolval;
+    char charval;
+    char* string;
 }
 
-%token BGIN END ASSIGN NR CHAR
+%token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF TRUE FALSE FUNC STRING RETURN
+%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+
+%token<intval> NR
+%token<charval> CHAR
+%token<string> STRING
+%token<boolval> TRUE FALSE
+
 
 %start PROGRAM
 
@@ -60,14 +68,25 @@ var_declarations : var_declarations var_declaration
                  | var_declaration
                  ;
 
- var_declaration : TYPE ID ';' 
-                 | TYPE ID '[' expression ']' ';'
-                 | TYPE ID '[' boolean_expression ']' ';'
-                 | TYPE ID ASSIGN expression ';'
-                 | TYPE ID ASSIGN boolean_expression ';'
-                 | TYPE ID ASSIGN CHAR ';'
-                 | TYPE ID ASSIGN STRING ';'
-                 ;
+ var_declaration : TYPE ID ';' {
+                    std::cout << "Adding var: " << $2 << " of type: " << $1 <<std::endl;
+                    globalSymTable.addVar($1, $2);
+                }
+                | TYPE ID '[' expression ']' ';'
+                | TYPE ID '[' boolean_expression ']' ';'
+                | TYPE ID ASSIGN expression ';'
+                | TYPE ID ASSIGN boolean_expression ';'
+                | TYPE ID ASSIGN CHAR ';'
+                {
+                    std::cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<std::endl;
+                    globalSymTable.addVar($1, $2, $4);
+                }
+                | TYPE ID ASSIGN STRING ';'
+                {
+                    std::cout << "Adding var: " << $2 << " of type: " << $1 << " with value: " << $4 <<std::endl;
+                    globalSymTable.addVar($1, $2, $4);
+                }
+                ;
 
 
 
@@ -240,10 +259,10 @@ int main(int argc, char** argv) {
 
     SymTable symTable("global");
 
-    symTable.addVar("int", "x");
-    symTable.addFunc("string", "foo");
+    //symTable.addVar("int", "x");
+    //symTable.addFunc("string", "foo");
     symTable.printVars();
-    symTable.printFuncs();
+    //symTable.printFuncs();
 
     yyparse();
     delete current;

@@ -6,6 +6,9 @@
 #include <string>
 #include <vector>
 #include <stack>
+#include <variant>
+
+using Value = std::variant<int, float, bool, std::string, char, std::vector<int>, std::vector<float>, std::vector<bool>, std::vector<char>, std::vector<std::string>>;
 
 class ParamList
 {
@@ -23,10 +26,12 @@ public:
     std::string idType;
     std::string type;
     std::string name;
+    Value value;
     ParamList params;
+
     IdInfo() {}
-    IdInfo(const std::string &idType, const std::string &type, const std::string &name)
-        : idType(idType), type(type), name(name) {}
+    IdInfo(const std::string &idType, const std::string &type, const std::string &name, const Value &value = {})
+        : idType(idType), type(type), name(name), value(value) {}
 };
 
 class SymTable
@@ -40,7 +45,7 @@ public:
     ~SymTable();
 
     bool existsId(const std::string &id);
-    void addVar(const std::string &type, const std::string &name);
+    void addVar(const std::string &type, const std::string &name, const Value &value = {});
     void addFunc(const std::string &returnType, const std::string &name);
     void addClass(const std::string &name);
 
