@@ -2,7 +2,7 @@
 #define SYMTABLE_H
 
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <vector>
 #include <stack>
@@ -34,14 +34,16 @@ public:
 };
 
 class SymTable {
-    unordered_map<string, IdInfo> globalScope;
-    unordered_map<string, unordered_map<string, IdInfo>> classScopes;
-    unordered_map<string, unordered_map<string, IdInfo>> functionScopes;
-    unordered_map<string, unordered_map<string, IdInfo>> constructorScopes;
-    unordered_map<string,IdInfo> mainScope;
+    map<string, IdInfo> globalScope;
+    map<string, map<string, IdInfo>> classScopes;
+    map<string, map<string, IdInfo>> functionScopes;
+    map<string, map<string, IdInfo>> blockScopes;
+    map<string, map<string, IdInfo>> constructorScopes;
+    map<string, map<string, IdInfo>> methodScopes;
+    map<string,IdInfo> mainScope;
 
-    unordered_map<string, IdInfo> currentVars;
-    stack<unordered_map<string, IdInfo>> scopeStack;
+    map<string, IdInfo> currentVars;
+    stack<map<string, IdInfo>> scopeStack;
     stack<string> scopeNames;
     stack<string> scopeTypes;
     string tableName;
@@ -65,9 +67,16 @@ public:
 
     bool removeId(const string &id);
 
+
+    void printScope(const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
+    
     void printGlobalScope() const;
     void printClassScopes() const;
     void printFunctionScopes() const;
+    void printBlockScopes() const;
+    void printConstructorScopes() const;
+    void printMethodScopes() const;
+
     void printAllScopes() const;
 };
 #endif

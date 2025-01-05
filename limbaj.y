@@ -166,7 +166,6 @@ class_definitions : class_definitions class_definition
 class_definition:
     CLASS ID 
     {
-        cout << "Class " << $2 << " defined." << endl;
         currentSymTable->addClass($2);
         currentSymTable->enterScope($2, "class");
     }
@@ -191,7 +190,7 @@ class_member : var_declaration
 constructor_definition: 
     ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +constructor: " << $1 << "\n";
+        cout << "  ("<<currentSymTable->getScope() << "): +constr: " << $1 << "\n";
         currentSymTable->addConstructor($1);
         currentSymTable->enterScope($1, "constructor"); 
     }

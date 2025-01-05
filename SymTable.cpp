@@ -38,7 +38,7 @@ void SymTable::leaveScope()
 
         cout << "-Leaving " << scopeType << " scope: " << scopeName << "\n";
 
-       if(scopeType == "global")
+        if(scopeType == "global")
         {
             globalScope = currentVars;
         }
@@ -50,9 +50,16 @@ void SymTable::leaveScope()
         {
             functionScopes[scopeName] = currentVars;
         }
+        else if(scopeType=="block"){
+            blockScopes[scopeName] = currentVars;
+        }
         else if(scopeType == "constructor")
         {
             constructorScopes[scopeName] = currentVars;
+        }
+        else if(scopeType=="method")
+        {
+            methodScopes[scopeName] = currentVars;
         }
         else if(scopeType == "main")
         {
@@ -60,7 +67,7 @@ void SymTable::leaveScope()
         }
         else
         {
-            cout << "Error: Unknown scope type: " << scopeType << "\n";
+            cout << "Error: Unknown scope type: " << scopeType <<' '<<scopeName<< "\n";
         }
 
         scopeNames.pop();
@@ -132,43 +139,58 @@ bool SymTable::removeId(const string &id)
     }
     return false;
 }
+void SymTable::printScope(const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const
+{
+    cout << "=== " << scopeType << " ===\n";
+    for (const auto &scope : scopes)
+    {
+        cout << scopeType << ": " << scope.first << "\n";
+        for (const auto &entry : scope.second)
+        {
+            cout << "  " << entry.second.idType << ": " << entry.second.name;
+            if (entry.second.idType != "class" && entry.second.idType != "constructor")
+                cout << " : " << entry.second.type;
+            cout << endl;
+        }
+    }
+    cout << endl;
+}
 
 void SymTable::printGlobalScope() const
 {
     cout << "=== Global Scope ===\n";
     for (const auto &entry : globalScope)
     {
+        cout << "  " << entry.second.idType << ": " << entry.second.name;
         if (entry.second.idType != "class")
-            cout << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
-        else
-            cout << entry.second.idType << ": " << entry.second.name << endl;
+            cout << " : " << entry.second.type;
+        cout << endl;
     }
 }
 
 void SymTable::printClassScopes() const
 {
-    cout << "=== Class Scopes ===\n";
-    for (const auto &classScope : classScopes)
-    {
-        cout << "Class: " << classScope.first << "\n";
-        for (const auto &entry : classScope.second)
-        {
-            cout << "  " << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
-        }
-    }
+    printScope("Class Scope", classScopes);
 }
 
 void SymTable::printFunctionScopes() const
 {
-    cout << "=== Function Scopes ===\n";
-    for (const auto &funcScope : functionScopes)
-    {
-        cout << "Function: " << funcScope.first << "\n";
-        for (const auto &entry : funcScope.second)
-        {
-            cout << "  " << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
-        }
-    }
+    printScope("Function Scope", functionScopes);
+}
+
+void SymTable::printBlockScopes() const
+{
+    printScope("Block Scope", blockScopes);
+}
+
+void SymTable::printConstructorScopes() const
+{
+    printScope("Constructor Scope", constructorScopes);
+}
+
+void SymTable::printMethodScopes() const
+{
+    printScope("Method Scope", methodScopes);
 }
 
 void SymTable::printAllScopes() const
