@@ -354,8 +354,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 47
-#define YY_END_OF_BUFFER 48
+#define YY_NUM_RULES 48
+#define YY_END_OF_BUFFER 49
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -365,18 +365,18 @@ struct yy_trans_info
 	};
 static const flex_int16_t yy_accept[115] =
     {   0,
-        0,    0,   48,   46,   44,   45,   46,   46,   20,   46,
-       46,   34,   35,   18,   16,   33,   17,   38,   19,   40,
-       40,   31,   32,   23,   30,   22,   39,   39,   39,   36,
-       37,   21,   39,   39,   39,   39,   39,   39,   39,   39,
-       39,   39,    5,   46,    6,   27,    0,   43,   28,    0,
-       41,   40,   25,   26,   24,   39,   39,   39,   39,   39,
-       39,   39,   39,   39,   39,   39,    8,   39,   39,   39,
-       39,   39,   39,   29,   42,   41,   39,   39,   39,   39,
-       39,   39,   39,   39,   11,   39,    1,   39,   39,   39,
-       39,   39,   39,   39,   39,    9,   39,   39,    4,    3,
+        0,    0,   49,   47,   45,   46,   30,   47,   20,   47,
+       47,   35,   36,   18,   16,   34,   17,   39,   19,   41,
+       41,   32,   33,   23,   31,   22,   40,   40,   40,   37,
+       38,   21,   40,   40,   40,   40,   40,   40,   40,   40,
+       40,   40,    5,   47,    6,   27,    0,   44,   28,    0,
+       42,   41,   25,   26,   24,   40,   40,   40,   40,   40,
+       40,   40,   40,   40,   40,   40,    8,   40,   40,   40,
+       40,   40,   40,   29,   43,   42,   40,   40,   40,   40,
+       40,   40,   40,   40,   11,   40,    1,   40,   40,   40,
+       40,   40,   40,   40,   40,    9,   40,   40,    4,    3,
 
-       39,   39,   14,   39,   12,   39,    2,   15,   39,   39,
+       40,   40,   14,   40,   12,   40,    2,   15,   40,   40,
        10,   13,    7,    0
     } ;
 
@@ -947,113 +947,118 @@ YY_RULE_SETUP
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 45 "limbaj.l"
-{ return ASSIGN; }
+#line 44 "limbaj.l"
+{ return '!'; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
 #line 46 "limbaj.l"
-{ return ':'; }
+{ return ASSIGN; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 47 "limbaj.l"
-{ return ';'; }
+{ return ':'; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 48 "limbaj.l"
-{ return ','; }
+{ return ';'; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
 #line 49 "limbaj.l"
-{ return '('; }
+{ return ','; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
 #line 50 "limbaj.l"
-{ return ')'; }
+{ return '('; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
 #line 51 "limbaj.l"
-{ return '['; }
+{ return ')'; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
 #line 52 "limbaj.l"
-{ return ']'; }
+{ return '['; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 53 "limbaj.l"
-{ return '.'; }
+{ return ']'; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 55 "limbaj.l"
+#line 54 "limbaj.l"
+{ return '.'; }
+	YY_BREAK
+case 40:
+YY_RULE_SETUP
+#line 56 "limbaj.l"
 {
     yylval.string = strdup(yytext);
     return ID;
 }
 	YY_BREAK
-case 40:
+case 41:
 YY_RULE_SETUP
-#line 60 "limbaj.l"
+#line 61 "limbaj.l"
 {
     yylval.intval = atoi(yytext);
     return NR;
 }
 	YY_BREAK
-case 41:
+case 42:
 YY_RULE_SETUP
-#line 65 "limbaj.l"
+#line 66 "limbaj.l"
 {
     yylval.floatval = atof(yytext);
     return NR;
 }
 	YY_BREAK
-case 42:
-/* rule 42 can match eol */
+case 43:
+/* rule 43 can match eol */
 YY_RULE_SETUP
-#line 70 "limbaj.l"
+#line 71 "limbaj.l"
 {
     yylval.intval = yytext[1];
     return CHAR;
 } 
 	YY_BREAK
-case 43:
-/* rule 43 can match eol */
+case 44:
+/* rule 44 can match eol */
 YY_RULE_SETUP
-#line 75 "limbaj.l"
+#line 76 "limbaj.l"
 {
     yylval.string = strdup(yytext);
     return STRING;
 }
 	YY_BREAK
-case 44:
-YY_RULE_SETUP
-#line 80 "limbaj.l"
-;
-	YY_BREAK
 case 45:
-/* rule 45 can match eol */
 YY_RULE_SETUP
 #line 81 "limbaj.l"
-{ yylineno++; }
+;
 	YY_BREAK
 case 46:
+/* rule 46 can match eol */
 YY_RULE_SETUP
 #line 82 "limbaj.l"
-{ return yytext[0]; }
+{ yylineno++; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 84 "limbaj.l"
+#line 83 "limbaj.l"
+{ return yytext[0]; }
+	YY_BREAK
+case 48:
+YY_RULE_SETUP
+#line 85 "limbaj.l"
 ECHO;
 	YY_BREAK
-#line 1057 "lex.yy.c"
+#line 1062 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2058,6 +2063,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 84 "limbaj.l"
+#line 85 "limbaj.l"
 
 

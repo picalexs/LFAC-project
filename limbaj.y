@@ -1,7 +1,9 @@
 %{
     #include <iostream>
     #include <vector>
+    #include "ASTNode.h"
     #include "SymTable.h"
+
     using namespace std;
     extern FILE* yyin;
     extern char* yytext;
@@ -30,6 +32,7 @@
 %left AND
 
 %union {
+    ASTNode* node;
     int intval;
     float floatval;
     bool boolval;
@@ -45,6 +48,7 @@
 %token<charval> CHAR
 %token<string> STRING
 %token<boolval> TRUE FALSE
+%type<node> expression boolean_expression
 
 
 %start PROGRAM
@@ -315,30 +319,77 @@ argument_list : argument_list ',' expression
               ;
 
  /* Expressions_____________________________________________________________________________________________*/
-expression : expression '+' expression
-           | expression '-' expression
-           | expression '*' expression
-           | expression '/' expression
-           | expression '%' expression
-           | expression '^' expression
-           | '-' expression %prec UMINUS
-           | '(' expression ')'
-           | ID
-           | NR
-           | function_call
+expression : expression '+' expression {
+               $$ = new ASTNode(ASTNode::Operator::ADD, $1, $3);
+           }
+           | expression '-' expression {
+               $$ = new ASTNode(ASTNode::Operator::SUBTRACT, $1, $3);
+           }
+           | expression '*' expression {
+               $$ = new ASTNode(ASTNode::Operator::MULTIPLY, $1, $3);
+           }
+           | expression '/' expression {
+               $$ = new ASTNode(ASTNode::Operator::DIVIDE, $1, $3);
+           }
+           | expression '%' expression {
+               $$ = new ASTNode(ASTNode::Operator::MODULO, $1, $3);
+           }
+           | expression '^' expression {
+               $$ = new ASTNode(ASTNode::Operator::POWER, $1, $3);
+           }
+           | '-' expression %prec UMINUS {
+               $$ = new ASTNode(ASTNode::Operator::UMINUS, $2, nullptr);
+           }
+           | '(' expression ')' {
+               $$ = $2;
+           }
+           | ID {
+               $$ = new ASTNode($1, true);
+           }
+           | NR {
+               $$ = new ASTNode($1);
+           }
+           | function_call{
+                $$ = nullptr; //tmp
+           }
            ;
 
-boolean_expression : TRUE
-                   | FALSE
-                   | '(' boolean_expression ')'
-                   | expression '>' expression
-                   | expression '<' expression
-                   | expression GE expression
-                   | expression LE expression
-                   | expression EQ expression
-                   | expression NEQ expression
-                   | boolean_expression AND boolean_expression
-                   | boolean_expression OR boolean_expression
+boolean_expression : TRUE {
+                       $$ = new ASTNode(true);
+                   }
+                   | FALSE {
+                       $$ = new ASTNode(false);
+                   }
+                   | '(' boolean_expression ')' {
+                       $$ = $2;
+                   }
+                   | expression '>' expression {
+                       $$ = new ASTNode(ASTNode::Operator::GT, $1, $3);
+                   }
+                   | expression '<' expression {
+                       $$ = new ASTNode(ASTNode::Operator::LT, $1, $3);
+                   }
+                   | expression GE expression {
+                       $$ = new ASTNode(ASTNode::Operator::GE, $1, $3);
+                   }
+                   | expression LE expression {
+                       $$ = new ASTNode(ASTNode::Operator::LE, $1, $3);
+                   }
+                   | expression EQ expression {
+                       $$ = new ASTNode(ASTNode::Operator::EQ, $1, $3);
+                   }
+                   | expression NEQ expression {
+                       $$ = new ASTNode(ASTNode::Operator::NEQ, $1, $3);
+                   }
+                   | boolean_expression AND boolean_expression {
+                       $$ = new ASTNode(ASTNode::Operator::AND, $1, $3);
+                   }
+                   | boolean_expression OR boolean_expression {
+                       $$ = new ASTNode(ASTNode::Operator::OR, $1, $3);
+                   }
+                //    | '!' boolean_expression {
+                //       $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
+                //    }
                    ;
 
 %%

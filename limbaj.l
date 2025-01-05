@@ -41,6 +41,7 @@
 "!=" { return NEQ; }
 "&&" { return AND; }
 "||" { return OR; }
+"!" { return '!'; }
 
 "=" { return ASSIGN; }
 ":" { return ':'; }

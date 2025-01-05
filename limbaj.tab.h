@@ -89,15 +89,16 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 32 "limbaj.y"
+#line 36 "limbaj.y"
 
+    ASTNode* node;
     int intval;
     float floatval;
     bool boolval;
     char charval;
     char* string;
 
-#line 101 "limbaj.tab.h"
+#line 102 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;
