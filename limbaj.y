@@ -31,7 +31,7 @@
 %left AND
 
 %union {
-    ASTNode* node;
+    class ASTNode* node;
     int intval;
     float floatval;
     bool boolval;

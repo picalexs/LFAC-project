@@ -91,7 +91,7 @@ union YYSTYPE
 {
 #line 33 "limbaj.y"
 
-    ASTNode* node;
+    class ASTNode* node;
     int intval;
     float floatval;
     bool boolval;
