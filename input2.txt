@@ -1,0 +1,11 @@
+int n=10;
+
+main{
+    Print(true&&false||true);
+    Print(10+10);
+    Print(12.3+12.7);
+    TypeOf(10+10);
+    TypeOf(true&&false);
+    TypeOf(1.2+3.4);
+    int m;
+}
