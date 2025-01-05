@@ -1,12 +1,11 @@
 %{
     #include <stdio.h>
     #include "limbaj.tab.h"
-    #include <string.h>
 %}
 
 %option noyywrap
 %%
-"int"|"float"|"char"|"string"|"bool" { yylval.string = strdup(yytext); return TYPE; }
+"int"|"float"|"char"|"string"|"bool" { yylval.valtype = strdup(yytext); return TYPE; }
 
 "class" { return CLASS; }
 "main" { return MAIN; }
@@ -74,7 +73,7 @@
 } 
 
 \"[^\"]*\" {
-    yylval.string = strdup(yytext);
+    yylval.valtype = strdup(yytext);
     return STRING;
 }
 

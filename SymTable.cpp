@@ -119,6 +119,30 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     currentVars[name] = varInfo;
 }
 
+void SymTable::addVector(const string &type, const string &name, int size, const VectorValue &defaultValue) {
+    if (size <= 0) {
+        cout << "Error: Invalid array size! (size must be a positive integer)" << endl;
+        return;
+    }
+
+    if (type == "int") {
+        vector<int> tmp(size);
+        addVar(type, name, tmp);
+    } else if (type == "float") {
+        vector<float> tmp(size);
+        addVar(type, name, tmp);
+    } else if (type == "bool") {
+        vector<bool> tmp(size);
+        addVar(type, name, tmp);
+    } else if (type == "string") {
+        vector<string> tmp(size);
+        addVar(type, name, tmp);
+    } else {
+        cout << "Error: Unsupported array type '" << type << "'!" << endl;
+    }
+}
+
+
 void SymTable::addEntity(const string &entityType, const string &name, const string &returnType)
 {
     string content = std::string(indentLevel * 3, ' ') + "+" + entityType + ": " + name;

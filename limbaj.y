@@ -1,5 +1,6 @@
 %{
     #include "AST.h"
+    #include <cstring>
     #include <iostream>
     #include <vector>
     using namespace std;
@@ -31,6 +32,7 @@
 %left AND
 
 %union {
+    char* valtype;
     class ASTNode* node;
     int intval;
     float floatval;
@@ -41,7 +43,8 @@
 
 %token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<string> ID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<valtype> TYPE
 
 %token<intval> INT
 %token<floatval> FLOAT
@@ -83,13 +86,24 @@ var_declaration : TYPE ID ';' {
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
-                    vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
-                    currentSymTable->addVar($1, $2, tmp);
+                    auto result=$4->evaluate(*currentSymTable);
+                    if($4->getType() == "int")
+                    {
+                        currentSymTable->addVector($1, $2, get<int>(result));
+                    }else{
+                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                    }
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
-                    currentSymTable->addVar($1, $2, tmp);
+                    auto result=$4->evaluate(*currentSymTable);
+                    auto valueResult = $7->evaluate(*currentSymTable);
+                    if($4->getType() == "int")
+                    {
+                        currentSymTable->addVector($1, $2, get<int>(result), valueResult);
+                    }else{
+                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                    }
                 }
                 | TYPE ID ASSIGN expression ';'
                 {

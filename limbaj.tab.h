@@ -65,17 +65,17 @@ extern int yydebug;
     LE = 266,                      /* LE  */
     GE = 267,                      /* GE  */
     ID = 268,                      /* ID  */
-    TYPE = 269,                    /* TYPE  */
-    CLASS = 270,                   /* CLASS  */
-    MAIN = 271,                    /* MAIN  */
-    IF = 272,                      /* IF  */
-    ELSE = 273,                    /* ELSE  */
-    WHILE = 274,                   /* WHILE  */
-    FOR = 275,                     /* FOR  */
-    PRINT = 276,                   /* PRINT  */
-    TYPEOF = 277,                  /* TYPEOF  */
-    FUNC = 278,                    /* FUNC  */
-    RETURN = 279,                  /* RETURN  */
+    CLASS = 269,                   /* CLASS  */
+    MAIN = 270,                    /* MAIN  */
+    IF = 271,                      /* IF  */
+    ELSE = 272,                    /* ELSE  */
+    WHILE = 273,                   /* WHILE  */
+    FOR = 274,                     /* FOR  */
+    PRINT = 275,                   /* PRINT  */
+    TYPEOF = 276,                  /* TYPEOF  */
+    FUNC = 277,                    /* FUNC  */
+    RETURN = 278,                  /* RETURN  */
+    TYPE = 279,                    /* TYPE  */
     INT = 280,                     /* INT  */
     FLOAT = 281,                   /* FLOAT  */
     CHAR = 282,                    /* CHAR  */
@@ -90,8 +90,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 33 "limbaj.y"
+#line 34 "limbaj.y"
 
+    char* valtype;
     class ASTNode* node;
     int intval;
     float floatval;
@@ -99,7 +100,7 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 103 "limbaj.tab.h"
+#line 104 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

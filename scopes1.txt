@@ -6,8 +6,8 @@ Global Scope: Global Scope
   variable: is_active : bool
   variable: n1 : int
   variable: n2 : float[5]
-  variable: n3 : int[3]
-  variable: n4 : bool[5]
+  variable: n3 : int[10]
+  variable: n4 : bool[10]
   variable: nume : string
   function: print_message : int
 
@@ -21,7 +21,7 @@ Class Scope: MyClass
 === Function Scope ===
 Function Scope: add
   variable: test : int
-  variable: val : bool[3]
+  variable: val : bool[10]
 Function Scope: print_message
   variable: i : int
 

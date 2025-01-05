@@ -50,6 +50,22 @@ ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)
     this->right = right;
 }
 
+ASTNode::~ASTNode()
+{
+    if (type == NodeType::STRING || type == NodeType::IDENTIFIER)
+    {
+        delete value.stringVal;
+    }
+    if (left)
+    {
+        delete left;
+    }
+    if (right)
+    {
+        delete right;
+    }
+}
+
 variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
 {
     switch (type)

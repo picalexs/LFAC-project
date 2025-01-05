@@ -15,6 +15,7 @@ using namespace std;
 #define SCOPE_TREE_FILE "scope_tree.txt"
 
 using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
+using VectorValue=variant<int, float, bool, string>;
 
 class ParamList {
     vector<string> types;
@@ -66,6 +67,7 @@ public:
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
+    void addVector(const string &type, const string &name, int size, const VectorValue &defaultValue = VectorValue());
     void addFunc(const string &returnType, const string &name);
     void addClass(const string &name);
     void addConstructor(const string &name);
