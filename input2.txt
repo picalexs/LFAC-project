@@ -1,6 +1,18 @@
 int n=10;
+int n=6;
 
-main{
+
+bool x;
+
+char s;
+char y;
+
+string s;
+
+bool x;
+
+main
+{
     Print(true&&false||true);
     Print(10+10);
     Print(12.3+12.7);

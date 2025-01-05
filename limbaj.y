@@ -74,8 +74,14 @@ var_declarations : var_declarations var_declaration
                  ;
 
 var_declaration : TYPE ID ';' {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
-                    currentSymTable->addVar($1, $2);
+                                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
+                                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
+                                        currentSymTable->addVar($1, $2);
+                                    }
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
@@ -85,29 +91,62 @@ var_declaration : TYPE ID ';' {
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
                     cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 3 ]=tmp value 100)\n";
                     vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
                     currentSymTable->addVar($1, $2, tmp);
+                                    }
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else 
+                    {
+                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
                     currentSymTable->addVar($1, $2, 101);
+                    }
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else 
+                    {
                     cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
                     currentSymTable->addVar($1, $2, 1);
                 }
+                }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else
+                    {
+                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
+                    }
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
                     cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
+                                    }
                 }
                 ;
 

@@ -55,6 +55,48 @@ bool SymTable::existsId(const string &id)
     return currentVars.find(id) != currentVars.end();
 }
 
+// nu o folosesc inca
+bool SymTable::checkIdExists(const string &id)
+{
+    if (existsId(id))
+    {
+        return true;
+    }
+    stack<unordered_map<string, IdInfo>> ttempStack = scopeStack;
+    while (!ttempStack.empty())
+    {
+        auto &scope = ttempStack.top();
+        if (scope.find(id) != scope.end())
+        {
+            return true;
+        }
+        ttempStack.pop();
+    }
+    return false;
+}
+
+bool SymTable::isDefined(const string &id)
+{
+    stack<unordered_map<string, IdInfo>> tempScopeStack = scopeStack;
+    unordered_map<string, IdInfo> tempCurrentVars = currentVars;
+
+    if (tempCurrentVars.find(id) != tempCurrentVars.end())
+    {
+        return true;
+    }
+
+    while (!tempScopeStack.empty())
+    {
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        {
+            return true;
+        }
+        tempScopeStack.pop();
+    }
+
+    return false;
+}
+
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
     IdInfo varInfo("variable", type, name, value);

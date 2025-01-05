@@ -48,6 +48,8 @@ public:
     string getScope();
 
     bool existsId(const string &id);
+    bool isDefined(const string &id);
+    bool checkIdExists(const string &id);
     void addVar(const string &type, const string &name, const Value &value = {});
     void addFunc(const string &returnType, const string &name);
     void addClass(const string &name);
