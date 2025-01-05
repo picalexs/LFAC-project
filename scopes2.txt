@@ -5,9 +5,9 @@ Global Scope: Global Scope
   variable: ch : char
   variable: is_active : bool
   variable: n1 : int
-  variable: n2 : float[5]
+  variable: n2 : float[125]
   variable: n3 : int[10]
-  variable: n4 : bool[10]
+  variable: n4 : bool[123]
   variable: nume : string
   function: print_message : int
 

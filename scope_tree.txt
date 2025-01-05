@@ -7,6 +7,7 @@
          >Entering constructor scope: MyClass
          +variable: zet : int
             >Entering block scope: IF
+            +variable: isthistrue : bool
             <Leaving block scope: IF
             >Entering block scope: ELSE
             <Leaving block scope: ELSE
@@ -17,9 +18,9 @@
          <Leaving method scope: setValues
       <Leaving class scope: MyClass
    +variable: n1 : int
-   +variable: n2 : float[5]
+   +variable: n2 : float[125]
    +variable: n3 : int[10]
-   +variable: n4 : bool[10]
+   +variable: n4 : bool[123]
    +variable: is_active : bool
    +variable: ch : char
    +variable: nume : string

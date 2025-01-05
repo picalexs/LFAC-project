@@ -6,6 +6,8 @@ class MyClass {
         x = 10;
         y = 20.5;
         if(x>y){
+            bool isthistrue=!true;
+            Print(!false && true);
             x=x+1;
         }
         else{
@@ -22,9 +24,9 @@ class MyClass {
 }
 
 int n1=65;
-float n2[5];
+float n2[125];
 int n3[10]=4;
-bool n4[10];
+bool n4[103+10*2];
 bool is_active=false;
 char ch='x';
 string nume="Mihai";

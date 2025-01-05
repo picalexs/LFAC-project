@@ -309,19 +309,19 @@ void ASTNode::printResult() const
 {
     if (holds_alternative<int>(evaluatedResult))
     {
-        cout << "INT: " << get<int>(evaluatedResult) << endl;
+        cout << "PRINT (int): " << get<int>(evaluatedResult) << endl;
     }
     else if (holds_alternative<float>(evaluatedResult))
     {
-        cout << "FLOAT: " << get<float>(evaluatedResult) << endl;
+        cout << "PRINT (float): " << get<float>(evaluatedResult) << endl;
     }
     else if (holds_alternative<bool>(evaluatedResult))
     {
-        cout << "BOOL: " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
+        cout << "PRINT (bool): " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
     }
     else if (holds_alternative<string>(evaluatedResult))
     {
-        cout << "STRING: " << get<string>(evaluatedResult) << endl;
+        cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
     }
 }
 

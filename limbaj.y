@@ -26,10 +26,14 @@
 %right '='
 %left '+' '-'
 %left '*' '/' '%'
-%right UMINUS
 %right '^'
+%right UMINUS
+
 %left OR
 %left AND
+%right '!'
+%left '>' '<' GE LE EQ NEQ
+%left '(' ')'
 
 %union {
     char* valtype;
@@ -318,10 +322,10 @@ function_call : ID '(' argument_list ')'
               ;
 
 print_statement : PRINT '(' CHAR ')'{
-                    cout << "Print: " << $3 << endl;
+                    cout << "Print (char): " << $3 << endl;
                 }
                 | PRINT '(' STRING ')'{
-                    cout << "Print: " << $3 << endl;
+                    cout << "Print (string): " << $3 << endl;
                 }
                 | PRINT '(' expression ')'{
                     $3->evaluate(*currentSymTable);
@@ -429,9 +433,9 @@ boolean_expression : TRUE {
                    | boolean_expression OR boolean_expression {
                        $$ = new ASTNode(ASTNode::Operator::OR, $1, $3);
                    }
-                //    | '!' boolean_expression {
-                //       $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
-                //    }
+                   | '!' boolean_expression {
+                      $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
+                   }
                    ;
 
 %%
