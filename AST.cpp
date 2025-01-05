@@ -81,13 +81,11 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
             case Operator::ADD:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    cout << "Adding two integers: " << get<int>(leftVal) << " + " << get<int>(rightVal) << endl;
                     evaluatedResult = get<int>(leftVal) + get<int>(rightVal);
                     return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    cout << "Adding two floats: " << get<float>(leftVal) << " + " << get<float>(rightVal) << endl;
                     evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
                     return evaluatedResult;
                 }

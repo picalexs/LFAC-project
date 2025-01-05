@@ -2,6 +2,7 @@ class MyClass {
     int x;
     int y;
     MyClass() {
+        int zet=9;
         x = 10;
         y = 20.5;
         if(x>y){
@@ -61,7 +62,7 @@ func int print_message()
             Print("This is a message");
         } 
     }
-    Print(TypeOf(nume));
+    Print(nume);
     return 0;
 }
 

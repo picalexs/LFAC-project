@@ -55,11 +55,16 @@
 
 %%
 
-PROGRAM : class_section var_section func_section main_function {
+PROGRAM : {
+            currentSymTable->enterScope("Global", "global");
+        }
+        class_section var_section func_section main_function
+        {
             if (errorCount == 0) 
             {
+                currentSymTable->leaveScope();
                 cout << "The program is correct!" << endl;
-                //printSymbolTables();
+                printSymbolTables();
             }
         }
         ;
@@ -125,7 +130,22 @@ func_definition:
     {
         cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
         currentSymTable->addFunc($2, $3);
-        currentSymTable->enterScope($3);
+        currentSymTable->enterScope($3,"function");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
+ //_________________________________________________
+
+method_definition:
+    FUNC TYPE ID '(' parameter_list ')' 
+    {
+        cout << "  ("<<currentSymTable->getScope() << "): +method: " << $3 << " (" << $2 << ")\n";
+        currentSymTable->addMethod($2, $3);
+        currentSymTable->enterScope($3,"method");
     }
     BGIN statement_list END 
     {
@@ -148,7 +168,7 @@ class_definition:
     {
         cout << "Class " << $2 << " defined." << endl;
         currentSymTable->addClass($2);
-        currentSymTable->enterScope($2);
+        currentSymTable->enterScope($2, "class");
     }
     BGIN
     class_body 
@@ -164,7 +184,7 @@ class_body : class_body class_member
            ;
 
 class_member : var_declaration
-             | func_definition
+             | method_definition
              | constructor_definition
              ;
 
@@ -172,8 +192,8 @@ constructor_definition:
     ID '(' parameter_list ')' 
     {
         cout << "  ("<<currentSymTable->getScope() << "): +constructor: " << $1 << "\n";
-        currentSymTable->addFunc("constructor", $1);
-        currentSymTable->enterScope($1); 
+        currentSymTable->addConstructor($1);
+        currentSymTable->enterScope($1, "constructor"); 
     }
     BGIN statement_list END 
     {
@@ -196,7 +216,7 @@ main_function:
     MAIN BGIN
     {
         cout << "Main function defined." << endl;
-        currentSymTable->enterScope("main");
+        currentSymTable->enterScope("main", "main");
     }
     statement_list END
     {
@@ -244,7 +264,7 @@ object_access : ID '.' ID
 if_statement:
     IF '(' boolean_expression ')' 
     {
-        currentSymTable->enterScope("IF");
+        currentSymTable->enterScope("IF","block");
     } 
     BGIN statement_list END 
     {
@@ -257,7 +277,7 @@ else_statement :
     /* epsilon */
     | ELSE 
     {
-        currentSymTable->enterScope("ELSE");                
+        currentSymTable->enterScope("ELSE","block");                
     }
     BGIN statement_list END 
     {
@@ -268,7 +288,7 @@ else_statement :
 while_statement:
     WHILE '(' boolean_expression ')' 
     {
-        currentSymTable->enterScope("WHILE");
+        currentSymTable->enterScope("WHILE","block");
     }
     BGIN statement_list END 
     {
@@ -279,7 +299,7 @@ while_statement:
 for_statement:
     FOR '(' var_declaration boolean_expression ';' assignment ')' 
     {
-        currentSymTable->enterScope("FOR");
+        currentSymTable->enterScope("FOR","block");
     }
     BGIN statement_list END 
     {

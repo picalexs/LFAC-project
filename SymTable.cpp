@@ -15,27 +15,56 @@ string ParamList::toString() const
     {
         result += types[i] + " " + names[i];
         if (i < types.size() - 1)
-        {
             result += ", ";
-        }
     }
     return result;
 }
 
-void SymTable::enterScope(const string &scopeName)
+void SymTable::enterScope(const string &scopeName, const string &scopeType)
 {
     scopeNames.push(scopeName);
-    cout << "+Entering scope: " << scopeName << "\n";
+    scopeTypes.push(scopeType);
+    cout << "+Entering " << scopeType << " scope: " << scopeName << "\n";
     scopeStack.push(currentVars);
     currentVars.clear();
 }
 
 void SymTable::leaveScope()
 {
-    if (!scopeStack.empty() && !scopeNames.empty())
+    if (!scopeStack.empty() && !scopeNames.empty() && !scopeTypes.empty())
     {
-        cout << "-Leaving scope: " << scopeNames.top() << "\n";
+        string scopeName = scopeNames.top();
+        string scopeType = scopeTypes.top();
+
+        cout << "-Leaving " << scopeType << " scope: " << scopeName << "\n";
+
+       if(scopeType == "global")
+        {
+            globalScope = currentVars;
+        }
+        else if(scopeType == "class")
+        {
+            classScopes[scopeName] = currentVars;
+        }
+        else if(scopeType == "function")
+        {
+            functionScopes[scopeName] = currentVars;
+        }
+        else if(scopeType == "constructor")
+        {
+            constructorScopes[scopeName] = currentVars;
+        }
+        else if(scopeType == "main")
+        {
+            mainScope = currentVars;
+        }
+        else
+        {
+            cout << "Error: Unknown scope type: " << scopeType << "\n";
+        }
+
         scopeNames.pop();
+        scopeTypes.pop();
         currentVars = scopeStack.top();
         scopeStack.pop();
     }
@@ -47,7 +76,7 @@ string SymTable::getScope()
     {
         return scopeNames.top();
     }
-    return "Global";
+    return "No scope";
 }
 
 bool SymTable::existsId(const string &id)
@@ -73,6 +102,18 @@ void SymTable::addClass(const string &name)
     currentVars[name] = classInfo;
 }
 
+void SymTable::addConstructor(const string &name)
+{
+    IdInfo constructorInfo("constructor", "", name);
+    currentVars[name] = constructorInfo;
+}
+
+void SymTable::addMethod(const string &returnType, const string &name)
+{
+    IdInfo methodInfo("method", returnType, name);
+    currentVars[name] = methodInfo;
+}
+
 string SymTable::getType(const string &id)
 {
     if (existsId(id))
@@ -92,159 +133,47 @@ bool SymTable::removeId(const string &id)
     return false;
 }
 
-void SymTable::printVars() const
+void SymTable::printGlobalScope() const
 {
-    cout << "Variables in " << tableName << " scope: " << endl;
-    for (const auto &entry : currentVars)
+    cout << "=== Global Scope ===\n";
+    for (const auto &entry : globalScope)
     {
-        if (entry.second.idType == "variable")
-        {
-            cout << "Variable: " << entry.second.name << " : " << entry.second.type << " = ";
+        if (entry.second.idType != "class")
+            cout << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
+        else
+            cout << entry.second.idType << ": " << entry.second.name << endl;
+    }
+}
 
-            try
-            {
-                if (holds_alternative<int>(entry.second.value))
-                {
-                    cout << get<int>(entry.second.value);
-                }
-                else if (holds_alternative<float>(entry.second.value))
-                {
-                    cout << get<float>(entry.second.value);
-                }
-                else if (holds_alternative<bool>(entry.second.value))
-                {
-                    cout << (get<bool>(entry.second.value) ? "true" : "false");
-                }
-                else if (holds_alternative<string>(entry.second.value))
-                {
-                    cout << get<string>(entry.second.value);
-                }
-                else if (holds_alternative<char>(entry.second.value))
-                {
-                    cout << get<char>(entry.second.value);
-                }
-                else if (holds_alternative<vector<int>>(entry.second.value))
-                {
-                    cout << "[ ";
-                    for (auto val : get<vector<int>>(entry.second.value))
-                    {
-                        cout << val << " ";
-                    }
-                    cout << "]";
-                }
-                else if (holds_alternative<vector<float>>(entry.second.value))
-                {
-                    cout << "[ ";
-                    for (auto val : get<vector<float>>(entry.second.value))
-                    {
-                        cout << val << " ";
-                    }
-                    cout << "]";
-                }
-                else if (holds_alternative<vector<bool>>(entry.second.value))
-                {
-                    cout << "[ ";
-                    for (auto val : get<vector<bool>>(entry.second.value))
-                    {
-                        cout << (val ? "true" : "false") << " ";
-                    }
-                    cout << "]";
-                }
-                else if (holds_alternative<vector<char>>(entry.second.value))
-                {
-                    cout << "[ ";
-                    for (auto val : get<vector<char>>(entry.second.value))
-                    {
-                        cout << val << " ";
-                    }
-                    cout << "]";
-                }
-                else if (holds_alternative<vector<string>>(entry.second.value))
-                {
-                    cout << "[ ";
-                    for (auto val : get<vector<string>>(entry.second.value))
-                    {
-                        cout << val << " ";
-                    }
-                    cout << "]";
-                }
-                else
-                {
-                    cout << "undefined";
-                }
-            }
-            catch (...)
-            {
-                cout << "undefined";
-            }
-            cout << endl;
+void SymTable::printClassScopes() const
+{
+    cout << "=== Class Scopes ===\n";
+    for (const auto &classScope : classScopes)
+    {
+        cout << "Class: " << classScope.first << "\n";
+        for (const auto &entry : classScope.second)
+        {
+            cout << "  " << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
         }
     }
 }
 
-void SymTable::printFuncs() const
+void SymTable::printFunctionScopes() const
 {
-    cout << "Functions in " << tableName << " scope: " << endl;
-    for (const auto &entry : currentVars)
+    cout << "=== Function Scopes ===\n";
+    for (const auto &funcScope : functionScopes)
     {
-        if (entry.second.idType == "function")
+        cout << "Function: " << funcScope.first << "\n";
+        for (const auto &entry : funcScope.second)
         {
-            cout << "Function: " << entry.second.name << " : " << entry.second.type;
-            if (!entry.second.params.toString().empty())
-            {
-                cout << " (" << entry.second.params.toString() << ")";
-            }
-            cout << endl;
+            cout << "  " << entry.second.idType << ": " << entry.second.name << " : " << entry.second.type << endl;
         }
     }
-}
-
-void SymTable::printClasses() const
-{
-    cout << "Classes in " << tableName << " scope: " << endl;
-    for (const auto &entry : currentVars)
-    {
-        if (entry.second.idType == "class")
-        {
-            cout << "Class: " << entry.second.name << endl;
-        }
-    }
-}
-
-void SymTable::printGlobalScopes() const
-{
-    printVars();
-    printFuncs();
-    printClasses();
 }
 
 void SymTable::printAllScopes() const
 {
-    cout << "=== All Scopes ===\n";
-    stack<unordered_map<string, IdInfo>> tempStack = scopeStack;
-    stack<string> tempScopeNames = scopeNames;
-
-    printGlobalScopes();
-
-    while (!tempStack.empty())
-    {
-        cout << "Scope: " << tempScopeNames.top() << endl;
-        for (const auto &entry : tempStack.top())
-        {
-            if (entry.second.idType == "variable")
-            {
-                cout << "Variable: " << entry.second.name << " : " << entry.second.type << endl;
-            }
-            else if (entry.second.idType == "function")
-            {
-                cout << "Function: " << entry.second.name << " : " << entry.second.type << endl;
-            }
-            else if (entry.second.idType == "class")
-            {
-                cout << "Class: " << entry.second.name << endl;
-            }
-        }
-        tempScopeNames.pop();
-        tempStack.pop();
-    }
+    printGlobalScope();
+    printClassScopes();
+    printFunctionScopes();
 }
