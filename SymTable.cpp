@@ -58,20 +58,22 @@ bool SymTable::existsId(const string &id)
 // nu o folosesc inca
 bool SymTable::checkIdExists(const string &id)
 {
-    if (existsId(id))
+    if (currentVars.find(id) != currentVars.end())
     {
         return true;
     }
-    stack<unordered_map<string, IdInfo>> ttempStack = scopeStack;
-    while (!ttempStack.empty())
+
+    stack<unordered_map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty())
     {
-        auto &scope = ttempStack.top();
+        auto &scope = tempStack.top();
         if (scope.find(id) != scope.end())
         {
             return true;
         }
-        ttempStack.pop();
+        tempStack.pop();
     }
+
     return false;
 }
 
@@ -95,6 +97,20 @@ bool SymTable::isDefined(const string &id)
     }
 
     return false;
+}
+
+// Functie pentru verificarea definitiei unei variabile sau functii
+bool SymTable::isUsedBeforeDefined(const string &id)
+{
+    if (isDefined(id))
+    {
+        return true; // Simbolul este definit, deci poate fi utilizat
+    }
+    else
+    {
+        cout << "Error: Symbol '" << id << "' is used before definition.\n";
+        return false;
+    }
 }
 
 void SymTable::addVar(const string &type, const string &name, const Value &value)

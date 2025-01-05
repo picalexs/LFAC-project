@@ -3,16 +3,17 @@ int n=6;
 
 
 bool x;
-
 char s;
 char y;
 
 string s;
-
+int z;
+z=60;
 bool x;
 
 main
 {
+    z=30;
     Print(true&&false||true);
     Print(10+10);
     Print(12.3+12.7);
