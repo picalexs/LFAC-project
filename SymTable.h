@@ -2,12 +2,17 @@
 #define SYMTABLE_H
 
 #include <iostream>
+#include <fstream>
 #include <map>
 #include <string>
 #include <vector>
 #include <stack>
 #include <variant>
 using namespace std;
+
+#define SCOPE_FILE1 "scopes1.txt"
+#define SCOPE_FILE2 "scopes2.txt"
+#define SCOPE_TREE_FILE "scope_tree.txt"
 
 using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
 
@@ -37,7 +42,6 @@ class SymTable {
     map<string, IdInfo> globalScope;
     map<string, map<string, IdInfo>> classScopes;
     map<string, map<string, IdInfo>> functionScopes;
-    map<string, map<string, IdInfo>> blockScopes;
     map<string, map<string, IdInfo>> constructorScopes;
     map<string, map<string, IdInfo>> methodScopes;
     map<string,IdInfo> mainScope;
@@ -48,6 +52,8 @@ class SymTable {
     stack<string> scopeTypes;
     string tableName;
 
+    int indentLevel = 0;
+
 public:
     SymTable(const string &name) : tableName(name) {}
     ~SymTable() {}
@@ -57,6 +63,8 @@ public:
     string getScope();
 
     bool existsId(const string &id);
+
+    void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
     void addFunc(const string &returnType, const string &name);
     void addClass(const string &name);
@@ -68,15 +76,15 @@ public:
     bool removeId(const string &id);
 
 
-    void printScope(const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
-    
-    void printGlobalScope() const;
-    void printClassScopes() const;
-    void printFunctionScopes() const;
-    void printBlockScopes() const;
-    void printConstructorScopes() const;
-    void printMethodScopes() const;
+    void printScope(const string &fileName, const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
 
+    void printGlobalScope(const string &fileName) const;
+    void printClassScopes(const string &fileName) const;
+    void printFunctionScopes(const string &fileName) const;
+    void printConstructorScopes(const string &fileName) const;
+    void printMethodScopes(const string &fileName) const;
+
+    void printAskedScopes() const;
     void printAllScopes() const;
 };
 #endif

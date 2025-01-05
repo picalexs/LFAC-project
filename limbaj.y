@@ -17,8 +17,8 @@
 
     void printSymbolTables() 
     {
-        cout<<"\nPrinting all scopes:\n";
-        globalSymTable.printAllScopes();
+        globalSymTable.printAskedScopes(); //cele cerute
+        globalSymTable.printAllScopes(); //toate
     }
 %}
 
@@ -79,39 +79,32 @@ var_declarations : var_declarations var_declaration
                  ;
 
 var_declaration : TYPE ID ';' {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
                     currentSymTable->addVar($1, $2);
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 5 ])\n";
                     vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
                     currentSymTable->addVar($1, $2, tmp);
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 3 ]=tmp value 100)\n";
                     vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
                     currentSymTable->addVar($1, $2, tmp);
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
                     currentSymTable->addVar($1, $2, 101);
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
                     currentSymTable->addVar($1, $2, 1);
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 ;
@@ -128,7 +121,6 @@ func_definitions : func_definitions func_definition
 func_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
         currentSymTable->addFunc($2, $3);
         currentSymTable->enterScope($3,"function");
     }
@@ -143,7 +135,6 @@ func_definition:
 method_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +method: " << $3 << " (" << $2 << ")\n";
         currentSymTable->addMethod($2, $3);
         currentSymTable->enterScope($3,"method");
     }
@@ -190,7 +181,6 @@ class_member : var_declaration
 constructor_definition: 
     ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +constr: " << $1 << "\n";
         currentSymTable->addConstructor($1);
         currentSymTable->enterScope($1, "constructor"); 
     }
@@ -214,7 +204,6 @@ parameter : TYPE ID
 main_function:
     MAIN BGIN
     {
-        cout << "Main function defined." << endl;
         currentSymTable->enterScope("main", "main");
     }
     statement_list END

@@ -20,11 +20,42 @@ string ParamList::toString() const
     return result;
 }
 
+void clearFile(const string &fileName)
+{
+    ofstream fout(fileName, ios::trunc);
+    fout.close();
+}
+
+void writeToFile(const string &fileName, const string &content)
+{
+    ofstream fout(fileName, ios::app);
+    fout << content;
+    fout.close();
+}
+
+template <typename T>
+string getVectorSizeString(const Value &value)
+{
+    if (holds_alternative<vector<T>>(value))
+    {
+        return "[" + to_string(get<vector<T>>(value).size()) + "]";
+    }
+    return "";
+}
+
 void SymTable::enterScope(const string &scopeName, const string &scopeType)
 {
     scopeNames.push(scopeName);
     scopeTypes.push(scopeType);
-    cout << "+Entering " << scopeType << " scope: " << scopeName << "\n";
+    indentLevel++;
+
+    if (scopeType == "global")
+    {
+        clearFile(SCOPE_TREE_FILE);
+    }
+
+    writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + ">Entering " + scopeType + " scope: " + scopeName + "\n");
+
     scopeStack.push(currentVars);
     currentVars.clear();
 }
@@ -36,166 +67,153 @@ void SymTable::leaveScope()
         string scopeName = scopeNames.top();
         string scopeType = scopeTypes.top();
 
-        cout << "-Leaving " << scopeType << " scope: " << scopeName << "\n";
+        writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + "<Leaving " + scopeType + " scope: " + scopeName + "\n");
 
-        if(scopeType == "global")
+        if (scopeType == "global")
         {
             globalScope = currentVars;
         }
-        else if(scopeType == "class")
+        else if (scopeType == "class")
         {
             classScopes[scopeName] = currentVars;
         }
-        else if(scopeType == "function")
+        else if (scopeType == "function")
         {
             functionScopes[scopeName] = currentVars;
         }
-        else if(scopeType=="block"){
-            blockScopes[scopeName] = currentVars;
-        }
-        else if(scopeType == "constructor")
+        else if (scopeType == "constructor")
         {
             constructorScopes[scopeName] = currentVars;
         }
-        else if(scopeType=="method")
+        else if (scopeType == "method")
         {
             methodScopes[scopeName] = currentVars;
         }
-        else if(scopeType == "main")
+        else if (scopeType == "main")
         {
             mainScope = currentVars;
         }
-        else
+        else if(scopeType != "block")
         {
-            cout << "Error: Unknown scope type: " << scopeType <<' '<<scopeName<< "\n";
+            cout << "Error: Unknown scope type: " << scopeType << ' ' << scopeName << "\n";
         }
 
         scopeNames.pop();
         scopeTypes.pop();
         currentVars = scopeStack.top();
         scopeStack.pop();
+        indentLevel--;
     }
-}
-
-string SymTable::getScope()
-{
-    if (!scopeNames.empty())
-    {
-        return scopeNames.top();
-    }
-    return "No scope";
-}
-
-bool SymTable::existsId(const string &id)
-{
-    return currentVars.find(id) != currentVars.end();
 }
 
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
+    string sizeStr;
+    sizeStr = getVectorSizeString<int>(value) + getVectorSizeString<float>(value) +
+             getVectorSizeString<bool>(value) + getVectorSizeString<string>(value);
+
+    string content = std::string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n";
+    writeToFile(SCOPE_TREE_FILE, content);
+
     IdInfo varInfo("variable", type, name, value);
     currentVars[name] = varInfo;
 }
 
+void SymTable::addEntity(const string &entityType, const string &name, const string &returnType)
+{
+    string content = std::string(indentLevel * 3, ' ') + "+" + entityType + ": " + name;
+    if (!returnType.empty()) content += " : " + returnType;
+    content += "\n";
+    writeToFile(SCOPE_TREE_FILE, content);
+
+    IdInfo entityInfo(entityType, returnType, name);
+    currentVars[name] = entityInfo;
+}
+
 void SymTable::addFunc(const string &returnType, const string &name)
 {
-    IdInfo funcInfo("function", returnType, name);
-    currentVars[name] = funcInfo;
+    addEntity("function", name, returnType);
 }
 
 void SymTable::addClass(const string &name)
 {
-    IdInfo classInfo("class", "", name);
-    currentVars[name] = classInfo;
+    addEntity("class", name);
 }
 
 void SymTable::addConstructor(const string &name)
 {
-    IdInfo constructorInfo("constructor", "", name);
-    currentVars[name] = constructorInfo;
+    addEntity("constructor", name);
 }
 
 void SymTable::addMethod(const string &returnType, const string &name)
 {
-    IdInfo methodInfo("method", returnType, name);
-    currentVars[name] = methodInfo;
+    addEntity("method", name, returnType);
 }
 
-string SymTable::getType(const string &id)
+void SymTable::printScope(const string &fileName, const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const
 {
-    if (existsId(id))
-    {
-        return currentVars[id].type;
-    }
-    return "";
-}
-
-bool SymTable::removeId(const string &id)
-{
-    if (existsId(id))
-    {
-        currentVars.erase(id);
-        return true;
-    }
-    return false;
-}
-void SymTable::printScope(const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const
-{
-    cout << "=== " << scopeType << " ===\n";
+    writeToFile(fileName, "=== " + scopeType + " ===\n");
     for (const auto &scope : scopes)
     {
-        cout << scopeType << ": " << scope.first << "\n";
+        writeToFile(fileName, std::string(indentLevel, ' ') + scopeType + ": " + scope.first + "\n");
         for (const auto &entry : scope.second)
         {
-            cout << "  " << entry.second.idType << ": " << entry.second.name;
+            string content = "  " + entry.second.idType + ": " + entry.second.name;
             if (entry.second.idType != "class" && entry.second.idType != "constructor")
-                cout << " : " << entry.second.type;
-            cout << endl;
+            {
+                content += " : " + entry.second.type;
+            }
+            content += getVectorSizeString<int>(entry.second.value) + 
+                       getVectorSizeString<float>(entry.second.value) + 
+                       getVectorSizeString<bool>(entry.second.value) + 
+                       getVectorSizeString<string>(entry.second.value) + "\n";
+            writeToFile(fileName, content);
         }
     }
-    cout << endl;
+    writeToFile(fileName, "\n");
 }
 
-void SymTable::printGlobalScope() const
+void SymTable::printGlobalScope(const string &fileName) const
 {
-    cout << "=== Global Scope ===\n";
-    for (const auto &entry : globalScope)
-    {
-        cout << "  " << entry.second.idType << ": " << entry.second.name;
-        if (entry.second.idType != "class")
-            cout << " : " << entry.second.type;
-        cout << endl;
-    }
+    map<string, map<string, IdInfo>> globalTmp;
+    globalTmp["Global Scope"] = globalScope;
+    printScope(fileName, "Global Scope", globalTmp);
 }
 
-void SymTable::printClassScopes() const
+void SymTable::printClassScopes(const string &fileName) const
 {
-    printScope("Class Scope", classScopes);
+    printScope(fileName, "Class Scope", classScopes);
 }
 
-void SymTable::printFunctionScopes() const
+void SymTable::printFunctionScopes(const string &fileName) const
 {
-    printScope("Function Scope", functionScopes);
+    printScope(fileName, "Function Scope", functionScopes);
 }
 
-void SymTable::printBlockScopes() const
+void SymTable::printConstructorScopes(const string &fileName) const
 {
-    printScope("Block Scope", blockScopes);
+    printScope(fileName, "Constructor Scope", constructorScopes);
 }
 
-void SymTable::printConstructorScopes() const
+void SymTable::printMethodScopes(const string &fileName) const
 {
-    printScope("Constructor Scope", constructorScopes);
+    printScope(fileName, "Method Scope", methodScopes);
 }
 
-void SymTable::printMethodScopes() const
+void SymTable::printAskedScopes() const
 {
-    printScope("Method Scope", methodScopes);
+    clearFile(SCOPE_FILE1);
+    printGlobalScope(SCOPE_FILE1);
+    printClassScopes(SCOPE_FILE1);
+    printFunctionScopes(SCOPE_FILE1);
 }
 
 void SymTable::printAllScopes() const
 {
-    printGlobalScope();
-    printClassScopes();
-    printFunctionScopes();
+    clearFile(SCOPE_FILE2);
+    printGlobalScope(SCOPE_FILE2);
+    printClassScopes(SCOPE_FILE2);
+    printFunctionScopes(SCOPE_FILE2);
+    printConstructorScopes(SCOPE_FILE2);
+    printMethodScopes(SCOPE_FILE2);
 }
