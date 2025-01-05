@@ -1,4 +1,4 @@
-#include "ASTNode.h"
+#include "AST.h"
 #include <iostream>
 #include <cmath>
 #include <variant>
@@ -242,7 +242,6 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
             }
         }
     }
-    break;
     default:
         return 0;
     }

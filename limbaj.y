@@ -1,10 +1,9 @@
 %{
+    #include "AST.h"
     #include <iostream>
     #include <vector>
-    #include "ASTNode.h"
-    #include "SymTable.h"
-
     using namespace std;
+    
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;

@@ -1,10 +1,8 @@
-#ifndef ASTNODE_H
-#define ASTNODE_H
+#ifndef AST_H
+#define AST_H
 
 #include <string>
-#include <memory>
 #include "SymTable.h"
-using namespace std;
 
 class ASTNode {
 public:

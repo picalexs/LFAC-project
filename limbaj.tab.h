@@ -89,7 +89,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 36 "limbaj.y"
+#line 33 "limbaj.y"
 
     ASTNode* node;
     int intval;
