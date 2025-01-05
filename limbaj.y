@@ -1,8 +1,9 @@
 %{
+    #include "AST.h"
     #include <iostream>
     #include <vector>
-    #include "SymTable.h"
     using namespace std;
+    
     extern FILE* yyin;
     extern char* yytext;
     extern int yylineno;
@@ -30,6 +31,7 @@
 %left AND
 
 %union {
+    class ASTNode* node;
     int intval;
     float floatval;
     bool boolval;
@@ -41,10 +43,12 @@
 %token EQ NEQ AND OR LE GE
 %token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
 
-%token<intval> NR
+%token<intval> INT
+%token<floatval> FLOAT
 %token<charval> CHAR
 %token<string> STRING
 %token<boolval> TRUE FALSE
+%type<node> expression boolean_expression
 
 
 %start PROGRAM
@@ -55,7 +59,7 @@ PROGRAM : class_section var_section func_section main_function {
             if (errorCount == 0) 
             {
                 cout << "The program is correct!" << endl;
-                printSymbolTables();
+                //printSymbolTables();
             }
         }
         ;
@@ -209,8 +213,8 @@ statement_list : statement_list statement_with_semicolon ';'
 
 statement_with_semicolon:
                         assignment
-                        | function_call
                         | predefined_function_call
+                        | function_call
                         | return_statement
                         | object_access
                         ;
@@ -291,16 +295,33 @@ predefined_function_call : print_statement
 function_call : ID '(' argument_list ')'
               ;
 
-print_statement : PRINT '(' CHAR ')'
-                | PRINT '(' STRING ')'
-                | PRINT '(' expression ')'
-                | PRINT '(' boolean_expression ')'
-                | PRINT '(' object_access ')'
-                | PRINT '(' type_of_statement ')'
+print_statement : PRINT '(' CHAR ')'{
+                    cout << "Print: " << $3 << endl;
+                }
+                | PRINT '(' STRING ')'{
+                    cout << "Print: " << $3 << endl;
+                }
+                | PRINT '(' expression ')'{
+                    $3->evaluate(*currentSymTable);
+                    $3->printResult();
+                }
+                | PRINT '(' boolean_expression ')'{
+                    $3->evaluate(*currentSymTable);
+                    $3->printResult();
+                }
+                | PRINT '(' object_access ')'{
+                    cout<<"cccc\n";
+                }
                 ;
 
-type_of_statement : TYPEOF '(' expression ')'
-                  | TYPEOF '(' boolean_expression ')'
+type_of_statement : TYPEOF '(' expression ')'{
+                        $3->evaluate(*currentSymTable);
+                        cout<<"TypeOf: "<<$3->getType()<<endl;
+                  }
+                  | TYPEOF '(' boolean_expression ')'{\
+                        $3->evaluate(*currentSymTable);
+                        cout<<"TypeOf: "<<$3->getType()<<endl;
+                  }
                   | TYPEOF '(' object_access ')'
                   ;
 
@@ -315,30 +336,80 @@ argument_list : argument_list ',' expression
               ;
 
  /* Expressions_____________________________________________________________________________________________*/
-expression : expression '+' expression
-           | expression '-' expression
-           | expression '*' expression
-           | expression '/' expression
-           | expression '%' expression
-           | expression '^' expression
-           | '-' expression %prec UMINUS
-           | '(' expression ')'
-           | ID
-           | NR
-           | function_call
+expression : expression '+' expression {
+               $$ = new ASTNode(ASTNode::Operator::ADD, $1, $3);
+           }
+           | expression '-' expression {
+               $$ = new ASTNode(ASTNode::Operator::SUBTRACT, $1, $3);
+           }
+           | expression '*' expression {
+               $$ = new ASTNode(ASTNode::Operator::MULTIPLY, $1, $3);
+           }
+           | expression '/' expression {
+               $$ = new ASTNode(ASTNode::Operator::DIVIDE, $1, $3);
+           }
+           | expression '%' expression {
+               $$ = new ASTNode(ASTNode::Operator::MODULO, $1, $3);
+           }
+           | expression '^' expression {
+               $$ = new ASTNode(ASTNode::Operator::POWER, $1, $3);
+           }
+           | '-' expression %prec UMINUS {
+               $$ = new ASTNode(ASTNode::Operator::UMINUS, $2, nullptr);
+           }
+           | '(' expression ')' {
+               $$ = $2;
+           }
+           | ID {
+               $$ = new ASTNode($1, true);
+           }
+           | INT {
+               $$ = new ASTNode($1);
+           }
+           | FLOAT {
+               $$ = new ASTNode($1);
+           }
+           | function_call{
+                $$ = nullptr; //tmp
+           }
            ;
 
-boolean_expression : TRUE
-                   | FALSE
-                   | '(' boolean_expression ')'
-                   | expression '>' expression
-                   | expression '<' expression
-                   | expression GE expression
-                   | expression LE expression
-                   | expression EQ expression
-                   | expression NEQ expression
-                   | boolean_expression AND boolean_expression
-                   | boolean_expression OR boolean_expression
+boolean_expression : TRUE {
+                       $$ = new ASTNode(true);
+                   }
+                   | FALSE {
+                       $$ = new ASTNode(false);
+                   }
+                   | '(' boolean_expression ')' {
+                       $$ = $2;
+                   }
+                   | expression '>' expression {
+                       $$ = new ASTNode(ASTNode::Operator::GT, $1, $3);
+                   }
+                   | expression '<' expression {
+                       $$ = new ASTNode(ASTNode::Operator::LT, $1, $3);
+                   }
+                   | expression GE expression {
+                       $$ = new ASTNode(ASTNode::Operator::GE, $1, $3);
+                   }
+                   | expression LE expression {
+                       $$ = new ASTNode(ASTNode::Operator::LE, $1, $3);
+                   }
+                   | expression EQ expression {
+                       $$ = new ASTNode(ASTNode::Operator::EQ, $1, $3);
+                   }
+                   | expression NEQ expression {
+                       $$ = new ASTNode(ASTNode::Operator::NEQ, $1, $3);
+                   }
+                   | boolean_expression AND boolean_expression {
+                       $$ = new ASTNode(ASTNode::Operator::AND, $1, $3);
+                   }
+                   | boolean_expression OR boolean_expression {
+                       $$ = new ASTNode(ASTNode::Operator::OR, $1, $3);
+                   }
+                //    | '!' boolean_expression {
+                //       $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
+                //    }
                    ;
 
 %%
