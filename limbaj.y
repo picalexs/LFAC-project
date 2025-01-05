@@ -43,7 +43,8 @@
 %token EQ NEQ AND OR LE GE
 %token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
 
-%token<intval> NR
+%token<intval> INT
+%token<floatval> FLOAT
 %token<charval> CHAR
 %token<string> STRING
 %token<boolval> TRUE FALSE
@@ -58,7 +59,7 @@ PROGRAM : class_section var_section func_section main_function {
             if (errorCount == 0) 
             {
                 cout << "The program is correct!" << endl;
-                printSymbolTables();
+                //printSymbolTables();
             }
         }
         ;
@@ -212,8 +213,8 @@ statement_list : statement_list statement_with_semicolon ';'
 
 statement_with_semicolon:
                         assignment
-                        | function_call
                         | predefined_function_call
+                        | function_call
                         | return_statement
                         | object_access
                         ;
@@ -294,16 +295,33 @@ predefined_function_call : print_statement
 function_call : ID '(' argument_list ')'
               ;
 
-print_statement : PRINT '(' CHAR ')'
-                | PRINT '(' STRING ')'
-                | PRINT '(' expression ')'
-                | PRINT '(' boolean_expression ')'
-                | PRINT '(' object_access ')'
-                | PRINT '(' type_of_statement ')'
+print_statement : PRINT '(' CHAR ')'{
+                    cout << "Print: " << $3 << endl;
+                }
+                | PRINT '(' STRING ')'{
+                    cout << "Print: " << $3 << endl;
+                }
+                | PRINT '(' expression ')'{
+                    $3->evaluate(*currentSymTable);
+                    $3->printResult();
+                }
+                | PRINT '(' boolean_expression ')'{
+                    $3->evaluate(*currentSymTable);
+                    $3->printResult();
+                }
+                | PRINT '(' object_access ')'{
+                    cout<<"cccc\n";
+                }
                 ;
 
-type_of_statement : TYPEOF '(' expression ')'
-                  | TYPEOF '(' boolean_expression ')'
+type_of_statement : TYPEOF '(' expression ')'{
+                        $3->evaluate(*currentSymTable);
+                        cout<<"TypeOf: "<<$3->getType()<<endl;
+                  }
+                  | TYPEOF '(' boolean_expression ')'{\
+                        $3->evaluate(*currentSymTable);
+                        cout<<"TypeOf: "<<$3->getType()<<endl;
+                  }
                   | TYPEOF '(' object_access ')'
                   ;
 
@@ -345,7 +363,10 @@ expression : expression '+' expression {
            | ID {
                $$ = new ASTNode($1, true);
            }
-           | NR {
+           | INT {
+               $$ = new ASTNode($1);
+           }
+           | FLOAT {
                $$ = new ASTNode($1);
            }
            | function_call{

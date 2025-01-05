@@ -24,6 +24,7 @@ public:
     
     ASTNode* left;
     ASTNode* right;
+    variant<int, float, bool, string> evaluatedResult;
 
     ASTNode(int val);
     ASTNode(float val);
@@ -33,7 +34,8 @@ public:
     ASTNode(Operator op, ASTNode* left, ASTNode* right);
 
     variant<int, float, bool, string> evaluate(SymTable& symTable);
+    void printResult() const;
+    string getType() const;
 
-    void printNode() const;
 };
 #endif

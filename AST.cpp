@@ -55,16 +55,21 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
     switch (type)
     {
     case NodeType::INT:
-        return value.intVal;
+        evaluatedResult = value.intVal;
+        return evaluatedResult;
     case NodeType::FLOAT:
-        return value.floatVal;
+        evaluatedResult = value.floatVal;
+        return evaluatedResult;
     case NodeType::BOOL:
-        return value.boolVal;
+        evaluatedResult = value.boolVal;
+        return evaluatedResult;
     case NodeType::STRING:
-        return *value.stringVal;
+        evaluatedResult = *value.stringVal;
+        return evaluatedResult;
     case NodeType::IDENTIFIER:
         // return symTable.getVar(*value.stringVal).value;
-        return 101; // tmp test value
+        evaluatedResult = 101; // tmp test value
+        return evaluatedResult;
     case NodeType::OPERATOR:
     {
         auto leftVal = left->evaluate(symTable);
@@ -76,145 +81,181 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
             case Operator::ADD:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) + get<int>(rightVal);
+                    cout << "Adding two integers: " << get<int>(leftVal) << " + " << get<int>(rightVal) << endl;
+                    evaluatedResult = get<int>(leftVal) + get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) + get<float>(rightVal);
+                    cout << "Adding two floats: " << get<float>(leftVal) << " + " << get<float>(rightVal) << endl;
+                    evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
+                    return evaluatedResult;
+                }
+                else if (checkOperands<string>(leftVal, rightVal))
+                {
+                    evaluatedResult = get<string>(leftVal) + get<string>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::SUBTRACT:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) - get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) - get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) - get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) - get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::MULTIPLY:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) * get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) * get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) * get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) * get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::DIVIDE:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) / get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) / get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) / get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) / get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::MODULO:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) % get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) % get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::POWER:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return static_cast<int>(pow(get<int>(leftVal), get<int>(rightVal)));
+                    evaluatedResult = static_cast<int>(pow(get<int>(leftVal), get<int>(rightVal)));
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return static_cast<float>(pow(get<float>(leftVal), get<float>(rightVal)));
+                    evaluatedResult = static_cast<float>(pow(get<float>(leftVal), get<float>(rightVal)));
+                    return evaluatedResult;
                 }
                 break;
             case Operator::EQ:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) == get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) == get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) == get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) == get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<bool>(leftVal, rightVal))
                 {
-                    return get<bool>(leftVal) == get<bool>(rightVal);
+                    evaluatedResult = get<bool>(leftVal) == get<bool>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<string>(leftVal, rightVal))
                 {
-                    return get<string>(leftVal) == get<string>(rightVal);
+                    evaluatedResult = get<string>(leftVal) == get<string>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::NEQ:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) != get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) != get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) != get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) != get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<bool>(leftVal, rightVal))
                 {
-                    return get<bool>(leftVal) != get<bool>(rightVal);
+                    evaluatedResult = get<bool>(leftVal) != get<bool>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<string>(leftVal, rightVal))
                 {
-                    return get<string>(leftVal) != get<string>(rightVal);
+                    evaluatedResult = get<string>(leftVal) != get<string>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::GT:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) > get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) > get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) > get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) > get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::LT:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) < get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) < get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) < get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) < get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::GE:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) >= get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) >= get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) >= get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) >= get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::LE:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    return get<int>(leftVal) <= get<int>(rightVal);
+                    evaluatedResult = get<int>(leftVal) <= get<int>(rightVal);
+                    return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    return get<float>(leftVal) <= get<float>(rightVal);
+                    evaluatedResult = get<float>(leftVal) <= get<float>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::AND:
                 if (checkOperands<bool>(leftVal, rightVal))
                 {
-                    return get<bool>(leftVal) && get<bool>(rightVal);
+                    evaluatedResult = get<bool>(leftVal) && get<bool>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::OR:
                 if (checkOperands<bool>(leftVal, rightVal))
                 {
-                    return get<bool>(leftVal) || get<bool>(rightVal);
+                    evaluatedResult = get<bool>(leftVal) || get<bool>(rightVal);
+                    return evaluatedResult;
                 }
                 break;
             }
@@ -226,17 +267,20 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
             case Operator::UMINUS:
                 if (holds_alternative<int>(leftVal))
                 {
-                    return -get<int>(leftVal);
+                    evaluatedResult = -get<int>(leftVal);
+                    return evaluatedResult;
                 }
                 else if (holds_alternative<float>(leftVal))
                 {
-                    return -get<float>(leftVal);
+                    evaluatedResult = -get<float>(leftVal);
+                    return evaluatedResult;
                 }
                 break;
             case Operator::NOT:
                 if (holds_alternative<bool>(leftVal))
                 {
-                    return !get<bool>(leftVal);
+                    evaluatedResult = !get<bool>(leftVal);
+                    return evaluatedResult;
                 }
                 break;
             }
@@ -247,27 +291,43 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
     }
 }
 
-void ASTNode::printNode() const
+void ASTNode::printResult() const
 {
-    switch (type)
+    if (holds_alternative<int>(evaluatedResult))
     {
-    case NodeType::INT:
-        std::cout << "Int: " << value.intVal;
-        break;
-    case NodeType::FLOAT:
-        std::cout << "Float: " << value.floatVal;
-        break;
-    case NodeType::BOOL:
-        std::cout << "Bool: " << (value.boolVal ? "true" : "false");
-        break;
-    case NodeType::STRING:
-        std::cout << "String: " << *value.stringVal;
-        break;
-    case NodeType::IDENTIFIER:
-        std::cout << "Identifier: " << *value.stringVal;
-        break;
-    case NodeType::OPERATOR:
-        std::cout << "Operator: " << static_cast<int>(value.op);
-        break;
+        cout << "INT: " << get<int>(evaluatedResult) << endl;
     }
+    else if (holds_alternative<float>(evaluatedResult))
+    {
+        cout << "FLOAT: " << get<float>(evaluatedResult) << endl;
+    }
+    else if (holds_alternative<bool>(evaluatedResult))
+    {
+        cout << "BOOL: " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
+    }
+    else if (holds_alternative<string>(evaluatedResult))
+    {
+        cout << "STRING: " << get<string>(evaluatedResult) << endl;
+    }
+}
+
+string ASTNode::getType() const
+{
+    if(holds_alternative<int>(evaluatedResult))
+    {
+        return "int";
+    }
+    else if(holds_alternative<float>(evaluatedResult))
+    {
+        return "float";
+    }
+    else if(holds_alternative<bool>(evaluatedResult))
+    {
+        return "bool";
+    }
+    else if(holds_alternative<string>(evaluatedResult))
+    {
+        return "string";
+    }
+    return "undefined";
 }

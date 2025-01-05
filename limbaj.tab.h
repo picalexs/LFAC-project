@@ -76,11 +76,12 @@ extern int yydebug;
     TYPEOF = 277,                  /* TYPEOF  */
     FUNC = 278,                    /* FUNC  */
     RETURN = 279,                  /* RETURN  */
-    NR = 280,                      /* NR  */
-    CHAR = 281,                    /* CHAR  */
-    STRING = 282,                  /* STRING  */
-    TRUE = 283,                    /* TRUE  */
-    FALSE = 284                    /* FALSE  */
+    INT = 280,                     /* INT  */
+    FLOAT = 281,                   /* FLOAT  */
+    CHAR = 282,                    /* CHAR  */
+    STRING = 283,                  /* STRING  */
+    TRUE = 284,                    /* TRUE  */
+    FALSE = 285                    /* FALSE  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -98,7 +99,7 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 102 "limbaj.tab.h"
+#line 103 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

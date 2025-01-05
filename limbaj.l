@@ -60,12 +60,12 @@
 
 (0|[1-9][0-9]*) {
     yylval.intval = atoi(yytext);
-    return NR;
+    return INT;
 }
 
 (0|[1-9][0-9]*)(\.[0-9]*) {
     yylval.floatval = atof(yytext);
-    return NR;
+    return FLOAT;
 }
 
 \'[^\']\' {
