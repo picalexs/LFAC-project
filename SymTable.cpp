@@ -106,6 +106,35 @@ void SymTable::leaveScope()
     }
 }
 
+string SymTable::getScope()
+{
+    if (scopeNames.empty())
+    {
+        return "Global Scope";
+    }
+    return scopeNames.top();
+}
+
+bool SymTable::existsId(const string &id) {
+    if (currentVars.find(id) != currentVars.end()) {
+        return true;
+    }
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty()) {
+        const auto &scope = tempStack.top();
+        if (scope.find(id) != scope.end()) {
+            return true;
+        }
+        tempStack.pop();
+    }
+
+    if (globalScope.find(id) != globalScope.end()) {
+        return true;
+    }
+    return false;
+}
+
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
     string sizeStr;
