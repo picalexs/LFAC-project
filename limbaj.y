@@ -196,9 +196,10 @@ func_definition:
         }
         else 
         {
-        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
-        currentSymTable->addFunc($2, $3);
-        currentSymTable->enterScope($3,"function");
+            cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
+            currentSymTable->addFunc($2, $3);
+            currentSymTable->enterScope($3,"function");
+        }
     }
     BGIN statement_list END 
     {
@@ -213,8 +214,6 @@ method_definition:
     {
         currentSymTable->addMethod($2, $3);
         currentSymTable->enterScope($3,"method");
-        currentSymTable->enterScope($3);
-        }
     }
     BGIN statement_list END 
     {

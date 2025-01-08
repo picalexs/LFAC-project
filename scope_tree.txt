@@ -52,4 +52,3 @@
          >Entering block scope: WHILE
          <Leaving block scope: WHILE
       <Leaving main scope: main
-   <Leaving global scope: Global

@@ -1,14 +1,9 @@
 int n=10;
-int n=6;
 
 bool x;
 char s;
 char y;
-
-string s;
 int z;
-z=60;
-bool x;
 
 main
 {

@@ -20,7 +20,6 @@ using VectorValue=variant<int, float, bool, string>;
 class ParamList {
     vector<string> types;
     vector<string> names;
-
 public:
     void addParam(const string &type, const string &name);
     string toString() const;
