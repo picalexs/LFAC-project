@@ -1,5 +1,6 @@
 %{
     #include "AST.h"
+    #include <cstring>
     #include <iostream>
     #include <vector>
     using namespace std;
@@ -17,20 +18,25 @@
 
     void printSymbolTables() 
     {
-        cout<<"\nPrinting all scopes:\n";
-        globalSymTable.printAllScopes();
+        globalSymTable.printAskedScopes(); //cele cerute
+        globalSymTable.printAllScopes(); //toate
     }
 %}
 
 %right '='
 %left '+' '-'
 %left '*' '/' '%'
-%right UMINUS
 %right '^'
+%right UMINUS
+
 %left OR
 %left AND
+%right '!'
+%left '>' '<' GE LE EQ NEQ
+%left '(' ')'
 
 %union {
+    char* valtype;
     class ASTNode* node;
     int intval;
     float floatval;
@@ -41,7 +47,8 @@
 
 %token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID TYPE CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<string> ID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<valtype> TYPE
 
 %token<intval> INT
 %token<floatval> FLOAT
@@ -55,11 +62,16 @@
 
 %%
 
-PROGRAM : class_section var_section func_section main_function {
+PROGRAM : {
+            currentSymTable->enterScope("Global", "global");
+        }
+        class_section var_section func_section main_function
+        {
             if (errorCount == 0) 
             {
+                currentSymTable->leaveScope();
                 cout << "The program is correct!" << endl;
-                //printSymbolTables();
+                printSymbolTables();
             }
         }
         ;
@@ -74,39 +86,43 @@ var_declarations : var_declarations var_declaration
                  ;
 
 var_declaration : TYPE ID ';' {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
                     currentSymTable->addVar($1, $2);
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 5 ])\n";
-                    vector<int> tmp = {0, 0, 0, 0, 0}; //example vector size 5
-                    currentSymTable->addVar($1, $2, tmp);
+                    auto result=$4->evaluate(*currentSymTable);
+                    if($4->getType() == "int")
+                    {
+                        currentSymTable->addVector($1, $2, get<int>(result));
+                    }else{
+                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                    }
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << "[ tmp 3 ]=tmp value 100)\n";
-                    vector<int> tmp = {100, 100, 100}; // example vector size 3 = 100;
-                    currentSymTable->addVar($1, $2, tmp);
+                    auto result=$4->evaluate(*currentSymTable);
+                    auto valueResult = $7->evaluate(*currentSymTable);
+                    if($4->getType() == "int")
+                    {
+                        currentSymTable->addVector($1, $2, get<int>(result), valueResult);
+                    }else{
+                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                    }
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
                     currentSymTable->addVar($1, $2, 101);
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
                     currentSymTable->addVar($1, $2, 1);
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
                 }
                 ;
@@ -123,9 +139,22 @@ func_definitions : func_definitions func_definition
 func_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
         currentSymTable->addFunc($2, $3);
-        currentSymTable->enterScope($3);
+        currentSymTable->enterScope($3,"function");
+    }
+    BGIN statement_list END 
+    {
+        currentSymTable->leaveScope();
+    }
+    ;
+
+ //_________________________________________________
+
+method_definition:
+    FUNC TYPE ID '(' parameter_list ')' 
+    {
+        currentSymTable->addMethod($2, $3);
+        currentSymTable->enterScope($3,"method");
     }
     BGIN statement_list END 
     {
@@ -146,9 +175,8 @@ class_definitions : class_definitions class_definition
 class_definition:
     CLASS ID 
     {
-        cout << "Class " << $2 << " defined." << endl;
         currentSymTable->addClass($2);
-        currentSymTable->enterScope($2);
+        currentSymTable->enterScope($2, "class");
     }
     BGIN
     class_body 
@@ -164,16 +192,15 @@ class_body : class_body class_member
            ;
 
 class_member : var_declaration
-             | func_definition
+             | method_definition
              | constructor_definition
              ;
 
 constructor_definition: 
     ID '(' parameter_list ')' 
     {
-        cout << "  ("<<currentSymTable->getScope() << "): +constructor: " << $1 << "\n";
-        currentSymTable->addFunc("constructor", $1);
-        currentSymTable->enterScope($1); 
+        currentSymTable->addConstructor($1);
+        currentSymTable->enterScope($1, "constructor"); 
     }
     BGIN statement_list END 
     {
@@ -195,8 +222,7 @@ parameter : TYPE ID
 main_function:
     MAIN BGIN
     {
-        cout << "Main function defined." << endl;
-        currentSymTable->enterScope("main");
+        currentSymTable->enterScope("main", "main");
     }
     statement_list END
     {
@@ -244,7 +270,7 @@ object_access : ID '.' ID
 if_statement:
     IF '(' boolean_expression ')' 
     {
-        currentSymTable->enterScope("IF");
+        currentSymTable->enterScope("IF","block");
     } 
     BGIN statement_list END 
     {
@@ -257,7 +283,7 @@ else_statement :
     /* epsilon */
     | ELSE 
     {
-        currentSymTable->enterScope("ELSE");                
+        currentSymTable->enterScope("ELSE","block");                
     }
     BGIN statement_list END 
     {
@@ -268,7 +294,7 @@ else_statement :
 while_statement:
     WHILE '(' boolean_expression ')' 
     {
-        currentSymTable->enterScope("WHILE");
+        currentSymTable->enterScope("WHILE","block");
     }
     BGIN statement_list END 
     {
@@ -279,7 +305,7 @@ while_statement:
 for_statement:
     FOR '(' var_declaration boolean_expression ';' assignment ')' 
     {
-        currentSymTable->enterScope("FOR");
+        currentSymTable->enterScope("FOR","block");
     }
     BGIN statement_list END 
     {
@@ -296,10 +322,10 @@ function_call : ID '(' argument_list ')'
               ;
 
 print_statement : PRINT '(' CHAR ')'{
-                    cout << "Print: " << $3 << endl;
+                    cout << "Print (char): " << $3 << endl;
                 }
                 | PRINT '(' STRING ')'{
-                    cout << "Print: " << $3 << endl;
+                    cout << "Print (string): " << $3 << endl;
                 }
                 | PRINT '(' expression ')'{
                     $3->evaluate(*currentSymTable);
@@ -407,9 +433,9 @@ boolean_expression : TRUE {
                    | boolean_expression OR boolean_expression {
                        $$ = new ASTNode(ASTNode::Operator::OR, $1, $3);
                    }
-                //    | '!' boolean_expression {
-                //       $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
-                //    }
+                   | '!' boolean_expression {
+                      $$ = new ASTNode(ASTNode::Operator::NOT, $2, nullptr);
+                   }
                    ;
 
 %%

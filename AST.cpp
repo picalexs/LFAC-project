@@ -50,6 +50,22 @@ ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)
     this->right = right;
 }
 
+ASTNode::~ASTNode()
+{
+    if (type == NodeType::STRING || type == NodeType::IDENTIFIER)
+    {
+        delete value.stringVal;
+    }
+    if (left)
+    {
+        delete left;
+    }
+    if (right)
+    {
+        delete right;
+    }
+}
+
 variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
 {
     switch (type)
@@ -81,13 +97,11 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
             case Operator::ADD:
                 if (checkOperands<int>(leftVal, rightVal))
                 {
-                    cout << "Adding two integers: " << get<int>(leftVal) << " + " << get<int>(rightVal) << endl;
                     evaluatedResult = get<int>(leftVal) + get<int>(rightVal);
                     return evaluatedResult;
                 }
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
-                    cout << "Adding two floats: " << get<float>(leftVal) << " + " << get<float>(rightVal) << endl;
                     evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
                     return evaluatedResult;
                 }
@@ -295,19 +309,19 @@ void ASTNode::printResult() const
 {
     if (holds_alternative<int>(evaluatedResult))
     {
-        cout << "INT: " << get<int>(evaluatedResult) << endl;
+        cout << "PRINT (int): " << get<int>(evaluatedResult) << endl;
     }
     else if (holds_alternative<float>(evaluatedResult))
     {
-        cout << "FLOAT: " << get<float>(evaluatedResult) << endl;
+        cout << "PRINT (float): " << get<float>(evaluatedResult) << endl;
     }
     else if (holds_alternative<bool>(evaluatedResult))
     {
-        cout << "BOOL: " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
+        cout << "PRINT (bool): " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
     }
     else if (holds_alternative<string>(evaluatedResult))
     {
-        cout << "STRING: " << get<string>(evaluatedResult) << endl;
+        cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
     }
 }
 

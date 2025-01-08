@@ -32,6 +32,7 @@ public:
     ASTNode(const string& val);
     ASTNode(const string& id, bool isIdentifier);
     ASTNode(Operator op, ASTNode* left, ASTNode* right);
+    ~ASTNode();
 
     variant<int, float, bool, string> evaluate(SymTable& symTable);
     void printResult() const;
