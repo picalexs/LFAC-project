@@ -135,6 +135,122 @@ bool SymTable::existsId(const string &id) {
     return false;
 }
 
+// nu o folosesc inca
+bool SymTable::checkIdExists(const string &id)
+{
+    if (currentVars.find(id) != currentVars.end())
+    {
+        return true;
+    }
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty())
+    {
+        auto &scope = tempStack.top();
+        if (scope.find(id) != scope.end())
+        {
+            return true;
+        }
+        tempStack.pop();
+    }
+
+    return false;
+}
+
+bool SymTable::isDefined(const string &id)
+{
+    stack<map<string, IdInfo>> tempScopeStack = scopeStack;
+    map<string, IdInfo> tempCurrentVars = currentVars;
+
+    if (tempCurrentVars.find(id) != tempCurrentVars.end())
+    {
+        return true;
+    }
+
+    while (!tempScopeStack.empty())
+    {
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        {
+            return true;
+        }
+        tempScopeStack.pop();
+    }
+
+    return false;
+}
+
+// Functie pentru verificarea definitiei unei variabile sau functii
+bool SymTable::isUsedBeforeDefined(const string &id)
+{
+    if (isDefined(id))
+    {
+        return true; // Simbolul este definit, deci poate fi utilizat
+    }
+    else
+    {
+        cout << "Error: Symbol '" << id << "' is used before definition.\n";
+        return false;
+    }
+}
+
+// nu o folosesc inca
+bool SymTable::checkIdExists(const string &id)
+{
+    if (currentVars.find(id) != currentVars.end())
+    {
+        return true;
+    }
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty())
+    {
+        auto &scope = tempStack.top();
+        if (scope.find(id) != scope.end())
+        {
+            return true;
+        }
+        tempStack.pop();
+    }
+
+    return false;
+}
+
+bool SymTable::isDefined(const string &id)
+{
+    stack<map<string, IdInfo>> tempScopeStack = scopeStack;
+    map<string, IdInfo> tempCurrentVars = currentVars;
+
+    if (tempCurrentVars.find(id) != tempCurrentVars.end())
+    {
+        return true;
+    }
+
+    while (!tempScopeStack.empty())
+    {
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        {
+            return true;
+        }
+        tempScopeStack.pop();
+    }
+
+    return false;
+}
+
+// Functie pentru verificarea definitiei unei variabile sau functii
+bool SymTable::isUsedBeforeDefined(const string &id)
+{
+    if (isDefined(id))
+    {
+        return true; // Simbolul este definit, deci poate fi utilizat
+    }
+    else
+    {
+        cout << "Error: Symbol '" << id << "' is used before definition.\n";
+        return false;
+    }
+}
+
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
     string sizeStr;

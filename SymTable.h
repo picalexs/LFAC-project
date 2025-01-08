@@ -64,6 +64,9 @@ public:
     string getScope();
 
     bool existsId(const string &id);
+    bool isDefined(const string &id);
+    bool isUsedBeforeDefined(const string &id);
+    bool checkIdExists(const string &id);
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});

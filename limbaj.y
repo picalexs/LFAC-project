@@ -86,10 +86,22 @@ var_declarations : var_declarations var_declaration
                  ;
 
 var_declaration : TYPE ID ';' {
-                    currentSymTable->addVar($1, $2);
+                                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
+                                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 <<")\n";
+                                        currentSymTable->addVar($1, $2);
+                                        }
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
                     auto result=$4->evaluate(*currentSymTable);
                     if($4->getType() == "int")
                     {
@@ -97,9 +109,15 @@ var_declaration : TYPE ID ';' {
                     }else{
                         cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
                     }
+                    }
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
                     auto result=$4->evaluate(*currentSymTable);
                     auto valueResult = $7->evaluate(*currentSymTable);
                     if($4->getType() == "int")
@@ -108,22 +126,54 @@ var_declaration : TYPE ID ';' {
                     }else{
                         cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
                     }
+                                    }
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else 
+                    {
+                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 101)\n";
                     currentSymTable->addVar($1, $2, 101);
+                    }
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else 
+                    {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = tmp 1)\n";
                     currentSymTable->addVar($1, $2, 1);
+                }
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else
+                    {
+                        cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
+                    }
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
+                    if (currentSymTable->isDefined($2)) {
+                                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                                        errorCount++;
+                                        }
+                                    else {
+                    cout << "  ("<<currentSymTable->getScope() << "): +var: " << $2 << " (" << $1 << " = " << $4 << ")\n";
                     currentSymTable->addVar($1, $2, $4);
+                                    }
                 }
                 ;
 
@@ -139,6 +189,14 @@ func_definitions : func_definitions func_definition
 func_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
+        if (currentSymTable->isDefined($3)) 
+        {
+            cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones." << endl;
+            errorCount++;
+        }
+        else 
+        {
+        cout << "  ("<<currentSymTable->getScope() << "): +func: " << $3 << " (" << $2 << ")\n";
         currentSymTable->addFunc($2, $3);
         currentSymTable->enterScope($3,"function");
     }
@@ -155,6 +213,8 @@ method_definition:
     {
         currentSymTable->addMethod($2, $3);
         currentSymTable->enterScope($3,"method");
+        currentSymTable->enterScope($3);
+        }
     }
     BGIN statement_list END 
     {
@@ -387,6 +447,11 @@ expression : expression '+' expression {
                $$ = $2;
            }
            | ID {
+                if (!currentSymTable->checkIdExists($1)) 
+                {
+                    cout << "Error: Identifier '" << $1 << "' not defined." << endl;
+                    errorCount++;
+                }
                $$ = new ASTNode($1, true);
            }
            | INT {
