@@ -64,6 +64,7 @@ public:
 
     bool existsId(const string &id);
     VectorValue getIdValue(const string &id);
+    string getType(const string &id);
     VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
     bool isDefined(const string &id);
     bool isUsedBeforeDefined(const string &id);
@@ -75,8 +76,6 @@ public:
     void addClass(const string &name);
     void addConstructor(const string &name);
     void addMethod(const string &returnType, const string &name);
-
-    string getType(const string &id);
 
     bool removeId(const string &id);
 

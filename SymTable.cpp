@@ -193,6 +193,7 @@ VectorValue SymTable::getIdValue(const string &id)
     return {};
 }
 
+
 bool SymTable::isDefined(const string &id)
 {
     stack<map<string, IdInfo>> tempScopeStack = scopeStack;
