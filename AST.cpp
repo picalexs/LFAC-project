@@ -4,7 +4,7 @@
 #include <variant>
 
 template <typename T>
-bool checkOperands(const variant<int, float, bool, string> &leftVal, const variant<int, float, bool, string> &rightVal)
+bool checkOperands(const VectorValue &leftVal, const VectorValue &rightVal)
 {
     return holds_alternative<T>(leftVal) && holds_alternative<T>(rightVal);
 }
@@ -66,7 +66,7 @@ ASTNode::~ASTNode()
     }
 }
 
-variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
+VectorValue ASTNode::evaluate(SymTable &symTable)
 {
     switch (type)
     {
@@ -83,8 +83,7 @@ variant<int, float, bool, string> ASTNode::evaluate(SymTable &symTable)
         evaluatedResult = *value.stringVal;
         return evaluatedResult;
     case NodeType::IDENTIFIER:
-        // return symTable.getVar(*value.stringVal).value;
-        evaluatedResult = 101; // tmp test value
+        evaluatedResult = symTable.getIdValue(*value.stringVal);
         return evaluatedResult;
     case NodeType::OPERATOR:
     {
@@ -319,6 +318,10 @@ void ASTNode::printResult() const
     {
         cout << "PRINT (bool): " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
     }
+    else if(holds_alternative<char>(evaluatedResult))
+    {
+        cout << "PRINT (char): " << get<char>(evaluatedResult) << endl;
+    }
     else if (holds_alternative<string>(evaluatedResult))
     {
         cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
@@ -338,6 +341,10 @@ string ASTNode::getType() const
     else if(holds_alternative<bool>(evaluatedResult))
     {
         return "bool";
+    }
+    else if(holds_alternative<char>(evaluatedResult))
+    {
+        return "char";
     }
     else if(holds_alternative<string>(evaluatedResult))
     {

@@ -1,15 +1,20 @@
 int n=10;
 
 bool x;
-char s;
+char s='a';
 char y;
 int z;
 
 main
 {
     z=30;
+    string name="Mihai";
     Print(true&&false||true);
     Print(10+10);
+    Print('c');
+    Print(name);
+    Print(s);
+    Print(s);
     Print(12.3+12.7);
     TypeOf(10+10);
     TypeOf(true&&false);

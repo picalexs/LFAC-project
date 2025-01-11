@@ -135,26 +135,62 @@ bool SymTable::existsId(const string &id) {
     return false;
 }
 
-// nu o folosesc inca
-bool SymTable::checkIdExists(const string &id)
+VectorValue SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
+{
+    if (holds_alternative<int>(vars[id].value))
+    {
+        return get<int>(vars[id].value);
+    }
+    else if (holds_alternative<float>(vars[id].value))
+    {
+        return get<float>(vars[id].value);
+    }
+    else if (holds_alternative<bool>(vars[id].value))
+    {
+        return get<bool>(vars[id].value);
+    }
+    else if(holds_alternative<char>(vars[id].value))
+    {
+        return get<char>(vars[id].value);
+    }
+    else if (holds_alternative<string>(vars[id].value))
+    {
+        return get<string>(vars[id].value);
+    }
+    else
+    {
+        cout << "Error: Unsupported type for variable '" << id << "'\n";
+        // nu putem returna un vector intreg, ci doar o valoare din vector
+        return {};
+    }
+}
+
+VectorValue SymTable::getIdValue(const string &id)
 {
     if (currentVars.find(id) != currentVars.end())
     {
-        return true;
+        return returnIdValue(id, currentVars);
     }
 
-    stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty())
+    stack<map<string, IdInfo>> tempScopeStack = scopeStack;
+    map<string, IdInfo> tempCurrentVars = currentVars;
+
+    while (!tempScopeStack.empty())
     {
-        auto &scope = tempStack.top();
-        if (scope.find(id) != scope.end())
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
         {
-            return true;
+            return returnIdValue(id, tempScopeStack.top());
         }
-        tempStack.pop();
+        tempScopeStack.pop();
     }
 
-    return false;
+    if (globalScope.find(id) != globalScope.end())
+    {
+        return returnIdValue(id, globalScope);
+    }
+
+    cout << "Error: Symbol '" << id << "' is not defined.\n";
+    return {};
 }
 
 bool SymTable::isDefined(const string &id)
