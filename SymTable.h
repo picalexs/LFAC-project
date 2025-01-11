@@ -15,12 +15,11 @@ using namespace std;
 #define SCOPE_TREE_FILE "scope_tree.txt"
 
 using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
-using VectorValue=variant<int, float, bool, string>;
+using VectorValue=variant<int, float, bool, char, string>;
 
 class ParamList {
     vector<string> types;
     vector<string> names;
-
 public:
     void addParam(const string &type, const string &name);
     string toString() const;
@@ -64,6 +63,11 @@ public:
     string getScope();
 
     bool existsId(const string &id);
+    VectorValue getIdValue(const string &id);
+    string getType(const string &id);
+    VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
+    bool isDefined(const string &id);
+    bool isUsedBeforeDefined(const string &id);
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
@@ -72,8 +76,6 @@ public:
     void addClass(const string &name);
     void addConstructor(const string &name);
     void addMethod(const string &returnType, const string &name);
-
-    string getType(const string &id);
 
     bool removeId(const string &id);
 

@@ -1,21 +1,22 @@
 int n=10;
-int n=6;
 
 bool x;
-char s;
+char s='a';
 char y;
-
-string s="Mihai";
 int z;
-bool x;
 
 main
 {
     z=30;
+    string name="Mihai";
     Print(true&&false||true);
     Print(10+10);
-    Print(12.3+12.7);
+    Print('c');
+    Print(name);
     Print(s);
+    Print(s);
+    Print(12.3+12);
+    Print(12.3+12.7);
     TypeOf(10+10);
     TypeOf(true&&false);
     TypeOf(1.2+3.4);

@@ -135,6 +135,101 @@ bool SymTable::existsId(const string &id) {
     return false;
 }
 
+VectorValue SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
+{
+    if (holds_alternative<int>(vars[id].value))
+    {
+        return get<int>(vars[id].value);
+    }
+    else if (holds_alternative<float>(vars[id].value))
+    {
+        return get<float>(vars[id].value);
+    }
+    else if (holds_alternative<bool>(vars[id].value))
+    {
+        return get<bool>(vars[id].value);
+    }
+    else if(holds_alternative<char>(vars[id].value))
+    {
+        return get<char>(vars[id].value);
+    }
+    else if (holds_alternative<string>(vars[id].value))
+    {
+        return get<string>(vars[id].value);
+    }
+    else
+    {
+        cout << "Error: Unsupported type for variable '" << id << "'\n";
+        // nu putem returna un vector intreg, ci doar o valoare din vector
+        return {};
+    }
+}
+
+VectorValue SymTable::getIdValue(const string &id)
+{
+    if (currentVars.find(id) != currentVars.end())
+    {
+        return returnIdValue(id, currentVars);
+    }
+
+    stack<map<string, IdInfo>> tempScopeStack = scopeStack;
+    map<string, IdInfo> tempCurrentVars = currentVars;
+
+    while (!tempScopeStack.empty())
+    {
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        {
+            return returnIdValue(id, tempScopeStack.top());
+        }
+        tempScopeStack.pop();
+    }
+
+    if (globalScope.find(id) != globalScope.end())
+    {
+        return returnIdValue(id, globalScope);
+    }
+
+    cout << "Error: Symbol '" << id << "' is not defined.\n";
+    return {};
+}
+
+
+bool SymTable::isDefined(const string &id)
+{
+    stack<map<string, IdInfo>> tempScopeStack = scopeStack;
+    map<string, IdInfo> tempCurrentVars = currentVars;
+
+    if (tempCurrentVars.find(id) != tempCurrentVars.end())
+    {
+        return true;
+    }
+
+    while (!tempScopeStack.empty())
+    {
+        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        {
+            return true;
+        }
+        tempScopeStack.pop();
+    }
+
+    return false;
+}
+
+// Functie pentru verificarea definitiei unei variabile sau functii
+bool SymTable::isUsedBeforeDefined(const string &id)
+{
+    if (isDefined(id))
+    {
+        return true; // Simbolul este definit, deci poate fi utilizat
+    }
+    else
+    {
+        cout << "Error: Symbol '" << id << "' is used before definition.\n";
+        return false;
+    }
+}
+
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
     string sizeStr;

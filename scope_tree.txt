@@ -1,55 +1,11 @@
    >Entering global scope: Global
-   +class: MyClass
-      >Entering class scope: MyClass
-      +variable: x : int
-      +variable: y : int
-      +constructor: MyClass
-         >Entering constructor scope: MyClass
-         +variable: zet : int
-            >Entering block scope: IF
-            +variable: isthistrue : bool
-            <Leaving block scope: IF
-            >Entering block scope: ELSE
-            <Leaving block scope: ELSE
-         <Leaving constructor scope: MyClass
-      +method: setValues : int
-         >Entering method scope: setValues
-         +variable: times : string[100]
-         <Leaving method scope: setValues
-      <Leaving class scope: MyClass
-   +variable: n1 : int
-   +variable: n2 : float[125]
-   +variable: n3 : int[10]
-   +variable: n4 : bool[123]
-   +variable: is_active : bool
-   +variable: ch : char
-   +variable: nume : string
-   +function: add : int
-      >Entering function scope: add
-      +variable: test : int
-      +variable: val : bool[10]
-         >Entering block scope: IF
-            >Entering block scope: WHILE
-            +variable: testvalue : int
-            <Leaving block scope: WHILE
-         <Leaving block scope: IF
-         >Entering block scope: ELSE
-            >Entering block scope: IF
-            <Leaving block scope: IF
-         <Leaving block scope: ELSE
-      <Leaving function scope: add
-   +function: print_message : int
-      >Entering function scope: print_message
-      +variable: i : int
-         >Entering block scope: FOR
-         +variable: cnt : int
-            >Entering block scope: WHILE
-            <Leaving block scope: WHILE
-         <Leaving block scope: FOR
-      <Leaving function scope: print_message
+   +variable: n : int
+   +variable: x : bool
+   +variable: s : char
+   +variable: y : char
+   +variable: z : int
       >Entering main scope: main
-      +variable: number : int
-         >Entering block scope: WHILE
-         <Leaving block scope: WHILE
+      +variable: name : string
+      +variable: m : int
       <Leaving main scope: main
    <Leaving global scope: Global

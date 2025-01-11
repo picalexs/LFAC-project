@@ -47,15 +47,16 @@ func int add(int a, int b)
     }
     else
     {
-        if((f(10)==x && y<4) && (5+3==8))
+        if((f(10)==a && b<4) && (5+3==8))
         {
-            return a/2+x;
+            return a/2+b;
         }
     }
 }
 
 func int print_message() 
 {
+    int x=10;
     for(int i=0;i<x;i=i*2)
     {
         int cnt=0;
@@ -70,7 +71,7 @@ func int print_message()
 
 main 
 {
-    int number = -(a^2 + 10%3)*add(1,add(5,7));
+    int number = -(n1^2 + 10%3)*add(1,add(5,7));
     y[0] = 3.14;
     is_active = true;
     obj=MyClass();

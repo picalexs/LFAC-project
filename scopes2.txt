@@ -1,35 +1,16 @@
 === Global Scope ===
 Global Scope: Global Scope
-  class: MyClass
-  function: add : int
-  variable: ch : char
-  variable: is_active : bool
-  variable: n1 : int
-  variable: n2 : float[125]
-  variable: n3 : int[10]
-  variable: n4 : bool[123]
-  variable: nume : string
-  function: print_message : int
+  variable: n : int
+  variable: s : char
+  variable: x : bool
+  variable: y : char
+  variable: z : int
 
 === Class Scope ===
-Class Scope: MyClass
-  constructor: MyClass
-  method: setValues : int
-  variable: x : int
-  variable: y : int
 
 === Function Scope ===
-Function Scope: add
-  variable: test : int
-  variable: val : bool[10]
-Function Scope: print_message
-  variable: i : int
 
 === Constructor Scope ===
-Constructor Scope: MyClass
-  variable: zet : int
 
 === Method Scope ===
-Method Scope: setValues
-  variable: times : string[100]
 
