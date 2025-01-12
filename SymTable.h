@@ -67,7 +67,9 @@ public:
     string getType(const string &id);
     VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
     bool isDefined(const string &id);
-    bool isUsedBeforeDefined(const string &id);
+    bool existsFunc(const string &funcName);
+    bool existsClass(const string &className);
+    bool isUsedBeforeDefined(const string &id, const string &type);
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});

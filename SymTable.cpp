@@ -216,18 +216,55 @@ bool SymTable::isDefined(const string &id)
     return false;
 }
 
-// Functie pentru verificarea definitiei unei variabile sau functii
-bool SymTable::isUsedBeforeDefined(const string &id)
+bool SymTable::existsFunc(const string &funcName) 
 {
-    if (isDefined(id))
-    {
-        return true; // Simbolul este definit, deci poate fi utilizat
+    if (currentVars.find(funcName) != currentVars.end() && 
+        currentVars[funcName].idType == "function") {
+        return true;
     }
-    else
-    {
-        cout << "Error: Symbol '" << id << "' is used before definition.\n";
-        return false;
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty()) {
+        const auto &scope = tempStack.top();
+        if (scope.find(funcName) != scope.end() && scope.at(funcName).idType == "function") {
+            return true;
+        }
+        tempStack.pop();
     }
+
+    return functionScopes.find(funcName) != functionScopes.end();
+}
+
+bool SymTable::existsClass(const string &className) {
+    if (currentVars.find(className) != currentVars.end() && 
+        currentVars[className].idType == "class") {
+        return true;
+    }
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty()) {
+        const auto &scope = tempStack.top();
+        if (scope.find(className) != scope.end() && scope.at(className).idType == "class") {
+            return true;
+        }
+        tempStack.pop();
+    }
+
+    return classScopes.find(className) != classScopes.end();
+}
+
+bool SymTable::isUsedBeforeDefined(const string &id, const string &type) 
+{
+    if (type == "variable") {
+        return existsId(id);
+    } else if (type == "function") {
+        return existsFunc(id);
+    } else if (type == "class") {
+        return existsClass(id);
+    }
+    
+    cout << "Error: Unknown type '" << type << "' for symbol '" << id << "'.\n";
+    return false;
 }
 
 void SymTable::addVar(const string &type, const string &name, const Value &value)
@@ -353,7 +390,7 @@ void SymTable::printAskedScopes() const
     clearFile(SCOPE_FILE1);
     printGlobalScope(SCOPE_FILE1);
     printClassScopes(SCOPE_FILE1);
-    printFunctionScopes(SCOPE_FILE1); 
+    printFunctionScopes(SCOPE_FILE1);
 }
 
 void SymTable::printAllScopes() const
