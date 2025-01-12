@@ -311,7 +311,20 @@ assignment : left_value ASSIGN expression
            ;
 
 left_value : ID
+           {
+               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
+                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
+                   errorCount++;
+               }
+               cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
+           }
            | ID '[' expression ']'
+           {
+               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
+                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
+                   errorCount++;
+               }
+           }
            | object_access
            | CHAR
            | STRING
@@ -373,6 +386,12 @@ predefined_function_call : print_statement
                          ;
 
 function_call : ID '(' argument_list ')'
+              {
+                  if (!currentSymTable->isUsedBeforeDefined($1, "function")) {
+                      cout << "Error: Function '" << $1 << "' called before being defined." << endl;
+                      errorCount++;
+                  }
+              }
               ;
 
 print_statement : PRINT '(' CHAR ')'{
