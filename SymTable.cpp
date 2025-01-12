@@ -353,7 +353,7 @@ void SymTable::printAskedScopes() const
     clearFile(SCOPE_FILE1);
     printGlobalScope(SCOPE_FILE1);
     printClassScopes(SCOPE_FILE1);
-    printFunctionScopes(SCOPE_FILE1);
+    printFunctionScopes(SCOPE_FILE1); 
 }
 
 void SymTable::printAllScopes() const
