@@ -335,7 +335,7 @@ void SymTable::printClassScopes(const string &fileName) const
 
 void SymTable::printFunctionScopes(const string &fileName) const
 {
-    printScope(fileName, "Function Scope", functionScopes);
+    printScope(fileName, "Function Scope", functionScopes); 
 }
 
 void SymTable::printConstructorScopes(const string &fileName) const
