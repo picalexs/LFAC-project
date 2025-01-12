@@ -255,7 +255,7 @@ bool SymTable::existsClass(const string &className) {
 
 bool SymTable::isUsedBeforeDefined(const string &id, const string &type) 
 {
-    if (type == "variable") {
+    if (type == "variable") { 
         return existsId(id);
     } else if (type == "function") {
         return existsFunc(id);
@@ -315,9 +315,21 @@ void SymTable::addEntity(const string &entityType, const string &name, const str
     currentVars[name] = entityInfo;
 }
 
-void SymTable::addFunc(const string &returnType, const string &name)
+void SymTable::addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params)
 {
-    addEntity("function", name, returnType);
+    // Creează o listă de parametri
+    ParamList paramList;
+    for (const auto& param : params)
+    {
+        paramList.addParam(param.first, param.second);
+    }
+
+    // Creează un obiect IdInfo cu parametrii adăugați
+    IdInfo funcInfo("function", returnType, name);
+    funcInfo.params = paramList;
+
+    // Adaugă funcția în tabelul de simboluri
+    currentVars[name] = funcInfo;
 }
 
 void SymTable::addClass(const string &name)

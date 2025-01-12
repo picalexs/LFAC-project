@@ -608,13 +608,13 @@ static const yytype_int16 yyrline[] =
      186,   209,   208,   221,   222,   225,   226,   231,   230,   244,
      245,   248,   249,   250,   255,   254,   267,   268,   269,   272,
      278,   277,   288,   289,   290,   291,   295,   296,   297,   298,
-     299,   303,   304,   305,   306,   309,   310,   313,   321,   328,
-     329,   330,   333,   334,   339,   343,   338,   349,   352,   351,
-     363,   362,   374,   373,   384,   385,   388,   397,   400,   403,
-     407,   411,   416,   420,   424,   427,   430,   431,   432,   433,
-     434,   438,   441,   444,   447,   450,   453,   456,   459,   462,
-     470,   473,   476,   481,   484,   487,   490,   493,   496,   499,
-     502,   505,   508,   511,   514
+     299,   303,   304,   305,   306,   309,   310,   313,   320,   327,
+     328,   329,   332,   333,   338,   342,   337,   348,   351,   350,
+     362,   361,   373,   372,   383,   384,   387,   396,   399,   402,
+     406,   410,   415,   419,   423,   426,   429,   430,   431,   432,
+     433,   437,   440,   443,   446,   449,   452,   455,   458,   461,
+     469,   472,   475,   480,   483,   486,   489,   492,   495,   498,
+     501,   504,   507,   510,   513
 };
 #endif
 
@@ -1530,7 +1530,7 @@ yyreduce:
         }
         else 
         {
-            currentSymTable->addFunc((yyvsp[-4].valtype), (yyvsp[-3].string));
+             /* currentSymTable->addFunc($2, $3); */
             currentSymTable->enterScope((yyvsp[-3].string),"function");
         }
     }
@@ -1619,223 +1619,222 @@ yyreduce:
                    cout << "Error: Variable '" << (yyvsp[0].string) << "' used before being defined." << endl;
                    errorCount++;
                }
-               cout << "Error: Variable '" << (yyvsp[0].string) << "' used before being defined." << endl;
            }
-#line 1625 "limbaj.tab.c"
+#line 1624 "limbaj.tab.c"
     break;
 
   case 58: /* left_value: ID '[' expression ']'  */
-#line 322 "limbaj.y"
+#line 321 "limbaj.y"
            {
                if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "variable")) {
                    cout << "Error: Variable '" << (yyvsp[-3].string) << "' used before being defined." << endl;
                    errorCount++;
                }
            }
-#line 1636 "limbaj.tab.c"
+#line 1635 "limbaj.tab.c"
     break;
 
   case 64: /* $@7: %empty  */
-#line 339 "limbaj.y"
+#line 338 "limbaj.y"
     {
         currentSymTable->enterScope("IF","block");
     }
-#line 1644 "limbaj.tab.c"
+#line 1643 "limbaj.tab.c"
     break;
 
   case 65: /* $@8: %empty  */
-#line 343 "limbaj.y"
+#line 342 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1652 "limbaj.tab.c"
+#line 1651 "limbaj.tab.c"
     break;
 
   case 68: /* $@9: %empty  */
-#line 352 "limbaj.y"
+#line 351 "limbaj.y"
     {
         currentSymTable->enterScope("ELSE","block");                
     }
-#line 1660 "limbaj.tab.c"
+#line 1659 "limbaj.tab.c"
     break;
 
   case 69: /* else_statement: ELSE $@9 BGIN statement_list END  */
-#line 356 "limbaj.y"
+#line 355 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1668 "limbaj.tab.c"
+#line 1667 "limbaj.tab.c"
     break;
 
   case 70: /* $@10: %empty  */
-#line 363 "limbaj.y"
+#line 362 "limbaj.y"
     {
         currentSymTable->enterScope("WHILE","block");
     }
-#line 1676 "limbaj.tab.c"
+#line 1675 "limbaj.tab.c"
     break;
 
   case 71: /* while_statement: WHILE '(' boolean_expression ')' $@10 BGIN statement_list END  */
-#line 367 "limbaj.y"
+#line 366 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1684 "limbaj.tab.c"
+#line 1683 "limbaj.tab.c"
     break;
 
   case 72: /* $@11: %empty  */
-#line 374 "limbaj.y"
+#line 373 "limbaj.y"
     {
         currentSymTable->enterScope("FOR","block");
     }
-#line 1692 "limbaj.tab.c"
+#line 1691 "limbaj.tab.c"
     break;
 
   case 73: /* for_statement: FOR '(' var_declaration boolean_expression ';' assignment ')' $@11 BGIN statement_list END  */
-#line 378 "limbaj.y"
+#line 377 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1700 "limbaj.tab.c"
+#line 1699 "limbaj.tab.c"
     break;
 
   case 76: /* function_call: ID '(' argument_list ')'  */
-#line 389 "limbaj.y"
+#line 388 "limbaj.y"
               {
                   if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "function")) {
                       cout << "Error: Function '" << (yyvsp[-3].string) << "' called before being defined." << endl;
                       errorCount++;
                   }
               }
-#line 1711 "limbaj.tab.c"
+#line 1710 "limbaj.tab.c"
     break;
 
   case 77: /* print_statement: PRINT '(' CHAR ')'  */
-#line 397 "limbaj.y"
+#line 396 "limbaj.y"
                                     {
                     cout << "Print (char): " << (yyvsp[-1].charval) << endl;
                 }
-#line 1719 "limbaj.tab.c"
+#line 1718 "limbaj.tab.c"
     break;
 
   case 78: /* print_statement: PRINT '(' STRING ')'  */
-#line 400 "limbaj.y"
+#line 399 "limbaj.y"
                                       {
                     cout << "Print (string): " << (yyvsp[-1].string) << endl;
                 }
-#line 1727 "limbaj.tab.c"
+#line 1726 "limbaj.tab.c"
     break;
 
   case 79: /* print_statement: PRINT '(' expression ')'  */
-#line 403 "limbaj.y"
+#line 402 "limbaj.y"
                                           {
                     (yyvsp[-1].node)->evaluate(*currentSymTable);
                     (yyvsp[-1].node)->printResult();
                 }
-#line 1736 "limbaj.tab.c"
+#line 1735 "limbaj.tab.c"
     break;
 
   case 80: /* print_statement: PRINT '(' boolean_expression ')'  */
-#line 407 "limbaj.y"
+#line 406 "limbaj.y"
                                                   {
                     (yyvsp[-1].node)->evaluate(*currentSymTable);
                     (yyvsp[-1].node)->printResult();
                 }
-#line 1745 "limbaj.tab.c"
+#line 1744 "limbaj.tab.c"
     break;
 
   case 81: /* print_statement: PRINT '(' object_access ')'  */
-#line 411 "limbaj.y"
+#line 410 "limbaj.y"
                                              {
                     cout<<"Print (object access): 0\n";
                 }
-#line 1753 "limbaj.tab.c"
+#line 1752 "limbaj.tab.c"
     break;
 
   case 82: /* type_of_statement: TYPEOF '(' expression ')'  */
-#line 416 "limbaj.y"
+#line 415 "limbaj.y"
                                              {
                         (yyvsp[-1].node)->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<(yyvsp[-1].node)->getType()<<endl;
                   }
-#line 1762 "limbaj.tab.c"
+#line 1761 "limbaj.tab.c"
     break;
 
   case 83: /* type_of_statement: TYPEOF '(' boolean_expression ')'  */
-#line 420 "limbaj.y"
+#line 419 "limbaj.y"
                                                      {\
                         (yyvsp[-1].node)->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<(yyvsp[-1].node)->getType()<<endl;
                   }
-#line 1771 "limbaj.tab.c"
+#line 1770 "limbaj.tab.c"
     break;
 
   case 91: /* expression: expression '+' expression  */
-#line 438 "limbaj.y"
+#line 437 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::ADD, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1779 "limbaj.tab.c"
+#line 1778 "limbaj.tab.c"
     break;
 
   case 92: /* expression: expression '-' expression  */
-#line 441 "limbaj.y"
+#line 440 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::SUBTRACT, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1787 "limbaj.tab.c"
+#line 1786 "limbaj.tab.c"
     break;
 
   case 93: /* expression: expression '*' expression  */
-#line 444 "limbaj.y"
+#line 443 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::MULTIPLY, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1795 "limbaj.tab.c"
+#line 1794 "limbaj.tab.c"
     break;
 
   case 94: /* expression: expression '/' expression  */
-#line 447 "limbaj.y"
+#line 446 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::DIVIDE, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1803 "limbaj.tab.c"
+#line 1802 "limbaj.tab.c"
     break;
 
   case 95: /* expression: expression '%' expression  */
-#line 450 "limbaj.y"
+#line 449 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::MODULO, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1811 "limbaj.tab.c"
+#line 1810 "limbaj.tab.c"
     break;
 
   case 96: /* expression: expression '^' expression  */
-#line 453 "limbaj.y"
+#line 452 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::POWER, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1819 "limbaj.tab.c"
+#line 1818 "limbaj.tab.c"
     break;
 
   case 97: /* expression: '-' expression  */
-#line 456 "limbaj.y"
+#line 455 "limbaj.y"
                                          {
                (yyval.node) = new ASTNode(ASTNode::Operator::UMINUS, (yyvsp[0].node), nullptr);
            }
-#line 1827 "limbaj.tab.c"
+#line 1826 "limbaj.tab.c"
     break;
 
   case 98: /* expression: '(' expression ')'  */
-#line 459 "limbaj.y"
+#line 458 "limbaj.y"
                                 {
                (yyval.node) = (yyvsp[-1].node);
            }
-#line 1835 "limbaj.tab.c"
+#line 1834 "limbaj.tab.c"
     break;
 
   case 99: /* expression: ID  */
-#line 462 "limbaj.y"
+#line 461 "limbaj.y"
                 {
                 if (!currentSymTable->existsId((yyvsp[0].string))) 
                 {
@@ -1844,131 +1843,131 @@ yyreduce:
                 }
                (yyval.node) = new ASTNode((yyvsp[0].string), true);
            }
-#line 1848 "limbaj.tab.c"
+#line 1847 "limbaj.tab.c"
     break;
 
   case 100: /* expression: INT  */
-#line 470 "limbaj.y"
+#line 469 "limbaj.y"
                  {
                (yyval.node) = new ASTNode((yyvsp[0].intval));
            }
-#line 1856 "limbaj.tab.c"
+#line 1855 "limbaj.tab.c"
     break;
 
   case 101: /* expression: FLOAT  */
-#line 473 "limbaj.y"
+#line 472 "limbaj.y"
                    {
                (yyval.node) = new ASTNode((yyvsp[0].floatval));
            }
-#line 1864 "limbaj.tab.c"
+#line 1863 "limbaj.tab.c"
     break;
 
   case 102: /* expression: function_call  */
-#line 476 "limbaj.y"
+#line 475 "limbaj.y"
                           {
                 (yyval.node) = nullptr; //tmp
            }
-#line 1872 "limbaj.tab.c"
+#line 1871 "limbaj.tab.c"
     break;
 
   case 103: /* boolean_expression: TRUE  */
-#line 481 "limbaj.y"
+#line 480 "limbaj.y"
                           {
                        (yyval.node) = new ASTNode(true);
                    }
-#line 1880 "limbaj.tab.c"
+#line 1879 "limbaj.tab.c"
     break;
 
   case 104: /* boolean_expression: FALSE  */
-#line 484 "limbaj.y"
+#line 483 "limbaj.y"
                            {
                        (yyval.node) = new ASTNode(false);
                    }
-#line 1888 "limbaj.tab.c"
+#line 1887 "limbaj.tab.c"
     break;
 
   case 105: /* boolean_expression: '(' boolean_expression ')'  */
-#line 487 "limbaj.y"
+#line 486 "limbaj.y"
                                                 {
                        (yyval.node) = (yyvsp[-1].node);
                    }
-#line 1896 "limbaj.tab.c"
+#line 1895 "limbaj.tab.c"
     break;
 
   case 106: /* boolean_expression: expression '>' expression  */
-#line 490 "limbaj.y"
+#line 489 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::GT, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1904 "limbaj.tab.c"
+#line 1903 "limbaj.tab.c"
     break;
 
   case 107: /* boolean_expression: expression '<' expression  */
-#line 493 "limbaj.y"
+#line 492 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::LT, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1912 "limbaj.tab.c"
+#line 1911 "limbaj.tab.c"
     break;
 
   case 108: /* boolean_expression: expression GE expression  */
-#line 496 "limbaj.y"
+#line 495 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::GE, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1920 "limbaj.tab.c"
+#line 1919 "limbaj.tab.c"
     break;
 
   case 109: /* boolean_expression: expression LE expression  */
-#line 499 "limbaj.y"
+#line 498 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::LE, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1928 "limbaj.tab.c"
+#line 1927 "limbaj.tab.c"
     break;
 
   case 110: /* boolean_expression: expression EQ expression  */
-#line 502 "limbaj.y"
+#line 501 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::EQ, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1936 "limbaj.tab.c"
+#line 1935 "limbaj.tab.c"
     break;
 
   case 111: /* boolean_expression: expression NEQ expression  */
-#line 505 "limbaj.y"
+#line 504 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::NEQ, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1944 "limbaj.tab.c"
+#line 1943 "limbaj.tab.c"
     break;
 
   case 112: /* boolean_expression: boolean_expression AND boolean_expression  */
-#line 508 "limbaj.y"
+#line 507 "limbaj.y"
                                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::AND, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1952 "limbaj.tab.c"
+#line 1951 "limbaj.tab.c"
     break;
 
   case 113: /* boolean_expression: boolean_expression OR boolean_expression  */
-#line 511 "limbaj.y"
+#line 510 "limbaj.y"
                                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::OR, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 1960 "limbaj.tab.c"
+#line 1959 "limbaj.tab.c"
     break;
 
   case 114: /* boolean_expression: '!' boolean_expression  */
-#line 514 "limbaj.y"
+#line 513 "limbaj.y"
                                             {
                       (yyval.node) = new ASTNode(ASTNode::Operator::NOT, (yyvsp[0].node), nullptr);
                    }
-#line 1968 "limbaj.tab.c"
+#line 1967 "limbaj.tab.c"
     break;
 
 
-#line 1972 "limbaj.tab.c"
+#line 1971 "limbaj.tab.c"
 
       default: break;
     }
@@ -2161,7 +2160,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 519 "limbaj.y"
+#line 518 "limbaj.y"
 
  /*____________________________________________________________________________________________________________*/
 

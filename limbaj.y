@@ -192,7 +192,7 @@ func_definition:
         }
         else 
         {
-            currentSymTable->addFunc($2, $3);
+             /* currentSymTable->addFunc($2, $3); */
             currentSymTable->enterScope($3,"function");
         }
     }
@@ -316,7 +316,6 @@ left_value : ID
                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                    errorCount++;
                }
-               cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
            }
            | ID '[' expression ']'
            {
