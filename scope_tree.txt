@@ -5,6 +5,7 @@
    +variable: y : char
    +variable: z : int
       >Entering main scope: main
+      +variable: name : string
       +variable: m : int
       <Leaving main scope: main
    <Leaving global scope: Global

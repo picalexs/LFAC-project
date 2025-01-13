@@ -14,7 +14,6 @@ main
     Print('c');
     Print(name);
     Print(s);
-    Print(s);
     Print(12.3+12);
     Print(12.3+12.7);
     TypeOf(10+10);
