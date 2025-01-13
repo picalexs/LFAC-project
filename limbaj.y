@@ -55,8 +55,7 @@
 %token<charval> CHAR
 %token<string> STRING
 %token<boolval> TRUE FALSE
-%type<node> boolean_expression
-%type<valtype> expression
+%type<node> boolean_expression expression assignment left_value
 
 
 %start PROGRAM
@@ -159,16 +158,6 @@ var_declaration : TYPE ID ';'
                     }
                     else
                     {
-                        currentSymTable->addVar($1, $2, $4);
-                    }
-                }
-                | TYPE ID ASSIGN STRING ';'
-                {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
-                    }
-                    else {
                         currentSymTable->addVar($1, $2, $4);
                     }
                 }
@@ -308,14 +297,24 @@ statement_without_semicolon :
                             ;
 
 assignment : left_value ASSIGN expression {
-               if (!currentSymTable->checkAssignmentType($1, $3)) {
-                   errorCount++;
-               }
+                $1->evaluate(*currentSymTable);
+                $3->evaluate(*currentSymTable);
+                string ltype=$1->getType();
+                string rtype=$3->getType();
+                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    errorCount++;
+                }
            }
            | left_value ASSIGN boolean_expression {
-               if (!currentSymTable->checkAssignmentType($1, $3)) {
-                   errorCount++;
-               }
+                string ltype=$1->getType();
+                string rtype=$3->getType();
+                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    errorCount++;
+                }
            }
            ;
 
@@ -326,7 +325,7 @@ left_value : ID
                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                    errorCount++;
                }
-               $$ = new ASTNode($1, true);  // asigura că este tratat corect
+                $$=new ASTNode($1, true);
            }
            | ID '[' expression ']'
            {
@@ -334,11 +333,11 @@ left_value : ID
                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                    errorCount++;
                }
-               $$ = new ASTNode($1, true);  // pentru vectore, de asemenea
+                $$=new ASTNode($1, true);
            }
-           | object_access
-           | CHAR
-           | STRING
+           | object_access{
+                $$=nullptr;
+            }
            ;
 
 object_access : ID '.' ID
@@ -408,9 +407,6 @@ function_call : ID '(' argument_list ')'
 print_statement : PRINT '(' CHAR ')'{
                     cout << "Print (char): " << $3 << endl;
                 }
-                | PRINT '(' STRING ')'{
-                    cout << "Print (string): " << $3 << endl;
-                }
                 | PRINT '(' expression ')'{
                     $3->evaluate(*currentSymTable);
                     $3->printResult();
@@ -418,9 +414,6 @@ print_statement : PRINT '(' CHAR ')'{
                 | PRINT '(' boolean_expression ')'{
                     $3->evaluate(*currentSymTable);
                     $3->printResult();
-                }
-                | PRINT '(' object_access ')'{
-                    cout<<"Print (object access): 0\n";
                 }
                 ;
 
@@ -432,7 +425,6 @@ type_of_statement : TYPEOF '(' expression ')'{
                         $3->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
-                  | TYPEOF '(' object_access ')'
                   ;
 
 return_statement : RETURN expression
@@ -484,7 +476,13 @@ expression : expression '+' expression {
            | FLOAT {
                $$ = new ASTNode($1);
            }
+           | STRING {
+               $$ = new ASTNode($1);
+           }
            | function_call{
+                $$ = nullptr; //tmp
+           }
+           | object_access{
                 $$ = nullptr; //tmp
            }
            ;

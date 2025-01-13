@@ -93,7 +93,7 @@ void SymTable::leaveScope()
         {
             mainScope = currentVars;
         }
-        else if(scopeType != "block")
+        else if (scopeType != "block")
         {
             cout << "Error: Unknown scope type: " << scopeType << ' ' << scopeName << "\n";
         }
@@ -115,21 +115,26 @@ string SymTable::getScope()
     return scopeNames.top();
 }
 
-bool SymTable::existsId(const string &id) {
-    if (currentVars.find(id) != currentVars.end()) {
+bool SymTable::existsId(const string &id)
+{
+    if (currentVars.find(id) != currentVars.end())
+    {
         return true;
     }
 
     stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty()) {
+    while (!tempStack.empty())
+    {
         const auto &scope = tempStack.top();
-        if (scope.find(id) != scope.end()) {
+        if (scope.find(id) != scope.end())
+        {
             return true;
         }
         tempStack.pop();
     }
 
-    if (globalScope.find(id) != globalScope.end()) {
+    if (globalScope.find(id) != globalScope.end())
+    {
         return true;
     }
     return false;
@@ -149,7 +154,7 @@ VectorValue SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
     {
         return get<bool>(vars[id].value);
     }
-    else if(holds_alternative<char>(vars[id].value))
+    else if (holds_alternative<char>(vars[id].value))
     {
         return get<char>(vars[id].value);
     }
@@ -193,7 +198,6 @@ VectorValue SymTable::getIdValue(const string &id)
     return {};
 }
 
-
 bool SymTable::isDefined(const string &id)
 {
     stack<map<string, IdInfo>> tempScopeStack = scopeStack;
@@ -216,17 +220,20 @@ bool SymTable::isDefined(const string &id)
     return false;
 }
 
-bool SymTable::existsFunc(const string &funcName) 
+bool SymTable::existsFunc(const string &funcName)
 {
-    if (currentVars.find(funcName) != currentVars.end() && 
-        currentVars[funcName].idType == "function") {
+    if (currentVars.find(funcName) != currentVars.end() &&
+        currentVars[funcName].idType == "function")
+    {
         return true;
     }
 
     stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty()) {
+    while (!tempStack.empty())
+    {
         const auto &scope = tempStack.top();
-        if (scope.find(funcName) != scope.end() && scope.at(funcName).idType == "function") {
+        if (scope.find(funcName) != scope.end() && scope.at(funcName).idType == "function")
+        {
             return true;
         }
         tempStack.pop();
@@ -235,16 +242,20 @@ bool SymTable::existsFunc(const string &funcName)
     return functionScopes.find(funcName) != functionScopes.end();
 }
 
-bool SymTable::existsClass(const string &className) {
-    if (currentVars.find(className) != currentVars.end() && 
-        currentVars[className].idType == "class") {
+bool SymTable::existsClass(const string &className)
+{
+    if (currentVars.find(className) != currentVars.end() &&
+        currentVars[className].idType == "class")
+    {
         return true;
     }
 
     stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty()) {
+    while (!tempStack.empty())
+    {
         const auto &scope = tempStack.top();
-        if (scope.find(className) != scope.end() && scope.at(className).idType == "class") {
+        if (scope.find(className) != scope.end() && scope.at(className).idType == "class")
+        {
             return true;
         }
         tempStack.pop();
@@ -253,61 +264,101 @@ bool SymTable::existsClass(const string &className) {
     return classScopes.find(className) != classScopes.end();
 }
 
-bool SymTable::isUsedBeforeDefined(const string &id, const string &type) 
+bool SymTable::isUsedBeforeDefined(const string &id, const string &type)
 {
-    if (type == "variable") { 
+    if (type == "variable")
+    {
         return existsId(id);
-    } else if (type == "function") {
+    }
+    else if (type == "function")
+    {
         return existsFunc(id);
-    } else if (type == "class") {
+    }
+    else if (type == "class")
+    {
         return existsClass(id);
     }
-    
+
     cout << "Error: Unknown type '" << type << "' for symbol '" << id << "'.\n";
     return false;
 }
 
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
+    Value finalValue = value;
+    if (type == "int")
+    {
+        finalValue = 0;
+    }
+    else if (type == "float")
+    {
+        finalValue = 0.0f;
+    }
+    else if (type == "bool")
+    {
+        finalValue = false;
+    }
+    else if (type == "string")
+    {
+        finalValue = "";
+    }
+    else
+    {
+        cout << "Error: Unsupported type '" << type << "'!" << endl;
+        return;
+    }
+
     string sizeStr;
-    sizeStr = getVectorSizeString<int>(value) + getVectorSizeString<float>(value) +
-             getVectorSizeString<bool>(value) + getVectorSizeString<string>(value);
+    sizeStr = getVectorSizeString<int>(finalValue) + getVectorSizeString<float>(finalValue) +
+              getVectorSizeString<bool>(finalValue) + getVectorSizeString<string>(finalValue);
 
     string content = std::string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n";
     writeToFile(SCOPE_TREE_FILE, content);
 
-    IdInfo varInfo("variable", type, name, value);
+    IdInfo varInfo("variable", type, name, finalValue);
+    cout << "Adding variable " << name << " of type " << type << endl;
     currentVars[name] = varInfo;
 }
 
-void SymTable::addVector(const string &type, const string &name, int size, const VectorValue &defaultValue) {
-    if (size <= 0) {
+void SymTable::addVector(const string &type, const string &name, int size, const VectorValue &defaultValue)
+{
+    if (size <= 0)
+    {
         cout << "Error: Invalid array size! (size must be a positive integer)" << endl;
         return;
     }
 
-    if (type == "int") {
+    if (type == "int")
+    {
         vector<int> tmp(size);
         addVar(type, name, tmp);
-    } else if (type == "float") {
+    }
+    else if (type == "float")
+    {
         vector<float> tmp(size);
         addVar(type, name, tmp);
-    } else if (type == "bool") {
+    }
+    else if (type == "bool")
+    {
         vector<bool> tmp(size);
         addVar(type, name, tmp);
-    } else if (type == "string") {
+    }
+    else if (type == "string")
+    {
         vector<string> tmp(size);
         addVar(type, name, tmp);
-    } else {
+    }
+    else
+    {
         cout << "Error: Unsupported array type '" << type << "'!" << endl;
     }
 }
 
-
 void SymTable::addEntity(const string &entityType, const string &name, const string &returnType)
 {
     string content = std::string(indentLevel * 3, ' ') + "+" + entityType + ": " + name;
-    if (!returnType.empty()) content += " : " + returnType;
+    if (!returnType.empty())
+        content += " : " + returnType;
     content += "\n";
     writeToFile(SCOPE_TREE_FILE, content);
 
@@ -315,10 +366,10 @@ void SymTable::addEntity(const string &entityType, const string &name, const str
     currentVars[name] = entityInfo;
 }
 
-void SymTable::addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params)
+void SymTable::addFunc(const string &returnType, const string &name, const vector<pair<string, string>> &params)
 {
     ParamList paramList;
-    for (const auto& param : params)
+    for (const auto &param : params)
     {
         paramList.addParam(param.first, param.second);
 
@@ -360,9 +411,9 @@ void SymTable::printScope(const string &fileName, const string &scopeType, const
             {
                 content += " : " + entry.second.type;
             }
-            content += getVectorSizeString<int>(entry.second.value) + 
-                       getVectorSizeString<float>(entry.second.value) + 
-                       getVectorSizeString<bool>(entry.second.value) + 
+            content += getVectorSizeString<int>(entry.second.value) +
+                       getVectorSizeString<float>(entry.second.value) +
+                       getVectorSizeString<bool>(entry.second.value) +
                        getVectorSizeString<string>(entry.second.value) + "\n";
             writeToFile(fileName, content);
         }
@@ -384,7 +435,7 @@ void SymTable::printClassScopes(const string &fileName) const
 
 void SymTable::printFunctionScopes(const string &fileName) const
 {
-    printScope(fileName, "Function Scope", functionScopes); 
+    printScope(fileName, "Function Scope", functionScopes);
 }
 
 void SymTable::printConstructorScopes(const string &fileName) const
@@ -405,21 +456,25 @@ void SymTable::printAskedScopes() const
     printFunctionScopes(SCOPE_FILE1);
 }
 
-string SymTable::getType(const string &id) 
+string SymTable::getType(const string &id)
 {
-    if (currentVars.find(id) != currentVars.end()) {
+    if (currentVars.find(id) != currentVars.end())
+    {
         return currentVars[id].type;
     }
 
     stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty()) {
-        if (tempStack.top().find(id) != tempStack.top().end()) {
+    while (!tempStack.empty())
+    {
+        if (tempStack.top().find(id) != tempStack.top().end())
+        {
             return tempStack.top().at(id).type;
         }
         tempStack.pop();
     }
 
-    if (globalScope.find(id) != globalScope.end()) {
+    if (globalScope.find(id) != globalScope.end())
+    {
         return globalScope.at(id).type;
     }
 
@@ -427,11 +482,13 @@ string SymTable::getType(const string &id)
     return "";
 }
 
-bool SymTable::checkAssignmentType(const string &lhs, const string &rhs) {
+bool SymTable::checkAssignmentType(const string &lhs, const string &rhs)
+{
     string lhsType = getType(lhs);
     string rhsType = getType(rhs);
 
-    if (lhsType != rhsType) {
+    if (lhsType != rhsType)
+    {
         cout << "Error: Incompatible types in assignment: '" << lhs << "' and '" << rhs << "'!\n";
         return false;
     }

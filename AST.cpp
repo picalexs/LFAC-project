@@ -11,30 +11,35 @@ bool checkOperands(const VectorValue &leftVal, const VectorValue &rightVal)
 
 ASTNode::ASTNode(int val)
 {
+    cout<<"ASTNode::ASTNode(int val)"<<val<<"\n";
     type = NodeType::INT;
     value.intVal = val;
 }
 
 ASTNode::ASTNode(float val)
 {
+    cout<<"ASTNode::ASTNode(float val)"<<val<<"\n";
     type = NodeType::FLOAT;
     value.floatVal = val;
 }
 
 ASTNode::ASTNode(bool val)
 {
+    cout<<"ASTNode::ASTNode(bool val)"<<val<<"\n";
     type = NodeType::BOOL;
     value.boolVal = val;
 }
 
 ASTNode::ASTNode(const string &val)
 {
+    cout<<"ASTNode::ASTNode(const string &val)"<<val<<"\n";
     type = NodeType::STRING;
     value.stringVal = new string(val);
 }
 
 ASTNode::ASTNode(const string &id, bool isIdentifier)
 {
+    cout<<"ASTNode::ASTNode(const string &id, bool isIdentifier)"<<id<<"\n";
     if (isIdentifier)
     {
         type = NodeType::IDENTIFIER;
@@ -44,6 +49,7 @@ ASTNode::ASTNode(const string &id, bool isIdentifier)
 
 ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)
 {
+    cout<<"ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)\n";
     type = NodeType::OPERATOR;
     value.op = op;
     this->left = left;
@@ -71,19 +77,43 @@ VectorValue ASTNode::evaluate(SymTable &symTable)
     switch (type)
     {
     case NodeType::INT:
+        cout<<"int\n";
         evaluatedResult = value.intVal;
         return evaluatedResult;
     case NodeType::FLOAT:
+        cout<<"float\n";
         evaluatedResult = value.floatVal;
         return evaluatedResult;
     case NodeType::BOOL:
+        cout<<"bool\n";
         evaluatedResult = value.boolVal;
         return evaluatedResult;
     case NodeType::STRING:
+        cout<<"string\n";
         evaluatedResult = *value.stringVal;
         return evaluatedResult;
     case NodeType::IDENTIFIER:
         evaluatedResult = symTable.getIdValue(*value.stringVal);
+        if(holds_alternative<int>(evaluatedResult))
+        {
+            cout<<"identifier: "<<*value.stringVal<<" value: "<<get<int>(evaluatedResult)<<"\n";
+        }
+        else if(holds_alternative<float>(evaluatedResult))
+        {
+            cout<<"identifier: "<<*value.stringVal<<" value: "<<get<float>(evaluatedResult)<<"\n";
+        }
+        else if(holds_alternative<bool>(evaluatedResult))
+        {
+            cout<<"identifier: "<<*value.stringVal<<" value: "<<(get<bool>(evaluatedResult) ? "true" : "false")<<"\n";
+        }
+        else if(holds_alternative<char>(evaluatedResult))
+        {
+            cout<<"identifier: "<<*value.stringVal<<" value: "<<get<char>(evaluatedResult)<<"\n";
+        }
+        else if(holds_alternative<string>(evaluatedResult))
+        {
+            cout<<"identifier: "<<*value.stringVal<<" value: "<<get<string>(evaluatedResult)<<"\n";
+        }
         return evaluatedResult;
     case NodeType::OPERATOR:
     {

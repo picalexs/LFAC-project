@@ -1,10 +1,5 @@
 === Global Scope ===
 Global Scope: Global Scope
-  variable: n : int
-  variable: s : char
-  variable: x : bool
-  variable: y : char
-  variable: z : int
 
 === Class Scope ===
 
