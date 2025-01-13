@@ -95,6 +95,46 @@ var_declaration : TYPE ID ';'
                         currentSymTable->addVar($1, $2);
                     }
                 }
+                | TYPE ID ASSIGN expression ';'
+                {
+                    if (currentSymTable->isDefined($2)) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                        errorCount++;
+                    }
+                    else 
+                    {
+                        auto result=$4->evaluate(*currentSymTable);
+                        string rtype=$4->getType();
+                        if(strcmp($1,rtype.c_str())!=0 || strcmp($1,"bool")==0 || rtype=="bool")
+                        {
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            errorCount++;
+                        }
+                        else{
+                            currentSymTable->addVar($1, $2, result);
+                        }
+                    }
+                }
+                | TYPE ID ASSIGN boolean_expression ';'
+                {
+                    if (currentSymTable->isDefined($2)) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                        errorCount++;
+                    }
+                    else 
+                    {
+                        auto result=$4->evaluate(*currentSymTable);
+                        string rtype=$4->getType();
+                        if(strcmp($1,"bool")!=0 || rtype!="bool")
+                        {
+                            cout<<"Error: aaAssignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            errorCount++;
+                        }
+                        else{
+                            currentSymTable->addVar($1, $2, result);
+                        }
+                    }
+                }
                 | TYPE ID '[' expression ']' ';'
                 {
                     if (currentSymTable->isDefined($2)) {
@@ -122,7 +162,7 @@ var_declaration : TYPE ID ';'
                         auto valueResult = $7->evaluate(*currentSymTable);
                         string rtype=$7->getType();
 
-                        if($1!=rtype || strcmp($1,"bool")==0 || rtype=="bool")
+                        if(strcmp($1,rtype.c_str())!=0 || strcmp($1,"bool")==0 || rtype=="bool")
                         {
                             cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
                             errorCount++;
@@ -136,43 +176,28 @@ var_declaration : TYPE ID ';'
                         }
                     }
                 }
-                | TYPE ID ASSIGN expression ';'
+                | TYPE ID '[' expression ']' ASSIGN boolean_expression ';'
                 {
                     if (currentSymTable->isDefined($2)) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
                         errorCount++;
                     }
-                    else 
-                    {
+                    else {
                         auto result=$4->evaluate(*currentSymTable);
-                        string rtype=$4->getType();
-                        if($1!=rtype || strcmp($1,"bool")==0 || rtype=="bool")
+                        auto valueResult = $7->evaluate(*currentSymTable);
+                        string rtype=$7->getType();
+
+                        if(strcmp($1,rtype.c_str())!=0 || strcmp($1,"bool")!=0 || rtype!="bool")
                         {
                             cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
                             errorCount++;
                         }
-                        else{
-                            currentSymTable->addVar($1, $2, result);
-                        }
-                    }
-                }
-                | TYPE ID ASSIGN boolean_expression ';'
-                {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
-                    }
-                    else 
-                    {
-                        auto result=$4->evaluate(*currentSymTable);
-                        string rtype=$4->getType();
-                        if($1!=rtype || strcmp($1,"bool")!=0 || rtype!="bool")
+                        else if($4->getType() != "int")
                         {
-                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
                             errorCount++;
-                        }
-                        else{
-                            currentSymTable->addVar($1, $2, result);
+                        }else{
+                            currentSymTable->addVector($1, $2, get<int>(result), valueResult);
                         }
                     }
                 }

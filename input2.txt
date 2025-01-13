@@ -1,26 +1,8 @@
 main
 {
-    int x=1;
-    int x1=1.2;
-    int x2=true;
-    int x3='c';
-    int x4="acv";
-
-    string s="aabc";
-    string s1='x';
-    string s2=1;
-    string s3=1.23;
-    string s4=false;
-
-    char c4='a';
-    char c=1;
-    char c1=1.2;
-    char c2=true;
-    char c3="sabc";
+    int i=1;
+    float f=1.2;
 
     bool b=true;
-    bool b1=1;
-    bool b2=1.2;
-    bool b3="ab";
-    bool b4='a';
+    bool b1=b;
 }
