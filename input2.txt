@@ -3,7 +3,7 @@ int n=10;
 bool x;
 char s;
 char y;
-
+int x;
 main
 {
     z=30;

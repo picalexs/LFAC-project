@@ -65,6 +65,7 @@ public:
     bool existsId(const string &id);
     VectorValue getIdValue(const string &id);
     string getType(const string &id);
+    bool checkAssignmentType(const string &lhs, const string &rhs);
     VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
     bool isDefined(const string &id);
     bool existsFunc(const string &funcName);

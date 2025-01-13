@@ -317,18 +317,18 @@ void SymTable::addEntity(const string &entityType, const string &name, const str
 
 void SymTable::addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params)
 {
-    // Creează o listă de parametri
     ParamList paramList;
     for (const auto& param : params)
     {
         paramList.addParam(param.first, param.second);
+
+        IdInfo paramInfo("variable", param.first, param.second);
+        currentVars[param.second] = paramInfo;
     }
 
-    // Creează un obiect IdInfo cu parametrii adăugați
     IdInfo funcInfo("function", returnType, name);
     funcInfo.params = paramList;
 
-    // Adaugă funcția în tabelul de simboluri
     currentVars[name] = funcInfo;
 }
 
@@ -403,6 +403,40 @@ void SymTable::printAskedScopes() const
     printGlobalScope(SCOPE_FILE1);
     printClassScopes(SCOPE_FILE1);
     printFunctionScopes(SCOPE_FILE1);
+}
+
+string SymTable::getType(const string &id) 
+{
+    if (currentVars.find(id) != currentVars.end()) {
+        return currentVars[id].type;
+    }
+
+    stack<map<string, IdInfo>> tempStack = scopeStack;
+    while (!tempStack.empty()) {
+        if (tempStack.top().find(id) != tempStack.top().end()) {
+            return tempStack.top().at(id).type;
+        }
+        tempStack.pop();
+    }
+
+    if (globalScope.find(id) != globalScope.end()) {
+        return globalScope.at(id).type;
+    }
+
+    cout << "Error: Variable '" << id << "' not defined!" << endl;
+    return "";
+}
+
+bool SymTable::checkAssignmentType(const string &lhs, const string &rhs) {
+    string lhsType = getType(lhs);
+    string rhsType = getType(rhs);
+
+    if (lhsType != rhsType) {
+        cout << "Error: Incompatible types in assignment: '" << lhs << "' and '" << rhs << "'!\n";
+        return false;
+    }
+
+    return true;
 }
 
 void SymTable::printAllScopes() const

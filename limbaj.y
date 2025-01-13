@@ -55,7 +55,8 @@
 %token<charval> CHAR
 %token<string> STRING
 %token<boolval> TRUE FALSE
-%type<node> expression boolean_expression
+%type<node> boolean_expression
+%type<valtype> expression
 
 
 %start PROGRAM
@@ -306,9 +307,18 @@ statement_without_semicolon :
                             | for_statement
                             ;
 
-assignment : left_value ASSIGN expression
-           | left_value ASSIGN boolean_expression
+assignment : left_value ASSIGN expression {
+               if (!currentSymTable->checkAssignmentType($1, $3)) {
+                   errorCount++;
+               }
+           }
+           | left_value ASSIGN boolean_expression {
+               if (!currentSymTable->checkAssignmentType($1, $3)) {
+                   errorCount++;
+               }
+           }
            ;
+
 
 left_value : ID
            {
@@ -316,6 +326,7 @@ left_value : ID
                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                    errorCount++;
                }
+               $$ = new ASTNode($1, true);  // asigura că este tratat corect
            }
            | ID '[' expression ']'
            {
@@ -323,6 +334,7 @@ left_value : ID
                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                    errorCount++;
                }
+               $$ = new ASTNode($1, true);  // pentru vectore, de asemenea
            }
            | object_access
            | CHAR
