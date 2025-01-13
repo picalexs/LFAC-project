@@ -1,5 +1,6 @@
    >Entering global scope: Global
       >Entering main scope: main
-      +variable: f : float
-      +variable: i : int
-      <Leaving main scope: main
+      +variable: x : int
+      +variable: s : string
+      +variable: c4 : char
+      +variable: b : bool

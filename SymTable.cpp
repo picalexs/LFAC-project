@@ -140,7 +140,7 @@ bool SymTable::existsId(const string &id)
     return false;
 }
 
-VectorValue SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
+Value SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
 {
     if (holds_alternative<int>(vars[id].value))
     {
@@ -165,12 +165,11 @@ VectorValue SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
     else
     {
         cout << "Error: Unsupported type for variable '" << id << "'\n";
-        // nu putem returna un vector intreg, ci doar o valoare din vector
         return {};
     }
 }
 
-VectorValue SymTable::getIdValue(const string &id)
+Value SymTable::getIdValue(const string &id)
 {
     if (currentVars.find(id) != currentVars.end())
     {
@@ -298,6 +297,10 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     {
         finalValue = false;
     }
+    else if(type == "char")
+    {
+        finalValue = '\0';
+    }
     else if (type == "string")
     {
         finalValue = "";
@@ -320,7 +323,7 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     currentVars[name] = varInfo;
 }
 
-void SymTable::addVector(const string &type, const string &name, int size, const VectorValue &defaultValue)
+void SymTable::addVector(const string &type, const string &name, int size, const Value &defaultValue)
 {
     if (size <= 0)
     {

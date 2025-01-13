@@ -15,7 +15,7 @@ using namespace std;
 #define SCOPE_TREE_FILE "scope_tree.txt"
 
 using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
-using VectorValue=variant<int, float, bool, char, string>;
+//using VectorValue=variant<int, float, bool, char, string>;
 
 class ParamList {
     vector<string> types;
@@ -63,10 +63,10 @@ public:
     string getScope();
 
     bool existsId(const string &id);
-    VectorValue getIdValue(const string &id);
+    Value getIdValue(const string &id);
     string getType(const string &id);
     bool checkAssignmentType(const string &lhs, const string &rhs);
-    VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
+    Value returnIdValue(const string &id, map<string, IdInfo> &vars);
     bool isDefined(const string &id);
     bool existsFunc(const string &funcName);
     bool existsClass(const string &className);
@@ -74,7 +74,7 @@ public:
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
-    void addVector(const string &type, const string &name, int size, const VectorValue &defaultValue = VectorValue());
+    void addVector(const string &type, const string &name, int size, const Value &defaultValue = Value());
     void addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params);
     bool verifyFuncCallParams(const string &funcName, const ParamList &callParams);
     void addClass(const string &name);

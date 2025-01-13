@@ -120,11 +120,19 @@ var_declaration : TYPE ID ';'
                     else {
                         auto result=$4->evaluate(*currentSymTable);
                         auto valueResult = $7->evaluate(*currentSymTable);
-                        if($4->getType() == "int")
+                        string rtype=$7->getType();
+
+                        if($1!=rtype || strcmp($1,"bool")==0 || rtype=="bool")
                         {
-                            currentSymTable->addVector($1, $2, get<int>(result), valueResult);
-                        }else{
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            errorCount++;
+                        }
+                        else if($4->getType() != "int")
+                        {
                             cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                            errorCount++;
+                        }else{
+                            currentSymTable->addVector($1, $2, get<int>(result), valueResult);
                         }
                     }
                 }
@@ -136,7 +144,16 @@ var_declaration : TYPE ID ';'
                     }
                     else 
                     {
-                        currentSymTable->addVar($1, $2, 101);
+                        auto result=$4->evaluate(*currentSymTable);
+                        string rtype=$4->getType();
+                        if($1!=rtype || strcmp($1,"bool")==0 || rtype=="bool")
+                        {
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            errorCount++;
+                        }
+                        else{
+                            currentSymTable->addVar($1, $2, result);
+                        }
                     }
                 }
                 | TYPE ID ASSIGN boolean_expression ';'
@@ -147,7 +164,16 @@ var_declaration : TYPE ID ';'
                     }
                     else 
                     {
-                        currentSymTable->addVar($1, $2, 1);
+                        auto result=$4->evaluate(*currentSymTable);
+                        string rtype=$4->getType();
+                        if($1!=rtype || strcmp($1,"bool")!=0 || rtype!="bool")
+                        {
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<endl;
+                            errorCount++;
+                        }
+                        else{
+                            currentSymTable->addVar($1, $2, result);
+                        }
                     }
                 }
                 | TYPE ID ASSIGN CHAR ';'
@@ -158,7 +184,34 @@ var_declaration : TYPE ID ';'
                     }
                     else
                     {
-                        currentSymTable->addVar($1, $2, $4);
+                        if(strcmp($1,"char")!=0)
+                        {
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got char"<<endl;
+                            errorCount++;
+                        }
+                        else
+                        {
+                            currentSymTable->addVar($1, $2, $4);
+                        }
+                    }
+                }
+                | TYPE ID ASSIGN STRING ';'
+                {
+                    if (currentSymTable->isDefined($2)) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                        errorCount++;
+                    }
+                    else
+                    {
+                        if(strcmp($1,"string")!=0)
+                        {
+                            cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string"<<endl;
+                            errorCount++;
+                        }
+                        else
+                        {
+                            currentSymTable->addVar($1, $2, $4);
+                        }
                     }
                 }
                 ;
@@ -308,8 +361,29 @@ assignment : left_value ASSIGN expression {
                 }
            }
            | left_value ASSIGN boolean_expression {
+                $1->evaluate(*currentSymTable);
                 string ltype=$1->getType();
-                string rtype=$3->getType();
+                string rtype="bool";
+                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    errorCount++;
+                }
+           }
+           | left_value ASSIGN STRING {
+                $1->evaluate(*currentSymTable);
+                string ltype=$1->getType();
+                string rtype="string";
+                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    errorCount++;
+                }
+           }
+           | left_value ASSIGN CHAR {
+                $1->evaluate(*currentSymTable);
+                string ltype=$1->getType();
+                string rtype="char";
                 cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
                 if (ltype != rtype) {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
@@ -320,22 +394,22 @@ assignment : left_value ASSIGN expression {
 
 
 left_value : ID
-           {
-               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                   errorCount++;
-               }
+            {
+                if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
+                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
+                    errorCount++;
+                }
                 $$=new ASTNode($1, true);
-           }
-           | ID '[' expression ']'
-           {
-               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                   errorCount++;
-               }
+            }
+            | ID '[' expression ']'
+            {
+                if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
+                    cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
+                    errorCount++;
+                }
                 $$=new ASTNode($1, true);
-           }
-           | object_access{
+            }
+            | object_access{
                 $$=nullptr;
             }
            ;
@@ -407,6 +481,9 @@ function_call : ID '(' argument_list ')'
 print_statement : PRINT '(' CHAR ')'{
                     cout << "Print (char): " << $3 << endl;
                 }
+                | PRINT '(' STRING ')'{
+                    cout << "Print (string): " << $3 << endl;
+                }
                 | PRINT '(' expression ')'{
                     $3->evaluate(*currentSymTable);
                     $3->printResult();
@@ -421,9 +498,15 @@ type_of_statement : TYPEOF '(' expression ')'{
                         $3->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
-                  | TYPEOF '(' boolean_expression ')'{\
+                  | TYPEOF '(' boolean_expression ')'{
                         $3->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<$3->getType()<<endl;
+                  }
+                  | TYPEOF '(' STRING ')'{
+                        cout<<"TypeOf: string"<<endl;
+                  }
+                  | TYPEOF '(' CHAR ')'{
+                        cout<<"TypeOf: char"<<endl;
                   }
                   ;
 
@@ -474,9 +557,6 @@ expression : expression '+' expression {
                $$ = new ASTNode($1);
            }
            | FLOAT {
-               $$ = new ASTNode($1);
-           }
-           | STRING {
                $$ = new ASTNode($1);
            }
            | function_call{
