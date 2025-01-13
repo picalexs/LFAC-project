@@ -29,7 +29,7 @@ public:
 
     ASTNode(int val);
     ASTNode(float val);
-    ASTNode(bool val);
+    ASTNode(bool val, bool isBool);
     ASTNode(char val);
     ASTNode(const string& val);
     ASTNode(const string& id, bool isIdentifier);

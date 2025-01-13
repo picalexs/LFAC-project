@@ -1,8 +1,10 @@
 main
 {
-    int i=1;
-    float f=1.2;
+    bool b=false&&true||true;
+    bool c=b;
+    Print(c);
 
-    bool b=true;
-    bool b1=b;
+    int n=10;
+    int x=n;
+    Print(x);
 }

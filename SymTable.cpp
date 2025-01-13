@@ -64,6 +64,7 @@ void SymTable::leaveScope()
 {
     if (!scopeStack.empty() && !scopeNames.empty() && !scopeTypes.empty())
     {
+        printScope(SCOPE_TREE_FILE, scopeTypes.top(), map<string, map<string, IdInfo>>{{scopeNames.top(), currentVars}});
         string scopeName = scopeNames.top();
         string scopeType = scopeTypes.top();
 
@@ -140,7 +141,7 @@ bool SymTable::existsId(const string &id)
     return false;
 }
 
-Value SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
+Value SymTable::returnIdValueType(const string &id, map<string, IdInfo> &vars)
 {
     if (holds_alternative<int>(vars[id].value))
     {
@@ -169,11 +170,11 @@ Value SymTable::returnIdValue(const string &id, map<string, IdInfo> &vars)
     }
 }
 
-Value SymTable::getIdValue(const string &id)
+Value SymTable::getValue(const string &id)
 {
     if (currentVars.find(id) != currentVars.end())
     {
-        return returnIdValue(id, currentVars);
+        return returnIdValueType(id, currentVars);
     }
 
     stack<map<string, IdInfo>> tempScopeStack = scopeStack;
@@ -183,14 +184,14 @@ Value SymTable::getIdValue(const string &id)
     {
         if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
         {
-            return returnIdValue(id, tempScopeStack.top());
+            return returnIdValueType(id, tempScopeStack.top());
         }
         tempScopeStack.pop();
     }
 
     if (globalScope.find(id) != globalScope.end())
     {
-        return returnIdValue(id, globalScope);
+        return returnIdValueType(id, globalScope);
     }
 
     cout << "Error: Symbol '" << id << "' is not defined.\n";
@@ -285,42 +286,76 @@ bool SymTable::isUsedBeforeDefined(const string &id, const string &type)
 void SymTable::addVar(const string &type, const string &name, const Value &value)
 {
     Value finalValue = value;
-    if (type == "int")
+    if (value == Value())
     {
-        finalValue = 0;
-    }
-    else if (type == "float")
-    {
-        finalValue = 0.0f;
-    }
-    else if (type == "bool")
-    {
-        finalValue = false;
-    }
-    else if(type == "char")
-    {
-        finalValue = '\0';
-    }
-    else if (type == "string")
-    {
-        finalValue = "";
-    }
-    else
-    {
-        cout << "Error: Unsupported type '" << type << "'!" << endl;
-        return;
+        if (type == "int")
+        {
+            finalValue = 0;
+        }
+        else if (type == "float")
+        {
+            finalValue = 0.0f;
+        }
+        else if (type == "bool")
+        {
+            finalValue = false;
+        }
+        else if (type == "char")
+        {
+            finalValue = '\0';
+        }
+        else if (type == "string")
+        {
+            finalValue = "";
+        }
+        else
+        {
+            cout << "Error: Unsupported type '" << type << "'!" << endl;
+            return;
+        }
     }
 
     string sizeStr;
     sizeStr = getVectorSizeString<int>(finalValue) + getVectorSizeString<float>(finalValue) +
               getVectorSizeString<bool>(finalValue) + getVectorSizeString<string>(finalValue);
 
-    string content = std::string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n";
-    writeToFile(SCOPE_TREE_FILE, content);
+    string content = string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n" + " value = ";
 
     IdInfo varInfo("variable", type, name, finalValue);
-    cout << "Adding variable " << name << " of type " << type << endl;
+    cout << "Adding variable " << name << " of type " << type << " with value ";
+    if (holds_alternative<int>(finalValue))
+    {
+        cout << get<int>(finalValue) << endl;
+        content += to_string(get<int>(finalValue));
+    }
+    else if (holds_alternative<float>(finalValue))
+    {
+        cout << get<float>(finalValue) << endl;
+        content += to_string(get<float>(finalValue));
+    }
+    else if (holds_alternative<bool>(finalValue))
+    {
+        cout << (get<bool>(finalValue) ? "true" : "false") << endl;
+        content += get<bool>(finalValue) ? "true" : "false";
+    }
+    else if (holds_alternative<char>(finalValue))
+    {
+        cout << get<char>(finalValue) << endl;
+        content += get<char>(finalValue);
+    }
+    else if (holds_alternative<string>(finalValue))
+    {
+        cout << get<string>(finalValue) << endl;
+        content += get<string>(finalValue);
+    }
+    else
+    {
+        cout << "Error: Unsupported type for variable '" << name << "'\n";
+        content += "Unsupported type";
+    }
     currentVars[name] = varInfo;
+    content += "\n";
+    writeToFile(SCOPE_TREE_FILE, content);
 }
 
 void SymTable::addVector(const string &type, const string &name, int size, const Value &defaultValue)
@@ -417,7 +452,29 @@ void SymTable::printScope(const string &fileName, const string &scopeType, const
             content += getVectorSizeString<int>(entry.second.value) +
                        getVectorSizeString<float>(entry.second.value) +
                        getVectorSizeString<bool>(entry.second.value) +
-                       getVectorSizeString<string>(entry.second.value) + "\n";
+                       getVectorSizeString<string>(entry.second.value);
+            content += " = ";
+            if (holds_alternative<int>(entry.second.value))
+            {
+                content += to_string(get<int>(entry.second.value));
+            }
+            else if (holds_alternative<float>(entry.second.value))
+            {
+                content += to_string(get<float>(entry.second.value));
+            }
+            else if (holds_alternative<bool>(entry.second.value))
+            {
+                content += get<bool>(entry.second.value) ? "true" : "false";
+            }
+            else if (holds_alternative<char>(entry.second.value))
+            {
+                content += get<char>(entry.second.value);
+            }
+            else if (holds_alternative<string>(entry.second.value))
+            {
+                content += get<string>(entry.second.value);
+            }
+            content += "\n";
             writeToFile(fileName, content);
         }
     }

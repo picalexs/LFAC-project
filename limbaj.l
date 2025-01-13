@@ -5,7 +5,8 @@
 
 %option noyywrap
 %%
-"int"|"float"|"char"|"string"|"bool" { yylval.valtype = strdup(yytext); return TYPE; }
+"int"|"float"|"char"|"string" { yylval.valtype = strdup(yytext); return TYPE; }
+"bool" { yylval.valtype = strdup("bool"); return BOOL; }
 
 "class" { return CLASS; }
 "main" { return MAIN; }
@@ -22,8 +23,8 @@
 "Print" { return PRINT; }
 "TypeOf" { return TYPEOF; }
 
-"true" { yylval.intval = 1; return TRUE; }
-"false" { yylval.intval = 0; return FALSE; }
+"true" { yylval.boolval = 1; return TRUE; }
+"false" { yylval.boolval = 0; return FALSE; }
 
 "+" { return '+'; }
 "-" { return '-'; }

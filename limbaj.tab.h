@@ -81,7 +81,8 @@ extern int yydebug;
     CHAR = 282,                    /* CHAR  */
     STRING = 283,                  /* STRING  */
     TRUE = 284,                    /* TRUE  */
-    FALSE = 285                    /* FALSE  */
+    FALSE = 285,                   /* FALSE  */
+    BOOL = 286                     /* BOOL  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -100,7 +101,7 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 104 "limbaj.tab.h"
+#line 105 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

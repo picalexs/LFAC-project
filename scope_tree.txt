@@ -1,6 +1,22 @@
    >Entering global scope: Global
       >Entering main scope: main
-      +variable: i : int
-      +variable: f : float
       +variable: b : bool
+ value = true
+      +variable: c : bool
+ value = true
+      +variable: n : int
+ value = 10
+      +variable: x : int
+ value = 10
+=== main ===
+  main: main
+  variable: b : bool = true
+  variable: c : bool = true
+  variable: n : int = 10
+  variable: x : int = 10
+
       <Leaving main scope: main
+=== global ===
+ global: Global
+
+   <Leaving global scope: Global

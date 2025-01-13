@@ -63,10 +63,10 @@ public:
     string getScope();
 
     bool existsId(const string &id);
-    Value getIdValue(const string &id);
+    Value getValue(const string &id);
     string getType(const string &id);
     bool checkAssignmentType(const string &lhs, const string &rhs);
-    Value returnIdValue(const string &id, map<string, IdInfo> &vars);
+    Value returnIdValueType(const string &id, map<string, IdInfo> &vars);
     bool isDefined(const string &id);
     bool existsFunc(const string &funcName);
     bool existsClass(const string &className);
