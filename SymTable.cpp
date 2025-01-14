@@ -670,6 +670,40 @@ void SymTable::addFunc(const string &returnType, const string &name, const vecto
     currentVars[name] = funcInfo;
 }
 
+bool SymTable::checkParamTypes(const string &funcName, const vector<string> &params)
+{
+    if (!existsFunc(funcName))
+    {
+        cout << "Error: Function '" << funcName << "' is not defined.\n";
+        return false;
+    }
+
+    auto &funcInfo = currentVars[funcName];
+    auto &paramList = funcInfo.params;
+
+    if (params.size() != paramList.getTypes().size())
+    {
+        cout << "Error: Parameter count mismatch for function '" << funcName << "'. Expected "
+             << paramList.getTypes().size() << " parameters, but got " << params.size() << ".\n";
+        return false;
+    }
+
+    for (size_t i = 0; i < params.size(); ++i)
+    {   
+        string expectedType = paramList.getTypes()[i];
+        string actualType = getType(params[i]);
+        if (expectedType != actualType)
+        {
+            cout << "Error: Type mismatch for parameter " << paramList.getNames()[i] << " in function '"
+                 << funcName << "'. Expected " << expectedType << ", but got " << actualType << ".\n";
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 void SymTable::addClass(const string &name)
 {
     addEntity("class", name);

@@ -78,7 +78,7 @@ public:
     void changeVectorElement(const string &name, int index, const Value &newValue);
     Value getVectorElement(const string &name, int index);
     void addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params);
-    bool verifyFuncCallParams(const string &funcName, const ParamList &callParams);
+    bool checkParamTypes(const string &funcName, const vector<string> &params);
     void addClass(const string &name);
     void addConstructor(const string &name);
     void addMethod(const string &returnType, const string &name);

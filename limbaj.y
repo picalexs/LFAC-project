@@ -32,6 +32,15 @@
         Param* params;
         int count;
     };
+
+    struct Arg {
+        char* type;
+    };
+
+    struct ArgList {
+        Arg* args;
+        int count;
+    };
 %}
 
 %right '='
@@ -59,6 +68,9 @@
 
     struct Param* param;
     struct ParamListNonSTL* params;
+
+    struct Arg* arg;
+    struct ArgList* args;
 }
 
 %token BGIN END ASSIGN
@@ -72,10 +84,12 @@
 %token<string> STRING
 %token<boolval> TRUE FALSE BOOL
 %type<node> boolean_expression expression assignment left_value
-%type<string>  object_access function_call
+%type<string> object_access function_call
 
 %type <params> parameter_list
 %type <param> parameter
+%type <args> argument_list
+%type <arg> argument
 
 %start PROGRAM
 
@@ -499,7 +513,6 @@ parameter : TYPE ID {
                     return -1;
                 }
                 
-
                 $$ = new Param;
                 $$->size = get<int>(result);
                 $$->type = new char[20];
@@ -771,13 +784,23 @@ predefined_function_call : print_statement
                          | type_of_statement
                          ;
 
-function_call : ID '(' argument_list ')'
-              {
+function_call : ID '(' argument_list ')' {
                   if (!currentSymTable->isDefined($1, "function")) {
                       cout << "Error: Function '" << $1 << "' called before being defined. Line: " << yylineno << endl;
                       return -1;
                   }
-                  $$=$1;
+                  
+                  vector<string> types;
+                  for(int i=0;i<$3->count;i++)
+                  {
+                        types.push_back($3->args[i].type);
+                  }
+                  if(!currentSymTable->checkParamTypes($1, types)){
+                      cout << "Error: Function '" << $1 << "' called with wrong parameters. Line: " << yylineno << endl;
+                      return -1;
+                  }
+                  delete($3->args);
+                  delete($3);
               }
               ;
 
@@ -832,12 +855,41 @@ type_of_statement : TYPEOF '(' expression ')'{
 return_statement : RETURN expression
                  ;
 
-argument_list : argument_list ',' expression
-              | expression
-              | argument_list ',' boolean_expression
-              | boolean_expression
-              | /* epsilon */
+argument_list : argument_list ',' argument {
+                    $$ = $1;
+                    Arg* newArgs = new Arg[$$->count + 1];
+                    for (int i = 0; i < $$->count; ++i) {
+                        newArgs[i] = $$->args[i];
+                    }
+                    newArgs[$$->count] = *$3;
+                    delete[] $$->args;
+                    $$->args = newArgs;
+                    $$->count++;
+                    delete $3;
+                }
+              | argument {
+                    $$ = new ArgList;
+                    $$->args = new Arg[1];
+                    $$->args[0] = *$1;
+                    $$->count = 1;
+                    delete $1;
+                }
+              | /* epsilon */ {
+                    $$ = new ArgList;
+                    $$->args = nullptr;
+                    $$->count = 0;
+                }
               ;
+
+argument : expression {
+                $$ = new Arg;
+                $$->type = strdup($1->getType().c_str());
+            }
+            | boolean_expression {
+                $$ = new Arg;
+                $$->type = strdup("bool");
+            }
+            ;
 
  /* Expressions_____________________________________________________________________________________________*/
 expression : expression '+' expression {

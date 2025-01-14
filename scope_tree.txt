@@ -8,6 +8,3 @@
       >Entering main scope: main
          +variable a : int = 1
          +variable x : float = 10.200000
-         +variable x2 : int = 0
-      <Leaving main scope: main
-   <Leaving global scope: Global
