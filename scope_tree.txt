@@ -1,13 +1,19 @@
    >Entering global scope: Global
+      +class: MyClass
+      >Entering class scope: MyClass
+         +variable: x : int = 0
+         +variable: y : float = 0.000000
+         +constructor: MyClass
+         >Entering constructor scope: MyClass
+            +variable: zet : int = 9
+            >Entering block scope: IF
+               +variable: BOOL1 : true 
+            <Leaving block scope: IF
+            >Entering block scope: ELSE
+            <Leaving block scope: ELSE
+         <Leaving constructor scope: MyClass
+      <Leaving class scope: MyClass
       >Entering main scope: main
-      +variable: c : char
- value = vector<char> with values: a a a a a 
-=== main ===
-  main: main
-  variable: c : char = 
-
+         +variable: x : int = 0
       <Leaving main scope: main
-=== global ===
- global: Global
-
    <Leaving global scope: Global

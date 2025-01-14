@@ -2,6 +2,103 @@
 #include <iostream>
 #include <fstream>
 
+template <typename T>
+string getVectorSizeString(const Value &value)
+{
+    if (holds_alternative<vector<T>>(value))
+    {
+        return "[" + to_string(get<vector<T>>(value).size()) + "]";
+    }
+    return "";
+}
+
+string generateVarContent(const string &name, const Value &finalValue, int indentLevel)
+{
+    string sizeStr = getVectorSizeString<int>(finalValue) + getVectorSizeString<float>(finalValue) +
+                     getVectorSizeString<bool>(finalValue) + getVectorSizeString<string>(finalValue) + getVectorSizeString<char>(finalValue);
+
+    string content = string(indentLevel * 3, ' ') + "+variable: " + name + sizeStr + " : ";
+
+    if (holds_alternative<int>(finalValue))
+    {
+        string out = "int = " + to_string(get<int>(finalValue));
+        content += out;
+    }
+    else if (holds_alternative<float>(finalValue))
+    {
+        string out = "float = " + to_string(get<float>(finalValue));
+        content += out;
+    }
+    else if (holds_alternative<bool>(finalValue))
+    {
+        string out = "bool = " + get<bool>(finalValue) ? "true " : "false ";
+        content += out;
+    }
+    else if (holds_alternative<char>(finalValue))
+    {
+        string out = "char = " + get<char>(finalValue);
+        content += out;
+    }
+    else if (holds_alternative<string>(finalValue))
+    {
+        string out = "string = " + get<string>(finalValue);
+        content += out;
+    }
+    else if (holds_alternative<vector<int>>(finalValue))
+    {
+        string out = "vector<int> = ";
+        for (auto &val : get<vector<int>>(finalValue))
+        {
+            out += to_string(val) + " ";
+        }
+        content += out;
+    }
+    else if (holds_alternative<vector<float>>(finalValue))
+    {
+        string out = "vector<float> = ";
+        for (auto &val : get<vector<float>>(finalValue))
+        {
+            out += to_string(val);
+        }
+        content += out;
+    }
+    else if (holds_alternative<vector<bool>>(finalValue))
+    {
+        string out = "vector<bool> = ";
+        for (auto val : get<vector<bool>>(finalValue))
+        {
+            out += (val ? "true " : "false ");
+        }
+        content += out;
+    }
+    else if (holds_alternative<vector<char>>(finalValue))
+    {
+        string out = "vector<char> = ";
+        for (auto &val : get<vector<char>>(finalValue))
+        {
+            out += val;
+            out += " ";
+        }
+        content += out;
+    }
+    else if (holds_alternative<vector<string>>(finalValue))
+    {
+        string out = "vector<string> = ";
+        for (auto &val : get<vector<string>>(finalValue))
+        {
+            out += val + " ";
+        }
+        content += out;
+    }
+    else
+    {
+        cout << "Error: Unsupported type for variable '" << name << "'\n";
+        content += "Unsupported type";
+    }
+    content += "\n";
+    return content;
+}
+
 void ParamList::addParam(const string &type, const string &name)
 {
     types.push_back(type);
@@ -33,21 +130,11 @@ void writeToFile(const string &fileName, const string &content)
     fout.close();
 }
 
-template <typename T>
-string getVectorSizeString(const Value &value)
-{
-    if (holds_alternative<vector<T>>(value))
-    {
-        return "[" + to_string(get<vector<T>>(value).size()) + "]";
-    }
-    return "";
-}
 
 void SymTable::enterScope(const string &scopeName, const string &scopeType)
 {
     scopeNames.push(scopeName);
     scopeTypes.push(scopeType);
-    indentLevel++;
 
     if (scopeType == "global")
     {
@@ -55,6 +142,7 @@ void SymTable::enterScope(const string &scopeName, const string &scopeType)
     }
 
     writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + ">Entering " + scopeType + " scope: " + scopeName + "\n");
+    indentLevel++;
 
     scopeStack.push(currentVars);
     currentVars.clear();
@@ -64,10 +152,10 @@ void SymTable::leaveScope()
 {
     if (!scopeStack.empty() && !scopeNames.empty() && !scopeTypes.empty())
     {
-        printScope(SCOPE_TREE_FILE, scopeTypes.top(), map<string, map<string, IdInfo>>{{scopeNames.top(), currentVars}});
         string scopeName = scopeNames.top();
         string scopeType = scopeTypes.top();
 
+        indentLevel--;
         writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + "<Leaving " + scopeType + " scope: " + scopeName + "\n");
 
         if (scopeType == "global")
@@ -103,7 +191,6 @@ void SymTable::leaveScope()
         scopeTypes.pop();
         currentVars = scopeStack.top();
         scopeStack.pop();
-        indentLevel--;
     }
 }
 
@@ -163,23 +250,23 @@ Value SymTable::returnIdValueType(const string &id, map<string, IdInfo> &vars)
     {
         return get<string>(vars[id].value);
     }
-    else if(holds_alternative<vector<int>>(vars[id].value))
+    else if (holds_alternative<vector<int>>(vars[id].value))
     {
         return get<vector<int>>(vars[id].value);
     }
-    else if(holds_alternative<vector<float>>(vars[id].value))
+    else if (holds_alternative<vector<float>>(vars[id].value))
     {
         return get<vector<float>>(vars[id].value);
     }
-    else if(holds_alternative<vector<bool>>(vars[id].value))
+    else if (holds_alternative<vector<bool>>(vars[id].value))
     {
         return get<vector<bool>>(vars[id].value);
     }
-    else if(holds_alternative<vector<char>>(vars[id].value))
+    else if (holds_alternative<vector<char>>(vars[id].value))
     {
         return get<vector<char>>(vars[id].value);
     }
-    else if(holds_alternative<vector<string>>(vars[id].value))
+    else if (holds_alternative<vector<string>>(vars[id].value))
     {
         return get<vector<string>>(vars[id].value);
     }
@@ -217,7 +304,6 @@ Value SymTable::getValue(const string &id)
     cerr << "Error: Symbol '" << id << "' is not defined.\n";
     return {};
 }
-
 
 bool SymTable::isDefined(const string &id)
 {
@@ -335,103 +421,9 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
             return;
         }
     }
-
-    string sizeStr;
-    sizeStr = getVectorSizeString<int>(finalValue) + getVectorSizeString<float>(finalValue) +
-              getVectorSizeString<bool>(finalValue) + getVectorSizeString<string>(finalValue);
-
-    string content = string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n" + " value = ";
-
-    IdInfo varInfo("variable", type, name, finalValue);
-    cout << "Adding variable " << name << " of type ";
-    if (holds_alternative<int>(finalValue))
-    {
-        string out="int with value: " + to_string(get<int>(finalValue));
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if (holds_alternative<float>(finalValue))
-    {
-        string out="float with value: " + to_string(get<float>(finalValue));
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if (holds_alternative<bool>(finalValue))
-    {
-        string out="bool with value: " + get<bool>(finalValue) ? "true " : "false ";
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if (holds_alternative<char>(finalValue))
-    {
-        string out="char with value: " + get<char>(finalValue);
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if (holds_alternative<string>(finalValue))
-    {
-        string out="string with value: " + get<string>(finalValue);
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if(holds_alternative<vector<int>>(finalValue))
-    {
-        string out="vector<int> with values: ";
-        for(auto &val : get<vector<int>>(finalValue))
-        {
-            out+=to_string(val) + " ";
-        }
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if(holds_alternative<vector<float>>(finalValue))
-    {
-        string out="vector<float> with values: ";
-        for(auto &val : get<vector<float>>(finalValue))
-        {
-            out+=to_string(val);
-        }
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if(holds_alternative<vector<bool>>(finalValue))
-    {
-        string out="vector<bool> with values: ";
-        for(auto val : get<vector<bool>>(finalValue))
-        {
-            out+=(val ? "true " : "false ");
-        }
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if(holds_alternative<vector<char>>(finalValue))
-    {
-        string out="vector<char> with values: ";
-        for (auto &val : get<vector<char>>(finalValue)) {
-            out += val;
-            out += " ";
-        }
-        cout<<out<<endl;
-        content+=out;
-    }
-    else if(holds_alternative<vector<string>>(finalValue))
-    {
-        string out="vector<string> with values: ";
-        for(auto &val : get<vector<string>>(finalValue))
-        {
-            out+=val + " ";
-        }
-        cout<<out<<endl;
-        content+=out;
-    }
-    else
-    {
-        cout << "-\nError: Unsupported type for variable '" << name << "'\n";
-        content += "Unsupported type";
-    }
-    content += "\n";
+    string content = generateVarContent(name, finalValue, indentLevel);
     writeToFile(SCOPE_TREE_FILE, content);
-
+    IdInfo varInfo("variable", type, name, finalValue);
     currentVars[name] = varInfo;
 }
 
@@ -440,8 +432,32 @@ void SymTable::changeVar(const string &name, const Value &newValue)
     if (currentVars.find(name) != currentVars.end())
     {
         currentVars[name].value = newValue;
+        return;
     }
-    else
+
+    stack<map<string, IdInfo>> tempStack;
+    bool varFound = false;
+
+    while (!scopeStack.empty())
+    {
+        auto &scope = scopeStack.top();
+        if (scope.find(name) != scope.end())
+        {
+            scope[name].value = newValue;
+            varFound = true;
+            break;
+        }
+        tempStack.push(scope);
+        scopeStack.pop();
+    }
+
+    while (!tempStack.empty())
+    { // restoram ordinea din stiva
+        scopeStack.push(tempStack.top());
+        tempStack.pop();
+    }
+
+    if (!varFound)
     {
         cout << "Error: Variable '" << name << "' not defined!\n";
     }
@@ -477,7 +493,7 @@ void SymTable::addVector(const string &type, const string &name, int size, const
     }
     else if (type == "string")
     {
-        vector<string> tmp(size,get<string>(defaultValue));
+        vector<string> tmp(size, get<string>(defaultValue));
         addVar(type, name, tmp);
     }
     else
@@ -486,101 +502,125 @@ void SymTable::addVector(const string &type, const string &name, int size, const
     }
 }
 
-void SymTable::changeVectorElement(const string &name, int index, const Value &newValue){
+void SymTable::changeVectorElement(const string &name, int index, const Value &newValue)
+{
     Value vectorValue = getValue(name);
-    if(holds_alternative<vector<int>>(vectorValue)){
+    if (holds_alternative<vector<int>>(vectorValue))
+    {
         vector<int> tmp = get<vector<int>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return;
         }
         tmp[index] = get<int>(newValue);
         changeVar(name, tmp);
     }
-    else if(holds_alternative<vector<float>>(vectorValue)){
+    else if (holds_alternative<vector<float>>(vectorValue))
+    {
         vector<float> tmp = get<vector<float>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return;
         }
         tmp[index] = get<float>(newValue);
         changeVar(name, tmp);
     }
-    else if(holds_alternative<vector<bool>>(vectorValue)){
+    else if (holds_alternative<vector<bool>>(vectorValue))
+    {
         vector<bool> tmp = get<vector<bool>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return;
         }
         tmp[index] = get<bool>(newValue);
         changeVar(name, tmp);
     }
-    else if(holds_alternative<vector<char>>(vectorValue)){
+    else if (holds_alternative<vector<char>>(vectorValue))
+    {
         vector<char> tmp = get<vector<char>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return;
         }
         tmp[index] = get<char>(newValue);
         changeVar(name, tmp);
     }
-    else if(holds_alternative<vector<string>>(vectorValue)){
+    else if (holds_alternative<vector<string>>(vectorValue))
+    {
         vector<string> tmp = get<vector<string>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return;
         }
         tmp[index] = get<string>(newValue);
         changeVar(name, tmp);
     }
-    else{
+    else
+    {
         cout << "Error: Unsupported type for vector '" << name << "'\n";
     }
 }
 
-Value SymTable::getVectorElement(const string &name, int index){
+Value SymTable::getVectorElement(const string &name, int index)
+{
     Value vectorValue = getValue(name);
-    if(holds_alternative<vector<int>>(vectorValue)){
+    if (holds_alternative<vector<int>>(vectorValue))
+    {
         vector<int> tmp = get<vector<int>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return monostate{};
         }
         return tmp[index];
     }
-    else if(holds_alternative<vector<float>>(vectorValue)){
+    else if (holds_alternative<vector<float>>(vectorValue))
+    {
         vector<float> tmp = get<vector<float>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return monostate{};
         }
         return tmp[index];
     }
-    else if(holds_alternative<vector<bool>>(vectorValue)){
+    else if (holds_alternative<vector<bool>>(vectorValue))
+    {
         vector<bool> tmp = get<vector<bool>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return monostate{};
         }
         return tmp[index];
     }
-    else if(holds_alternative<vector<char>>(vectorValue)){
+    else if (holds_alternative<vector<char>>(vectorValue))
+    {
         vector<char> tmp = get<vector<char>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return monostate{};
         }
         return tmp[index];
     }
-    else if(holds_alternative<vector<string>>(vectorValue)){
+    else if (holds_alternative<vector<string>>(vectorValue))
+    {
         vector<string> tmp = get<vector<string>>(vectorValue);
-        if(index < 0 || index >= tmp.size()){
+        if (index < 0 || index >= tmp.size())
+        {
             cout << "Error: Index out of bounds for vector '" << name << "'\n";
             return monostate{};
         }
         return tmp[index];
     }
-    else{
+    else
+    {
         cout << "Error: Unsupported type for vector '" << name << "'\n";
         return monostate{};
     }
@@ -638,38 +678,7 @@ void SymTable::printScope(const string &fileName, const string &scopeType, const
         writeToFile(fileName, std::string(indentLevel, ' ') + scopeType + ": " + scope.first + "\n");
         for (const auto &entry : scope.second)
         {
-            string content = "  " + entry.second.idType + ": " + entry.second.name;
-            if (entry.second.idType != "class" && entry.second.idType != "constructor")
-            {
-                content += " : " + entry.second.type;
-            }
-            content += getVectorSizeString<int>(entry.second.value) +
-                       getVectorSizeString<float>(entry.second.value) +
-                       getVectorSizeString<bool>(entry.second.value) +
-                       getVectorSizeString<string>(entry.second.value);
-            content += " = ";
-            if (holds_alternative<int>(entry.second.value))
-            {
-                content += to_string(get<int>(entry.second.value));
-            }
-            else if (holds_alternative<float>(entry.second.value))
-            {
-                content += to_string(get<float>(entry.second.value));
-            }
-            else if (holds_alternative<bool>(entry.second.value))
-            {
-                content += get<bool>(entry.second.value) ? "true" : "false";
-            }
-            else if (holds_alternative<char>(entry.second.value))
-            {
-                content += get<char>(entry.second.value);
-            }
-            else if (holds_alternative<string>(entry.second.value))
-            {
-                content += get<string>(entry.second.value);
-            }
-            content += "\n";
-            writeToFile(fileName, content);
+            writeToFile(fileName, generateVarContent(entry.first, entry.second.value, indentLevel + 1));
         }
     }
     writeToFile(fileName, "\n");

@@ -1,6 +1,9 @@
+int i[7]=4;
+char d[i[3]]='b';
+char c[5]='a';
+
 main
-{
-   char c[5]='a';
-   c[2]='b';
+{  
+   c[2]=d[3];
    Print(c);
 }

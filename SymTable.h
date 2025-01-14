@@ -51,7 +51,7 @@ class SymTable {
     stack<string> scopeTypes;
     string tableName;
 
-    int indentLevel = 0;
+    int indentLevel = 1;
 
 public:
     SymTable(const string &name) : tableName(name) {}

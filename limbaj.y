@@ -444,7 +444,7 @@ assignment : left_value ASSIGN expression {
                 string ltype=$1->getType();
                 string rtype=$3->getType();
                 if (ltype != rtype) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -474,7 +474,7 @@ assignment : left_value ASSIGN expression {
                 string ltype=$1->getType();
                 string rtype="bool";
                 if (ltype != rtype || strcmp("bool",ltype.c_str())!=0) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -497,7 +497,7 @@ assignment : left_value ASSIGN expression {
 
                 string ltype=$1->getType();
                 if (strcmp("string",ltype.c_str())!=0) {
-                    cout << "Error: Assignment type mismatch. Expected string but got " << $1 << endl;
+                    cout << "Error: Assignment type mismatch. Expected string but got " << $1 << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -523,7 +523,7 @@ assignment : left_value ASSIGN expression {
                 string ltype=$1->getType();
                 string rtype="char";
                 if (ltype != rtype) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 

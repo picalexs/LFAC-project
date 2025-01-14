@@ -1808,7 +1808,7 @@ yyreduce:
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype=(yyvsp[0].node)->getType();
                 if (ltype != rtype) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -1843,7 +1843,7 @@ yyreduce:
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype="bool";
                 if (ltype != rtype || strcmp("bool",ltype.c_str())!=0) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -1871,7 +1871,7 @@ yyreduce:
 
                 string ltype=(yyvsp[-2].node)->getType();
                 if (strcmp("string",ltype.c_str())!=0) {
-                    cout << "Error: Assignment type mismatch. Expected string but got " << (yyvsp[-2].node) << endl;
+                    cout << "Error: Assignment type mismatch. Expected string but got " << (yyvsp[-2].node) << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
@@ -1902,7 +1902,7 @@ yyreduce:
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype="char";
                 if (ltype != rtype) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
                     return -1;
                 }
 
