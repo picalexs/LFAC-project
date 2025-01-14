@@ -333,14 +333,12 @@ func_definition:
             cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
             return -1;
         }
-        vector<pair<string,string>> params;
+        vector<tuple<string,string,string>> tmp;
         for(int i=0;i<$5->count;i++)
         {
-            params.push_back(make_pair($5->params[i].type,$5->params[i].name));
+            tmp.push_back(make_tuple($5->params[i].type,$5->params[i].name,to_string($5->params[i].size)));
         }
-        currentSymTable->addFunc($2, $3, params);
-        currentSymTable->enterScope($3, "function");
-
+        currentSymTable->enterScope($3, "function", tmp, $2);
         
         delete($5->params);
         delete($5);
@@ -454,10 +452,6 @@ parameter : TYPE ID {
                     return -1;
                 }
 
-                $$ = new Param;
-                $$->type = $1;
-                $$->name = $2;
-
                 auto result=$4->evaluate(*currentSymTable);
                 if(holds_alternative<monostate>(result)){
                     cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
@@ -468,7 +462,14 @@ parameter : TYPE ID {
                     cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
                     return -1;
                 }
+
+                $$ = new Param;
                 $$->size = get<int>(result);
+                $$->type = new char[20];
+                strcpy($$->type,"vector<");
+                strcat($$->type,$1);
+                strcat($$->type,">");
+                $$->name = $2;
             }
             | BOOL BOOLID {
                 if(currentSymTable->isDefined($2, "identifier")){
@@ -482,7 +483,28 @@ parameter : TYPE ID {
                 $$->name = $2;
             }
             | BOOL BOOLID '[' expression ']' {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
 
+                auto result=$4->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($4->getType() != "int")
+                {
+                    cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                    return -1;
+                }
+                
+
+                $$ = new Param;
+                $$->size = get<int>(result);
+                $$->type = new char[20];
+                strcpy($$->type,"vector<bool>");
+                $$->name = $2;
             }
             ;
 

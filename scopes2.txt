@@ -1,14 +1,14 @@
 === Global Scope ===
  Global Scope: Global Scope
-      +variable: a : int = 0
-      +variable: b : int = 0
-      +variable: f : int = 0
 
 === Class Scope ===
 
 === Function Scope ===
  Function Scope: f
-      +variable: a2 : int = 0
+  parameter: a : int = 0
+  variable: a2 : int = 102
+  parameter: s : vector<string> = 0
+  parameter: x : vector<int> = 0
 
 === Constructor Scope ===
 

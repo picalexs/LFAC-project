@@ -21,6 +21,8 @@ class ParamList {
     vector<string> names;
 public:
     void addParam(const string &type, const string &name);
+    const vector<string>& getTypes() const { return types; }
+    const vector<string>& getNames() const { return names; }
 };
 
 class IdInfo {
@@ -56,7 +58,7 @@ public:
     SymTable(const string &name) : tableName(name) {}
     ~SymTable() {}
 
-    void enterScope(const string &scopeName, const string &scopeType);
+    void enterScope(const string &scopeName, const string &scopeType, vector<tuple<string,string,string>> params={}, const string &funcType={});
     void leaveScope();
     string getScope();
 
@@ -83,6 +85,7 @@ public:
 
     bool removeId(const string &id);
 
+    void printFunction(const string &funcName, const string &returnType, const vector<pair<string, string>> &params);
     void printScope(const string &fileName, const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
 
     void printGlobalScope(const string &fileName) const;
