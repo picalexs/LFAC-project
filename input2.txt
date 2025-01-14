@@ -5,6 +5,6 @@ main
    int c[(10-7*2+6)*0 + size]=14;
    Print(b);
    Print(c);
-   char d[3]='c';
+   char d[size-2/2]='b';
    Print(d);
 }

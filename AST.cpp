@@ -417,6 +417,14 @@ void ASTNode::printResult() const
         }
         cout << endl;
     }
+    else if(holds_alternative<vector<char>>(evaluatedResult)){
+        cout << "PRINT (vector<char>): ";
+        for(auto &val : get<vector<char>>(evaluatedResult))
+        {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
     else if(holds_alternative<vector<string>>(evaluatedResult)){
         cout << "PRINT (vector<string>): ";
         for(auto &val : get<vector<string>>(evaluatedResult))

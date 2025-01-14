@@ -175,6 +175,10 @@ Value SymTable::returnIdValueType(const string &id, map<string, IdInfo> &vars)
     {
         return get<vector<bool>>(vars[id].value);
     }
+    else if(holds_alternative<vector<char>>(vars[id].value))
+    {
+        return get<vector<char>>(vars[id].value);
+    }
     else if(holds_alternative<vector<string>>(vars[id].value))
     {
         return get<vector<string>>(vars[id].value);
@@ -341,37 +345,37 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     cout << "Adding variable " << name << " of type ";
     if (holds_alternative<int>(finalValue))
     {
-        string out="int with value " + to_string(get<int>(finalValue));
+        string out="int with value: " + to_string(get<int>(finalValue));
         cout<<out<<endl;
         content+=out;
     }
     else if (holds_alternative<float>(finalValue))
     {
-        string out="float with value " + to_string(get<float>(finalValue));
+        string out="float with value: " + to_string(get<float>(finalValue));
         cout<<out<<endl;
         content+=out;
     }
     else if (holds_alternative<bool>(finalValue))
     {
-        string out="bool with value " + get<bool>(finalValue) ? "true " : "false ";
+        string out="bool with value: " + get<bool>(finalValue) ? "true " : "false ";
         cout<<out<<endl;
         content+=out;
     }
     else if (holds_alternative<char>(finalValue))
     {
-        string out="char with value " + get<char>(finalValue);
+        string out="char with value: " + get<char>(finalValue);
         cout<<out<<endl;
         content+=out;
     }
     else if (holds_alternative<string>(finalValue))
     {
-        string out="string with value " + get<string>(finalValue);
+        string out="string with value: " + get<string>(finalValue);
         cout<<out<<endl;
         content+=out;
     }
     else if(holds_alternative<vector<int>>(finalValue))
     {
-        string out="vector<int> with values ";
+        string out="vector<int> with values: ";
         for(auto &val : get<vector<int>>(finalValue))
         {
             out+=to_string(val) + " ";
@@ -381,17 +385,17 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     }
     else if(holds_alternative<vector<float>>(finalValue))
     {
-        string out="vector<float> with values ";
+        string out="vector<float> with values: ";
         for(auto &val : get<vector<float>>(finalValue))
         {
-            out+=to_string(val) + " ";
+            out+=to_string(val);
         }
         cout<<out<<endl;
         content+=out;
     }
     else if(holds_alternative<vector<bool>>(finalValue))
     {
-        string out="vector<bool> with values ";
+        string out="vector<bool> with values: ";
         for(auto val : get<vector<bool>>(finalValue))
         {
             out+=(val ? "true " : "false ");
@@ -401,17 +405,17 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     }
     else if(holds_alternative<vector<char>>(finalValue))
     {
-        string out="vector<char> with values ";
-        for(auto &val : get<vector<char>>(finalValue))
-        {
-            out+=val + " ";
+        string out="vector<char> with values: ";
+        for (auto &val : get<vector<char>>(finalValue)) {
+            out += val;
+            out += " ";
         }
         cout<<out<<endl;
         content+=out;
     }
     else if(holds_alternative<vector<string>>(finalValue))
     {
-        string out="vector<string> with values ";
+        string out="vector<string> with values: ";
         for(auto &val : get<vector<string>>(finalValue))
         {
             out+=val + " ";

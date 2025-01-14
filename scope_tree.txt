@@ -1,13 +1,13 @@
    >Entering global scope: Global
       >Entering main scope: main
       +variable: size : int
- value = int with value 5
+ value = int with value: 5
       +variable: b : string[10]
- value = vector<string> with values "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" 
+ value = vector<string> with values: "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" "ss" 
       +variable: c : int[5]
- value = vector<int> with values 14 14 14 14 14 
+ value = vector<int> with values: 14 14 14 14 14 
       +variable: d : char
- value = vector<char> with values locklocklock
+ value = vector<char> with values: b b b b 
 === main ===
   main: main
   variable: b : string[10] = 
