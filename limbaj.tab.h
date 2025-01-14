@@ -92,7 +92,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 39 "limbaj.y"
+#line 50 "limbaj.y"
 
     char* valtype;
     class ASTNode* node;
@@ -102,7 +102,10 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 106 "limbaj.tab.h"
+    struct Param* param;
+    struct ParamListNonSTL* params;
+
+#line 109 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

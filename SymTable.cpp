@@ -105,18 +105,6 @@ void ParamList::addParam(const string &type, const string &name)
     names.push_back(name);
 }
 
-string ParamList::toString() const
-{
-    string result;
-    for (size_t i = 0; i < types.size(); i++)
-    {
-        result += types[i] + " " + names[i];
-        if (i < types.size() - 1)
-            result += ", ";
-    }
-    return result;
-}
-
 void clearFile(const string &fileName)
 {
     ofstream fout(fileName, ios::trunc);
@@ -141,8 +129,19 @@ void SymTable::enterScope(const string &scopeName, const string &scopeType)
         clearFile(SCOPE_TREE_FILE);
     }
 
-    writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + ">Entering " + scopeType + " scope: " + scopeName + "\n");
+    writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + ">Entering " + scopeType + " scope: " + scopeName);
     indentLevel++;
+    
+    if(scopeType=="function" || scopeType=="constructor" || scopeType=="method")
+    {
+        writeToFile(SCOPE_TREE_FILE, " (" + currentVars[scopeName].type + ")\n");
+        for (const auto &param : currentVars)
+        {
+            writeToFile(SCOPE_TREE_FILE, string(indentLevel * 3, ' ') +"+parameter: " + param.first + " : " + param.second.type + "\n");
+        }
+    }else{
+        writeToFile(SCOPE_TREE_FILE, "\n");
+    }
 
     scopeStack.push(currentVars);
     currentVars.clear();

@@ -3,6 +3,7 @@
     #include <cstring>
     #include <iostream>
     #include <vector>
+    #include <utility>
     using namespace std;
     
     extern FILE* yyin;
@@ -20,6 +21,16 @@
         globalSymTable.printAskedScopes(); //cele cerute
         globalSymTable.printAllScopes(); //toate
     }
+
+    struct Param {
+        char* type;
+        char* name;
+    };
+
+    struct ParamListNonSTL {
+        Param* params;
+        int count;
+    };
 %}
 
 %right '='
@@ -44,6 +55,9 @@
     bool boolval;
     char charval;
     char* string;
+
+    struct Param* param;
+    struct ParamListNonSTL* params;
 }
 
 %token BGIN END ASSIGN
@@ -58,6 +72,8 @@
 %token<boolval> TRUE FALSE BOOL
 %type<node> boolean_expression expression assignment left_value
 
+%type <params> parameter_list
+%type <param> parameter
 
 %start PROGRAM
 
@@ -315,8 +331,17 @@ func_definition:
             cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
             return -1;
         }
-        /* currentSymTable->addFunc($2, $3); */
-        currentSymTable->enterScope($3,"function");
+        vector<pair<string,string>> params;
+        for(int i=0;i<$5->count;i++)
+        {
+            params.push_back(make_pair($5->params[i].type,$5->params[i].name));
+        }
+        currentSymTable->addFunc($2, $3, params);
+        currentSymTable->enterScope($3, "function");
+
+        
+        delete($5->params);
+        delete($5);
     }
     BGIN statement_list END 
     {
@@ -386,13 +411,38 @@ constructor_definition:
 
 
  /*__________________________________________*/
-parameter_list : parameter
-               | parameter_list ',' parameter
-               | /* epsilon */
+parameter_list : parameter {
+                    $$ = new ParamListNonSTL;
+                    $$->params = new Param[1];
+                    $$->params[0] = *$1;
+                    $$->count = 1;
+                    delete $1;
+                }
+               | parameter_list ',' parameter {
+                    $$ = $1;
+                    Param* newParams = new Param[$$->count + 1];
+                    for (int i = 0; i < $$->count; ++i) {
+                        newParams[i] = $$->params[i];
+                    }
+                    newParams[$$->count] = *$3;
+                    delete[] $$->params;
+                    $$->params = newParams;
+                    $$->count++;
+                    delete $3;
+               }
+               | /* epsilon */ {
+                    $$ = new ParamListNonSTL;
+                    $$->params = nullptr;
+                    $$->count = 0;
+               }
                ;
 
-parameter : TYPE ID
-          ;
+parameter : TYPE ID {
+                $$ = new Param;
+                $$->type = $1;
+                $$->name = $2;
+            }
+            ;
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
 main_function:

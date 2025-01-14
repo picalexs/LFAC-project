@@ -21,14 +21,13 @@ class ParamList {
     vector<string> names;
 public:
     void addParam(const string &type, const string &name);
-    string toString() const;
 };
 
 class IdInfo {
 public:
+    string name;
     string idType;
     string type;
-    string name;
     Value value;
     ParamList params;
 

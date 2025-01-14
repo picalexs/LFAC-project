@@ -1,10 +1,10 @@
-func int f(){
-   int x=10;
-   return x+10;
+func int f(int a, int[10] b, string[3] nume){
+   int a2;
+   return b+10;
 }
 
 main
 {  
-   int x=obj.d;
+   int x=f(a,a);
    Print(x);
 }

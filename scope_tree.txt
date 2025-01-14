@@ -1,8 +1,1 @@
    >Entering global scope: Global
-      >Entering function scope: f
-         +variable: x : int = 10
-      <Leaving function scope: f
-      >Entering main scope: main
-         +variable: x : int = 0
-      <Leaving main scope: main
-   <Leaving global scope: Global
