@@ -10,8 +10,10 @@ bool checkOperands(const Value &leftVal, const Value &rightVal)
 }
 
 template <typename T>
-T getIfType(const Value &val) {
-    if (std::holds_alternative<T>(val)) {
+T getIfType(const Value &val)
+{
+    if (std::holds_alternative<T>(val))
+    {
         return std::get<T>(val);
     }
     throw std::bad_variant_access();
@@ -31,7 +33,6 @@ ASTNode::~ASTNode()
 
 Value ASTNode::evaluate(SymTable &symTable)
 {
-    flush(cout);
     switch (type)
     {
     case NodeType::INT:
@@ -64,48 +65,45 @@ Value ASTNode::evaluate(SymTable &symTable)
     case NodeType::VECTORSTRING:
         evaluatedResult = get<vector<string>>(symTable.getValue(get<string>(value)));
         return evaluatedResult;
+    case NodeType::FUNCTION_CALL:
+        evaluatedResult=0;
+        return evaluatedResult;
     case NodeType::IDENTIFIER:
     {
         Value symValue = symTable.getValue(get<string>(value));
         if (holds_alternative<int>(symValue))
         {
-            flush(cout);
             type = NodeType::INT;
             evaluatedResult = get<int>(symValue);
         }
         else if (holds_alternative<float>(symValue))
         {
-            flush(cout);
             type = NodeType::FLOAT;
             evaluatedResult = get<float>(symValue);
         }
         else if (holds_alternative<bool>(symValue))
         {
-            flush(cout);
             type = NodeType::BOOL;
             evaluatedResult = get<bool>(symValue);
         }
         else if (holds_alternative<char>(symValue))
         {
-            flush(cout);
             type = NodeType::CHAR;
             evaluatedResult = get<char>(symValue);
         }
         else if (holds_alternative<string>(symValue))
         {
-            flush(cout);
             type = NodeType::STRING;
             evaluatedResult = get<string>(symValue);
         }
         else if (holds_alternative<vector<int>>(symValue))
         {
-            flush(cout);
             if (index != -1)
             {
                 if (index < 0 || index > get<vector<int>>(symValue).size())
                 {
                     cout << "Error: Index out of bounds for vector '" << get<string>(value) << "'\n";
-                    cout<<index<<endl;
+                    cout << index << endl;
                     return monostate{};
                 }
                 type = NodeType::INT;
@@ -118,7 +116,7 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<float>>(symValue))
         {
-            flush(cout);
+
             if (index != -1)
             {
                 if (index < 0 || index >= get<vector<float>>(symValue).size())
@@ -135,7 +133,7 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<bool>>(symValue))
         {
-            flush(cout);
+
             if (index != -1)
             {
                 if (index < 0 || index >= get<vector<bool>>(symValue).size())
@@ -152,7 +150,7 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<char>>(symValue))
         {
-            flush(cout);
+
             if (index != -1)
             {
                 if (index < 0 || index >= get<vector<char>>(symValue).size())
@@ -169,7 +167,7 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<string>>(symValue))
         {
-            flush(cout);
+
             if (index != -1)
             {
                 if (index < 0 || index >= get<vector<string>>(symValue).size())

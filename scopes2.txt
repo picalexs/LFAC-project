@@ -1,18 +1,13 @@
 === Global Scope ===
  Global Scope: Global Scope
-      +variable: MyClass : int = 0
 
 === Class Scope ===
- Class Scope: MyClass
-      +variable: MyClass : int = 0
-      +variable: x : int = 0
-      +variable: y : float = 20.500000
 
 === Function Scope ===
+ Function Scope: f
+      +variable: x : int = 10
 
 === Constructor Scope ===
- Constructor Scope: MyClass
-      +variable: zet : int = 9
 
 === Method Scope ===
 

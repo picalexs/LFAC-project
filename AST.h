@@ -20,7 +20,8 @@ public:
         VECTORFLOAT,
         VECTORBOOL,
         VECTORCHAR,
-        VECTORSTRING
+        VECTORSTRING,
+        FUNCTION_CALL
     };
     enum class Operator
     {
@@ -50,6 +51,7 @@ public:
     ASTNode *right;
     Value evaluatedResult;
 
+    ASTNode(): type(NodeType::FUNCTION_CALL), value(0), left(nullptr), right(nullptr) {}
     ASTNode(int val) : type(NodeType::INT), value(val), left(nullptr), right(nullptr) {}
     ASTNode(float val) : type(NodeType::FLOAT), value(val), left(nullptr), right(nullptr) {}
     ASTNode(bool val, bool isBool) : type(NodeType::BOOL), value(val), left(nullptr), right(nullptr) {}

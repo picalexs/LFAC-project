@@ -2261,7 +2261,7 @@ yyreduce:
   case 109: /* expression: function_call  */
 #line 764 "limbaj.y"
                           {
-                (yyval.node) = nullptr; //tmp
+                (yyval.node) = new ASTNode();
            }
 #line 2267 "limbaj.tab.c"
     break;
@@ -2269,7 +2269,7 @@ yyreduce:
   case 110: /* expression: object_access  */
 #line 767 "limbaj.y"
                           {
-                (yyval.node) = nullptr; //tmp
+                (yyval.node) = new ASTNode();
            }
 #line 2275 "limbaj.tab.c"
     break;

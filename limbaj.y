@@ -762,10 +762,10 @@ expression : expression '+' expression {
                $$ = new ASTNode($1);
            }
            | function_call{
-                $$ = nullptr; //tmp
+                $$ = new ASTNode();
            }
            | object_access{
-                $$ = nullptr; //tmp
+                $$ = new ASTNode();
            }
            ;
 

@@ -1,9 +1,10 @@
-int i[7]=4;
-char d[i[3]]='b';
-char c[5]='a';
+func int f(){
+   int x=10;
+   return x+10;
+}
 
 main
 {  
-   c[2]=d[3];
-   Print(c);
+   int x=obj.d;
+   Print(x);
 }
