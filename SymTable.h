@@ -60,15 +60,14 @@ public:
     void leaveScope();
     string getScope();
 
-    bool existsId(const string &id);
     Value getValue(const string &id);
     string getType(const string &id);
     bool checkAssignmentType(const string &lhs, const string &rhs);
     Value returnIdValueType(const string &id, map<string, IdInfo> &vars);
-    bool isDefined(const string &id);
+    bool existsId(const string &id);
     bool existsFunc(const string &funcName);
     bool existsClass(const string &className);
-    bool isUsedBeforeDefined(const string &id, const string &type);
+    bool isDefined(const string &id, const string &type);
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
@@ -83,7 +82,6 @@ public:
     void addMethod(const string &returnType, const string &name);
 
     bool removeId(const string &id);
-
 
     void printScope(const string &fileName, const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
 

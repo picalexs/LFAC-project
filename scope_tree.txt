@@ -1,1 +1,9 @@
    >Entering global scope: Global
+      >Entering function scope: f (int)
+         +parameter: a : int
+         +parameter: f : int
+         +parameter: s : string
+         +parameter: x : int
+         +variable: a2 : int = 0
+      <Leaving function scope: f
+      >Entering main scope: main

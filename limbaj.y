@@ -25,6 +25,7 @@
     struct Param {
         char* type;
         char* name;
+        int size;// daca e vector
     };
 
     struct ParamListNonSTL {
@@ -62,7 +63,7 @@
 
 %token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID BOOLID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<string> ID BOOLID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN 
 %token<valtype> TYPE
 
 %token<intval> INT
@@ -71,6 +72,7 @@
 %token<string> STRING
 %token<boolval> TRUE FALSE BOOL
 %type<node> boolean_expression expression assignment left_value
+%type<string>  object_access function_call
 
 %type <params> parameter_list
 %type <param> parameter
@@ -101,7 +103,7 @@ var_declarations : var_declarations var_declaration
 
 var_declaration : TYPE ID ';' 
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -109,7 +111,7 @@ var_declaration : TYPE ID ';'
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -130,7 +132,7 @@ var_declaration : TYPE ID ';'
                 }
                 | BOOL BOOLID ASSIGN boolean_expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -145,7 +147,7 @@ var_declaration : TYPE ID ';'
                 }
                 | TYPE ID '[' expression ']' ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -164,7 +166,7 @@ var_declaration : TYPE ID ';'
                 }
                 | TYPE ID '[' expression ']' ASSIGN expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -195,7 +197,7 @@ var_declaration : TYPE ID ';'
                     currentSymTable->addVector($1, $2, get<int>(result), valueResult);
                 }
                 | TYPE ID '[' expression ']' ASSIGN CHAR ';'{
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -218,7 +220,7 @@ var_declaration : TYPE ID ';'
                     currentSymTable->addVector("char", $2, get<int>(result), $7);
                 }
                 | TYPE ID '[' expression ']' ASSIGN STRING ';'{
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -241,7 +243,7 @@ var_declaration : TYPE ID ';'
                     currentSymTable->addVector("string", $2, get<int>(result), $7);
                 }
                 | BOOL BOOLID '[' expression ']' ';'{
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -262,7 +264,7 @@ var_declaration : TYPE ID ';'
                 } 
                 | BOOL BOOLID '[' expression ']' ASSIGN boolean_expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -287,7 +289,7 @@ var_declaration : TYPE ID ';'
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -301,7 +303,7 @@ var_declaration : TYPE ID ';'
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
+                    if (currentSymTable->isDefined($2, "identifier")) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
@@ -326,7 +328,7 @@ func_definitions : func_definitions func_definition
 func_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
-        if (currentSymTable->isDefined($3)) 
+        if (currentSymTable->isDefined($3, "function")) 
         {
             cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
             return -1;
@@ -438,9 +440,49 @@ parameter_list : parameter {
                ;
 
 parameter : TYPE ID {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
                 $$ = new Param;
                 $$->type = $1;
                 $$->name = $2;
+            }
+            | TYPE ID '[' expression']' {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                $$ = new Param;
+                $$->type = $1;
+                $$->name = $2;
+
+                auto result=$4->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($4->getType() != "int")
+                {
+                    cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$->size = get<int>(result);
+            }
+            | BOOL BOOLID {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                $$ = new Param;
+                $$->type = new char[5];
+                strcpy($$->type,"bool");
+                $$->name = $2;
+            }
+            | BOOL BOOLID '[' expression ']' {
+
             }
             ;
 
@@ -593,14 +635,14 @@ assignment : left_value ASSIGN expression {
 
 left_value : ID
             {
-                if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
+                if (!currentSymTable->isDefined($1, "identifier")) {
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
                 $$=new ASTNode($1);
             }
             | ID '[' expression ']' {
-                if(!currentSymTable->isUsedBeforeDefined($1, "identifier")){
+                if(!currentSymTable->isDefined($1, "identifier")){
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
@@ -618,7 +660,7 @@ left_value : ID
                 $$ = new ASTNode($1, get<int>(result), true);
             }
             | BOOLID{
-                if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
+                if (!currentSymTable->isDefined($1, "identifier")) {
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
@@ -626,7 +668,7 @@ left_value : ID
             }
             | BOOLID '[' expression ']'
             {
-                if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
+                if (!currentSymTable->isDefined($1, "identifier")) {
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
@@ -644,12 +686,16 @@ left_value : ID
                 $$ = new ASTNode($1, get<int>(result), true);
             }
             | object_access{
-                $$=nullptr;
+                if(!currentSymTable->isDefined($1,"class")){
+                    cout << "Error: Class '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$=new ASTNode();
             }
            ;
 
-object_access : ID '.' ID
-              | ID '.' ID '(' argument_list ')'
+object_access : ID '.' ID {$$=$1;}
+              | ID '.' ID '(' argument_list ')' { $$=$1;}
               ;
 
 if_statement:
@@ -705,10 +751,11 @@ predefined_function_call : print_statement
 
 function_call : ID '(' argument_list ')'
               {
-                  if (!currentSymTable->isUsedBeforeDefined($1, "function")) {
+                  if (!currentSymTable->isDefined($1, "function")) {
                       cout << "Error: Function '" << $1 << "' called before being defined. Line: " << yylineno << endl;
                       return -1;
                   }
+                  $$=$1;
               }
               ;
 
@@ -719,21 +766,37 @@ print_statement : PRINT '(' CHAR ')'{
                     cout << "Print (string): " << $3 << endl;
                 }
                 | PRINT '(' expression ')'{
-                    $3->evaluate(*currentSymTable);
+                    auto result=$3->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     $3->printResult();
                 }
                 | PRINT '(' boolean_expression ')'{
-                    $3->evaluate(*currentSymTable);
+                    auto result=$3->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     $3->printResult();
                 }
                 ;
 
 type_of_statement : TYPEOF '(' expression ')'{
-                        $3->evaluate(*currentSymTable);
+                        auto result=$3->evaluate(*currentSymTable);
+                        if(holds_alternative<monostate>(result)){
+                            cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                            return -1;
+                        }
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
                   | TYPEOF '(' boolean_expression ')'{
-                        $3->evaluate(*currentSymTable);
+                        auto result=$3->evaluate(*currentSymTable);
+                        if(holds_alternative<monostate>(result)){
+                            cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                            return -1;
+                        }
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
                   | TYPEOF '(' STRING ')'{
@@ -780,7 +843,7 @@ expression : expression '+' expression {
                $$ = $2;
            }
            | ID {
-                if (!currentSymTable->existsId($1)) 
+                if (!currentSymTable->isDefined($1, "identifier")) 
                 {
                     cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
                     return -1;
@@ -788,7 +851,7 @@ expression : expression '+' expression {
                $$ = new ASTNode($1);
            }
            | ID '[' expression ']' {
-                if (!currentSymTable->existsId($1)) 
+                if (!currentSymTable->isDefined($1, "identifier")) 
                 {
                     cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
                     return -1;
@@ -812,9 +875,17 @@ expression : expression '+' expression {
                $$ = new ASTNode($1);
            }
            | function_call{
+                if(!currentSymTable->isDefined($1, "function")){
+                    cout << "Error: Function '" << $1 << "' called before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
                 $$ = new ASTNode();
            }
            | object_access{
+                if(!currentSymTable->isDefined($1,"class")){
+                    cout << "Error: Class '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
                 $$ = new ASTNode();
            }
            ;
@@ -829,7 +900,7 @@ boolean_expression : TRUE {
                        $$ = $2;
                    }
                    | BOOLID {
-                        if (!currentSymTable->existsId($1)) 
+                        if (!currentSymTable->isDefined($1, "identifier")) 
                         {
                             cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
                             return -1;

@@ -131,7 +131,7 @@ void SymTable::enterScope(const string &scopeName, const string &scopeType)
 
     writeToFile(SCOPE_TREE_FILE, std::string(indentLevel * 3, ' ') + ">Entering " + scopeType + " scope: " + scopeName);
     indentLevel++;
-    
+
     if(scopeType=="function" || scopeType=="constructor" || scopeType=="method")
     {
         writeToFile(SCOPE_TREE_FILE, " (" + currentVars[scopeName].type + ")\n");
@@ -200,31 +200,6 @@ string SymTable::getScope()
         return "Global Scope";
     }
     return scopeNames.top();
-}
-
-bool SymTable::existsId(const string &id)
-{
-    if (currentVars.find(id) != currentVars.end())
-    {
-        return true;
-    }
-
-    stack<map<string, IdInfo>> tempStack = scopeStack;
-    while (!tempStack.empty())
-    {
-        const auto &scope = tempStack.top();
-        if (scope.find(id) != scope.end())
-        {
-            return true;
-        }
-        tempStack.pop();
-    }
-
-    if (globalScope.find(id) != globalScope.end())
-    {
-        return true;
-    }
-    return false;
 }
 
 Value SymTable::returnIdValueType(const string &id, map<string, IdInfo> &vars)
@@ -304,7 +279,7 @@ Value SymTable::getValue(const string &id)
     return {};
 }
 
-bool SymTable::isDefined(const string &id)
+bool SymTable::existsId(const string &id)
 {
     stack<map<string, IdInfo>> tempScopeStack = scopeStack;
     map<string, IdInfo> tempCurrentVars = currentVars;
@@ -370,7 +345,7 @@ bool SymTable::existsClass(const string &className)
     return classScopes.find(className) != classScopes.end();
 }
 
-bool SymTable::isUsedBeforeDefined(const string &id, const string &type)
+bool SymTable::isDefined(const string &id, const string &type)
 {
     if (type == "identifier")
     {

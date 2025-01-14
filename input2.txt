@@ -1,6 +1,6 @@
-func int f(int a, int[10] b, string[3] nume){
+func int f(int a, int x[10], string s[10]){
    int a2;
-   return b+10;
+   return s+10;
 }
 
 main
