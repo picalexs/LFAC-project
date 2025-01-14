@@ -1,10 +1,10 @@
    >Entering global scope: Global
       >Entering main scope: main
-      +variable: v : int[5]
- value = vector<int> with values: 30 30 30 30 30 
+      +variable: c : char
+ value = vector<char> with values: a a a a a 
 === main ===
   main: main
-  variable: v : int[5] = 
+  variable: c : char = 
 
       <Leaving main scope: main
 === global ===

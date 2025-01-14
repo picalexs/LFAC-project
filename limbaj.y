@@ -447,7 +447,16 @@ assignment : left_value ASSIGN expression {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
-                //cout<<"Assignment: "<<$1->getVectorName()<<endl;
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
            }
            | left_value ASSIGN boolean_expression {
                 auto lResult=$1->evaluate(*currentSymTable);
@@ -464,9 +473,19 @@ assignment : left_value ASSIGN expression {
 
                 string ltype=$1->getType();
                 string rtype="bool";
-                if (ltype != rtype) {
+                if (ltype != rtype || strcmp("bool",ltype.c_str())!=0) {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
                 }
            }
            | left_value ASSIGN STRING {
@@ -480,6 +499,18 @@ assignment : left_value ASSIGN expression {
                 if (strcmp("string",ltype.c_str())!=0) {
                     cout << "Error: Assignment type mismatch. Expected string but got " << $1 << endl;
                     return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                Value rResult=$3;
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
                 }
            }
            | left_value ASSIGN CHAR {
@@ -495,6 +526,18 @@ assignment : left_value ASSIGN expression {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                Value rResult=$3;
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
            }
            ;
 
@@ -507,11 +550,11 @@ left_value : ID
                 $$=new ASTNode($1);
             }
             | ID '[' expression ']' {
-                if (!currentSymTable->existsId($1)) 
-                {
-                    cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
+                if(!currentSymTable->isUsedBeforeDefined($1, "identifier")){
+                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
+
                 auto result=$3->evaluate(*currentSymTable);
                 if(holds_alternative<monostate>(result)){
                     cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
@@ -522,6 +565,7 @@ left_value : ID
                     cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
                     return -1;
                 }
+                $$ = new ASTNode($1, get<int>(result), true);
             }
             | BOOLID{
                 if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
@@ -536,8 +580,18 @@ left_value : ID
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
-                //$$=new ASTNode($1);
-                $$=nullptr;
+
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode($1, get<int>(result), true);
             }
             | object_access{
                 $$=nullptr;

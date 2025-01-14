@@ -1,5 +1,6 @@
 main
 {
-   int v[5]=30;
-   Print(v[4]);
+   char c[5]='a';
+   c[2]='b';
+   Print(c);
 }

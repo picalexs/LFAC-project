@@ -53,8 +53,9 @@ public:
     ASTNode(int val) : type(NodeType::INT), value(val), left(nullptr), right(nullptr) {}
     ASTNode(float val) : type(NodeType::FLOAT), value(val), left(nullptr), right(nullptr) {}
     ASTNode(bool val, bool isBool) : type(NodeType::BOOL), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(const string &id) : type(NodeType::IDENTIFIER), value(id), left(nullptr), right(nullptr) {}
     ASTNode(const string &id, int idx, bool placeholder) : type(NodeType::IDENTIFIER), value(id), left(nullptr), right(nullptr), index(idx) {}
-    ASTNode(const char* val) : type(NodeType::CHAR), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(char val) : type(NodeType::CHAR), value(val), left(nullptr), right(nullptr) {}
     ASTNode(Operator op, ASTNode *left, ASTNode *right) : type(NodeType::OPERATOR), value(op), left(left), right(right) {}
 
     ~ASTNode();
@@ -62,7 +63,7 @@ public:
     Value evaluate(SymTable &symTable);
     void printResult() const;
     string getType() const;
-    string getVectorName() const;
-    string getVectorIndex() const;
+    string getIdName() const;
+    int getVectorIndex() const;
 };
 #endif

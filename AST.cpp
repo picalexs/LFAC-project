@@ -31,7 +31,6 @@ ASTNode::~ASTNode()
 
 Value ASTNode::evaluate(SymTable &symTable)
 {
-    cout << "+";
     flush(cout);
     switch (type)
     {
@@ -67,50 +66,39 @@ Value ASTNode::evaluate(SymTable &symTable)
         return evaluatedResult;
     case NodeType::IDENTIFIER:
     {
-        cout << "!!";
-        flush(cout);
-        cout << get<string>(value) << "!!";
-        flush(cout);
-
         Value symValue = symTable.getValue(get<string>(value));
         if (holds_alternative<int>(symValue))
         {
-            cout << "1??";
             flush(cout);
             type = NodeType::INT;
             evaluatedResult = get<int>(symValue);
         }
         else if (holds_alternative<float>(symValue))
         {
-            cout << "2??";
             flush(cout);
             type = NodeType::FLOAT;
             evaluatedResult = get<float>(symValue);
         }
         else if (holds_alternative<bool>(symValue))
         {
-            cout << "3??";
             flush(cout);
             type = NodeType::BOOL;
             evaluatedResult = get<bool>(symValue);
         }
         else if (holds_alternative<char>(symValue))
         {
-            cout << "4??";
             flush(cout);
             type = NodeType::CHAR;
             evaluatedResult = get<char>(symValue);
         }
         else if (holds_alternative<string>(symValue))
         {
-            cout << "5??";
             flush(cout);
             type = NodeType::STRING;
             evaluatedResult = get<string>(symValue);
         }
         else if (holds_alternative<vector<int>>(symValue))
         {
-            cout << "??";
             flush(cout);
             if (index != -1)
             {
@@ -130,7 +118,6 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<float>>(symValue))
         {
-            cout << "??2";
             flush(cout);
             if (index != -1)
             {
@@ -148,7 +135,6 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<bool>>(symValue))
         {
-            cout << "??3";
             flush(cout);
             if (index != -1)
             {
@@ -166,7 +152,6 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<char>>(symValue))
         {
-            cout << "??4";
             flush(cout);
             if (index != -1)
             {
@@ -184,7 +169,6 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else if (holds_alternative<vector<string>>(symValue))
         {
-            cout << "??5";
             flush(cout);
             if (index != -1)
             {
@@ -550,13 +534,12 @@ string ASTNode::getType() const
     return "undefined";
 }
 
-string ASTNode::getVectorName() const
+string ASTNode::getIdName() const
 {
-    cout << "a";
     return get<string>(value);
 }
 
-string ASTNode::getVectorIndex() const
+int ASTNode::getVectorIndex() const
 {
-    return index != -1 ? to_string(index) : "";
+    return index;
 }
