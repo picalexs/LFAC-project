@@ -1,10 +1,10 @@
 main
 {
-   int size=5;
-   string b[10]="ss";
-   int c[(10-7*2+6)*0 + size]=14;
-   Print(b);
-   Print(c);
-   char d[size-2/2]='b';
-   Print(d);
+   int v[5]=5;
+   v[0]=1;
+   v[1]=2;
+   v[2]=3;
+   v[3]=4;
+   Print(v);
+   Print(v[1]);
 }

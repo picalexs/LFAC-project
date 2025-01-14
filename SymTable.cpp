@@ -473,6 +473,54 @@ void SymTable::addVector(const string &type, const string &name, int size, const
     }
 }
 
+Value SymTable::getVectorElement(const string &name, int index){
+    Value vectorValue = getValue(name);
+    if(holds_alternative<vector<int>>(vectorValue)){
+        vector<int> tmp = get<vector<int>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return monostate{};
+        }
+        return tmp[index];
+    }
+    else if(holds_alternative<vector<float>>(vectorValue)){
+        vector<float> tmp = get<vector<float>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return monostate{};
+        }
+        return tmp[index];
+    }
+    else if(holds_alternative<vector<bool>>(vectorValue)){
+        vector<bool> tmp = get<vector<bool>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return monostate{};
+        }
+        return tmp[index];
+    }
+    else if(holds_alternative<vector<char>>(vectorValue)){
+        vector<char> tmp = get<vector<char>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return monostate{};
+        }
+        return tmp[index];
+    }
+    else if(holds_alternative<vector<string>>(vectorValue)){
+        vector<string> tmp = get<vector<string>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return monostate{};
+        }
+        return tmp[index];
+    }
+    else{
+        cout << "Error: Unsupported type for vector '" << name << "'\n";
+        return monostate{};
+    }
+}
+
 void SymTable::addEntity(const string &entityType, const string &name, const string &returnType)
 {
     string content = std::string(indentLevel * 3, ' ') + "+" + entityType + ": " + name;

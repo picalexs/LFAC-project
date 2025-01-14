@@ -27,10 +27,16 @@ ASTNode::ASTNode(bool val, bool isBool)
     value.boolVal = val;
 }
 
-ASTNode::ASTNode(const string &val)
+ASTNode::ASTNode(char val)
+{
+    type = NodeType::CHAR;
+    value.charVal = val;
+}
+
+ASTNode::ASTNode(const string &id)
 {
     type = NodeType::IDENTIFIER;
-    value.stringVal = new string(val);
+    value.stringVal = new string(id);
 }
 
 ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)

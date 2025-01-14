@@ -27,10 +27,12 @@ public:
     ASTNode* right;
     Value evaluatedResult;
 
+
     ASTNode(int val);
     ASTNode(float val);
     ASTNode(bool val, bool isBool);
-    ASTNode(const string& val);
+    ASTNode(const string& id);
+    ASTNode(char val);
     ASTNode(Operator op, ASTNode* left, ASTNode* right);
     ~ASTNode();
 

@@ -499,13 +499,43 @@ left_value : ID
                 }
                 $$=new ASTNode($1);
             }
-            | ID '[' expression ']'
-            {
-                if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
-                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+            | ID '[' expression ']' {
+                if (!currentSymTable->existsId($1)) 
+                {
+                    cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
                     return -1;
                 }
-                $$=new ASTNode($1);
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                
+                auto element=currentSymTable->getVectorElement($1,get<int>(result));
+                if(holds_alternative<monostate>(element)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if(holds_alternative<int>(element)){
+                    $$ = new ASTNode(get<int>(element));
+                }
+                else if(holds_alternative<float>(element)){
+                    $$ = new ASTNode(get<float>(element));
+                }
+                else if(holds_alternative<bool>(element)){
+                    $$ = new ASTNode(get<bool>(element),true);
+                }
+                else if(holds_alternative<char>(element)){
+                    $$ = new ASTNode(get<char>(element));
+                }
+                else if(holds_alternative<string>(element)){
+                    $$ = new ASTNode(get<string>(element));
+                }
             }
             | BOOLID{
                 if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
@@ -666,6 +696,44 @@ expression : expression '+' expression {
                 }
                $$ = new ASTNode($1);
            }
+           | ID '[' expression ']' {
+                if (!currentSymTable->existsId($1)) 
+                {
+                    cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                
+                auto element=currentSymTable->getVectorElement($1,get<int>(result));
+                if(holds_alternative<monostate>(element)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if(holds_alternative<int>(element)){
+                    $$ = new ASTNode(get<int>(element));
+                }
+                else if(holds_alternative<float>(element)){
+                    $$ = new ASTNode(get<float>(element));
+                }
+                else if(holds_alternative<bool>(element)){
+                    $$ = new ASTNode(get<bool>(element),true);
+                }
+                else if(holds_alternative<char>(element)){
+                    $$ = new ASTNode(get<char>(element));
+                }
+                else if(holds_alternative<string>(element)){
+                    $$ = new ASTNode(get<string>(element));
+                }
+           }
            | INT {
                $$ = new ASTNode($1);
            }
@@ -681,10 +749,10 @@ expression : expression '+' expression {
            ;
 
 boolean_expression : TRUE {
-                       $$ = new ASTNode(true, true);
+                       $$ = new ASTNode(true,true);
                    }
                    | FALSE {
-                       $$ = new ASTNode(false, false);
+                       $$ = new ASTNode(false,false);
                    }
                    | '(' boolean_expression ')' {
                        $$ = $2;
