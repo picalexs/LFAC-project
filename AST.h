@@ -4,41 +4,65 @@
 #include <string>
 #include "SymTable.h"
 
-class ASTNode {
+class ASTNode
+{
 public:
-    enum class NodeType { INT, FLOAT, BOOL, IDENTIFIER, CHAR, STRING, OPERATOR, VECTORINT, VECTORFLOAT, VECTORBOOL, VECTORCHAR, VECTORSTRING };
-    enum class Operator { 
-        ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO, POWER, 
-        AND, OR, EQ, NEQ, GT, LT, GE, LE, 
-        UMINUS, NOT 
+    enum class NodeType
+    {
+        INT,
+        FLOAT,
+        BOOL,
+        IDENTIFIER,
+        CHAR,
+        STRING,
+        OPERATOR,
+        VECTORINT,
+        VECTORFLOAT,
+        VECTORBOOL,
+        VECTORCHAR,
+        VECTORSTRING
+    };
+    enum class Operator
+    {
+        ADD,
+        SUBTRACT,
+        MULTIPLY,
+        DIVIDE,
+        MODULO,
+        POWER,
+        AND,
+        OR,
+        EQ,
+        NEQ,
+        GT,
+        LT,
+        GE,
+        LE,
+        UMINUS,
+        NOT
     };
 
     NodeType type;
-    union {
-        int intVal;
-        float floatVal;
-        bool boolVal;
-        char charVal;
-        string* stringVal;
-        Operator op;
-    } value;
-    
-    ASTNode* left;
-    ASTNode* right;
+    variant<int, float, bool, char, string, Operator> value;
+    int index=-1;
+
+    ASTNode *left;
+    ASTNode *right;
     Value evaluatedResult;
 
+    ASTNode(int val) : type(NodeType::INT), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(float val) : type(NodeType::FLOAT), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(bool val, bool isBool) : type(NodeType::BOOL), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(const string &id, int idx, bool placeholder) : type(NodeType::IDENTIFIER), value(id), left(nullptr), right(nullptr), index(idx) {}
+    ASTNode(const char* val) : type(NodeType::CHAR), value(val), left(nullptr), right(nullptr) {}
+    ASTNode(Operator op, ASTNode *left, ASTNode *right) : type(NodeType::OPERATOR), value(op), left(left), right(right) {}
 
-    ASTNode(int val);
-    ASTNode(float val);
-    ASTNode(bool val, bool isBool);
-    ASTNode(const string& id);
-    ASTNode(char val);
-    ASTNode(Operator op, ASTNode* left, ASTNode* right);
     ~ASTNode();
 
-    Value evaluate(SymTable& symTable);
+    Value evaluate(SymTable &symTable);
     void printResult() const;
     string getType() const;
-
+    string getVectorName() const;
+    string getVectorIndex() const;
 };
 #endif

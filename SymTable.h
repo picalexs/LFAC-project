@@ -73,7 +73,9 @@ public:
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
+    void changeVar(const string &name, const Value &newValue);
     void addVector(const string &type, const string &name, int size, const Value &defaultValue = Value());
+    void changeVectorElement(const string &name, int index, const Value &newValue);
     Value getVectorElement(const string &name, int index);
     void addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params);
     bool verifyFuncCallParams(const string &funcName, const ParamList &callParams);

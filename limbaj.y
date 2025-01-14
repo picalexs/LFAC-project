@@ -447,10 +447,17 @@ assignment : left_value ASSIGN expression {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
+                //cout<<"Assignment: "<<$1->getVectorName()<<endl;
            }
            | left_value ASSIGN boolean_expression {
                 auto lResult=$1->evaluate(*currentSymTable);
                 if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto rResult=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(rResult)){
                     cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
                     return -1;
                 }
@@ -515,27 +522,6 @@ left_value : ID
                     cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
                     return -1;
                 }
-                
-                auto element=currentSymTable->getVectorElement($1,get<int>(result));
-                if(holds_alternative<monostate>(element)){
-                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
-                    return -1;
-                }
-                if(holds_alternative<int>(element)){
-                    $$ = new ASTNode(get<int>(element));
-                }
-                else if(holds_alternative<float>(element)){
-                    $$ = new ASTNode(get<float>(element));
-                }
-                else if(holds_alternative<bool>(element)){
-                    $$ = new ASTNode(get<bool>(element),true);
-                }
-                else if(holds_alternative<char>(element)){
-                    $$ = new ASTNode(get<char>(element));
-                }
-                else if(holds_alternative<string>(element)){
-                    $$ = new ASTNode(get<string>(element));
-                }
             }
             | BOOLID{
                 if (!currentSymTable->isUsedBeforeDefined($1, "identifier")) {
@@ -550,7 +536,8 @@ left_value : ID
                     cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
-                $$=new ASTNode($1);
+                //$$=new ASTNode($1);
+                $$=nullptr;
             }
             | object_access{
                 $$=nullptr;
@@ -712,27 +699,7 @@ expression : expression '+' expression {
                     cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
                     return -1;
                 }
-                
-                auto element=currentSymTable->getVectorElement($1,get<int>(result));
-                if(holds_alternative<monostate>(element)){
-                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
-                    return -1;
-                }
-                if(holds_alternative<int>(element)){
-                    $$ = new ASTNode(get<int>(element));
-                }
-                else if(holds_alternative<float>(element)){
-                    $$ = new ASTNode(get<float>(element));
-                }
-                else if(holds_alternative<bool>(element)){
-                    $$ = new ASTNode(get<bool>(element),true);
-                }
-                else if(holds_alternative<char>(element)){
-                    $$ = new ASTNode(get<char>(element));
-                }
-                else if(holds_alternative<string>(element)){
-                    $$ = new ASTNode(get<string>(element));
-                }
+                $$ = new ASTNode($1, get<int>(result),true);
            }
            | INT {
                $$ = new ASTNode($1);

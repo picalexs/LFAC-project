@@ -1,10 +1,5 @@
 main
 {
-   int v[5]=5;
-   v[0]=1;
-   v[1]=2;
-   v[2]=3;
-   v[3]=4;
-   Print(v);
-   Print(v[1]);
+   int v[5]=30;
+   Print(v[4]);
 }

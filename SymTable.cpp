@@ -198,13 +198,13 @@ Value SymTable::getValue(const string &id)
     }
 
     stack<map<string, IdInfo>> tempScopeStack = scopeStack;
-    map<string, IdInfo> tempCurrentVars = currentVars;
 
     while (!tempScopeStack.empty())
     {
-        if (tempScopeStack.top().find(id) != tempScopeStack.top().end())
+        auto &currentScope = tempScopeStack.top();
+        if (currentScope.find(id) != currentScope.end())
         {
-            return returnIdValueType(id, tempScopeStack.top());
+            return returnIdValueType(id, currentScope);
         }
         tempScopeStack.pop();
     }
@@ -214,9 +214,10 @@ Value SymTable::getValue(const string &id)
         return returnIdValueType(id, globalScope);
     }
 
-    cout << "Error: Symbol '" << id << "' is not defined.\n";
+    cerr << "Error: Symbol '" << id << "' is not defined.\n";
     return {};
 }
+
 
 bool SymTable::isDefined(const string &id)
 {
@@ -434,6 +435,18 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     currentVars[name] = varInfo;
 }
 
+void SymTable::changeVar(const string &name, const Value &newValue)
+{
+    if (currentVars.find(name) != currentVars.end())
+    {
+        currentVars[name].value = newValue;
+    }
+    else
+    {
+        cout << "Error: Variable '" << name << "' not defined!\n";
+    }
+}
+
 void SymTable::addVector(const string &type, const string &name, int size, const Value &defaultValue)
 {
     if (size <= 0)
@@ -470,6 +483,58 @@ void SymTable::addVector(const string &type, const string &name, int size, const
     else
     {
         cout << "Error: Unsupported array type '" << type << "'!" << endl;
+    }
+}
+
+void SymTable::changeVectorElement(const string &name, int index, const Value &newValue){
+    Value vectorValue = getValue(name);
+    if(holds_alternative<vector<int>>(vectorValue)){
+        vector<int> tmp = get<vector<int>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return;
+        }
+        tmp[index] = get<int>(newValue);
+        changeVar(name, tmp);
+    }
+    else if(holds_alternative<vector<float>>(vectorValue)){
+        vector<float> tmp = get<vector<float>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return;
+        }
+        tmp[index] = get<float>(newValue);
+        changeVar(name, tmp);
+    }
+    else if(holds_alternative<vector<bool>>(vectorValue)){
+        vector<bool> tmp = get<vector<bool>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return;
+        }
+        tmp[index] = get<bool>(newValue);
+        changeVar(name, tmp);
+    }
+    else if(holds_alternative<vector<char>>(vectorValue)){
+        vector<char> tmp = get<vector<char>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return;
+        }
+        tmp[index] = get<char>(newValue);
+        changeVar(name, tmp);
+    }
+    else if(holds_alternative<vector<string>>(vectorValue)){
+        vector<string> tmp = get<vector<string>>(vectorValue);
+        if(index < 0 || index >= tmp.size()){
+            cout << "Error: Index out of bounds for vector '" << name << "'\n";
+            return;
+        }
+        tmp[index] = get<string>(newValue);
+        changeVar(name, tmp);
+    }
+    else{
+        cout << "Error: Unsupported type for vector '" << name << "'\n";
     }
 }
 
