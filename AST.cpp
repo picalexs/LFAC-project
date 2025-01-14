@@ -76,6 +76,21 @@ Value ASTNode::evaluate(SymTable &symTable)
     case NodeType::STRING:
         evaluatedResult = *value.stringVal;
         return evaluatedResult;
+    case NodeType::VECTORINT:
+        evaluatedResult = get<vector<int>>(symTable.getValue(*value.stringVal));
+        return evaluatedResult;
+    case NodeType::VECTORFLOAT:
+        evaluatedResult = get<vector<float>>(symTable.getValue(*value.stringVal));
+        return evaluatedResult;
+    case NodeType::VECTORBOOL:
+        evaluatedResult = get<vector<bool>>(symTable.getValue(*value.stringVal));
+        return evaluatedResult;
+    case NodeType::VECTORCHAR:
+        evaluatedResult = get<vector<char>>(symTable.getValue(*value.stringVal));
+        return evaluatedResult;
+    case NodeType::VECTORSTRING:
+        evaluatedResult = get<vector<string>>(symTable.getValue(*value.stringVal));
+        return evaluatedResult;
     case NodeType::IDENTIFIER:
     {
         Value symValue = symTable.getValue(*value.stringVal);
@@ -103,6 +118,26 @@ Value ASTNode::evaluate(SymTable &symTable)
         {
             type = NodeType::STRING;
             evaluatedResult = get<string>(symValue);
+        }
+        else if(holds_alternative<vector<int>>(symValue)){
+            type = NodeType::VECTORINT;
+            evaluatedResult = get<vector<int>>(symValue);
+        }
+        else if(holds_alternative<vector<float>>(symValue)){
+            type = NodeType::VECTORFLOAT;
+            evaluatedResult = get<vector<float>>(symValue);
+        }
+        else if(holds_alternative<vector<bool>>(symValue)){
+            type = NodeType::VECTORBOOL;
+            evaluatedResult = get<vector<bool>>(symValue);
+        }
+        else if(holds_alternative<vector<char>>(symValue)){
+            type = NodeType::VECTORCHAR;
+            evaluatedResult = get<vector<char>>(symValue);
+        }
+        else if(holds_alternative<vector<string>>(symValue)){
+            type = NodeType::VECTORSTRING;
+            evaluatedResult = get<vector<string>>(symValue);
         }
         else
         {
@@ -358,6 +393,38 @@ void ASTNode::printResult() const
     {
         cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
     }
+    else if(holds_alternative<vector<int>>(evaluatedResult)){
+        cout << "PRINT (vector<int>): ";
+        for(auto &val : get<vector<int>>(evaluatedResult))
+        {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+    else if(holds_alternative<vector<float>>(evaluatedResult)){
+        cout << "PRINT (vector<float>): ";
+        for(auto &val : get<vector<float>>(evaluatedResult))
+        {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
+    else if(holds_alternative<vector<bool>>(evaluatedResult)){
+        cout << "PRINT (vector<bool>): ";
+        for(auto val : get<vector<bool>>(evaluatedResult))
+        {
+            cout << (val ? "true" : "false") << " ";
+        }
+        cout << endl;
+    }
+    else if(holds_alternative<vector<string>>(evaluatedResult)){
+        cout << "PRINT (vector<string>): ";
+        for(auto &val : get<vector<string>>(evaluatedResult))
+        {
+            cout << val << " ";
+        }
+        cout << endl;
+    }
     else
     {
         cout << "PRINT (undefined): " << endl;
@@ -385,6 +452,21 @@ string ASTNode::getType() const
     else if (holds_alternative<string>(evaluatedResult))
     {
         return "string";
+    }
+    else if(holds_alternative<vector<int>>(evaluatedResult)){
+        return "vector<int>";
+    }
+    else if(holds_alternative<vector<float>>(evaluatedResult)){
+        return "vector<float>";
+    }
+    else if(holds_alternative<vector<bool>>(evaluatedResult)){
+        return "vector<bool>";
+    }
+    else if(holds_alternative<vector<char>>(evaluatedResult)){
+        return "vector<char>";
+    }
+    else if(holds_alternative<vector<string>>(evaluatedResult)){
+        return "vector<string>";
     }
     return "undefined";
 }

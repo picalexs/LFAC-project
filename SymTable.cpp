@@ -163,6 +163,22 @@ Value SymTable::returnIdValueType(const string &id, map<string, IdInfo> &vars)
     {
         return get<string>(vars[id].value);
     }
+    else if(holds_alternative<vector<int>>(vars[id].value))
+    {
+        return get<vector<int>>(vars[id].value);
+    }
+    else if(holds_alternative<vector<float>>(vars[id].value))
+    {
+        return get<vector<float>>(vars[id].value);
+    }
+    else if(holds_alternative<vector<bool>>(vars[id].value))
+    {
+        return get<vector<bool>>(vars[id].value);
+    }
+    else if(holds_alternative<vector<string>>(vars[id].value))
+    {
+        return get<vector<string>>(vars[id].value);
+    }
     else
     {
         cout << "Error: Unsupported type for variable '" << id << "'\n";
@@ -322,40 +338,96 @@ void SymTable::addVar(const string &type, const string &name, const Value &value
     string content = string(indentLevel * 3, ' ') + "+variable: " + name + " : " + type + sizeStr + "\n" + " value = ";
 
     IdInfo varInfo("variable", type, name, finalValue);
-    cout << "Adding variable " << name << " of type " << type << " with value ";
+    cout << "Adding variable " << name << " of type ";
     if (holds_alternative<int>(finalValue))
     {
-        cout << get<int>(finalValue) << endl;
-        content += to_string(get<int>(finalValue));
+        string out="int with value " + to_string(get<int>(finalValue));
+        cout<<out<<endl;
+        content+=out;
     }
     else if (holds_alternative<float>(finalValue))
     {
-        cout << get<float>(finalValue) << endl;
-        content += to_string(get<float>(finalValue));
+        string out="float with value " + to_string(get<float>(finalValue));
+        cout<<out<<endl;
+        content+=out;
     }
     else if (holds_alternative<bool>(finalValue))
     {
-        cout << (get<bool>(finalValue) ? "true" : "false") << endl;
-        content += get<bool>(finalValue) ? "true" : "false";
+        string out="bool with value " + get<bool>(finalValue) ? "true " : "false ";
+        cout<<out<<endl;
+        content+=out;
     }
     else if (holds_alternative<char>(finalValue))
     {
-        cout << get<char>(finalValue) << endl;
-        content += get<char>(finalValue);
+        string out="char with value " + get<char>(finalValue);
+        cout<<out<<endl;
+        content+=out;
     }
     else if (holds_alternative<string>(finalValue))
     {
-        cout << get<string>(finalValue) << endl;
-        content += get<string>(finalValue);
+        string out="string with value " + get<string>(finalValue);
+        cout<<out<<endl;
+        content+=out;
+    }
+    else if(holds_alternative<vector<int>>(finalValue))
+    {
+        string out="vector<int> with values ";
+        for(auto &val : get<vector<int>>(finalValue))
+        {
+            out+=to_string(val) + " ";
+        }
+        cout<<out<<endl;
+        content+=out;
+    }
+    else if(holds_alternative<vector<float>>(finalValue))
+    {
+        string out="vector<float> with values ";
+        for(auto &val : get<vector<float>>(finalValue))
+        {
+            out+=to_string(val) + " ";
+        }
+        cout<<out<<endl;
+        content+=out;
+    }
+    else if(holds_alternative<vector<bool>>(finalValue))
+    {
+        string out="vector<bool> with values ";
+        for(auto val : get<vector<bool>>(finalValue))
+        {
+            out+=(val ? "true " : "false ");
+        }
+        cout<<out<<endl;
+        content+=out;
+    }
+    else if(holds_alternative<vector<char>>(finalValue))
+    {
+        string out="vector<char> with values ";
+        for(auto &val : get<vector<char>>(finalValue))
+        {
+            out+=val + " ";
+        }
+        cout<<out<<endl;
+        content+=out;
+    }
+    else if(holds_alternative<vector<string>>(finalValue))
+    {
+        string out="vector<string> with values ";
+        for(auto &val : get<vector<string>>(finalValue))
+        {
+            out+=val + " ";
+        }
+        cout<<out<<endl;
+        content+=out;
     }
     else
     {
-        cout << "Error: Unsupported type for variable '" << name << "'\n";
+        cout << "-\nError: Unsupported type for variable '" << name << "'\n";
         content += "Unsupported type";
     }
-    currentVars[name] = varInfo;
     content += "\n";
     writeToFile(SCOPE_TREE_FILE, content);
+
+    currentVars[name] = varInfo;
 }
 
 void SymTable::addVector(const string &type, const string &name, int size, const Value &defaultValue)
@@ -368,22 +440,27 @@ void SymTable::addVector(const string &type, const string &name, int size, const
 
     if (type == "int")
     {
-        vector<int> tmp(size);
+        vector<int> tmp(size, get<int>(defaultValue));
         addVar(type, name, tmp);
     }
     else if (type == "float")
     {
-        vector<float> tmp(size);
+        vector<float> tmp(size, get<float>(defaultValue));
         addVar(type, name, tmp);
     }
     else if (type == "bool")
     {
-        vector<bool> tmp(size);
+        vector<bool> tmp(size, get<bool>(defaultValue));
+        addVar(type, name, tmp);
+    }
+    else if (type == "char")
+    {
+        vector<char> tmp(size, get<char>(defaultValue));
         addVar(type, name, tmp);
     }
     else if (type == "string")
     {
-        vector<string> tmp(size);
+        vector<string> tmp(size,get<string>(defaultValue));
         addVar(type, name, tmp);
     }
     else

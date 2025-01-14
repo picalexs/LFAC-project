@@ -6,7 +6,7 @@
 
 class ASTNode {
 public:
-    enum class NodeType { INT, FLOAT, BOOL, IDENTIFIER, CHAR, STRING, OPERATOR };
+    enum class NodeType { INT, FLOAT, BOOL, IDENTIFIER, CHAR, STRING, OPERATOR, VECTORINT, VECTORFLOAT, VECTORBOOL, VECTORCHAR, VECTORSTRING };
     enum class Operator { 
         ADD, SUBTRACT, MULTIPLY, DIVIDE, MODULO, POWER, 
         AND, OR, EQ, NEQ, GT, LT, GE, LE, 

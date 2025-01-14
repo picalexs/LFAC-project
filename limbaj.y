@@ -178,23 +178,51 @@ var_declaration : TYPE ID ';'
                     }
                     currentSymTable->addVector($1, $2, get<int>(result), valueResult);
                 }
+                | TYPE ID '[' expression ']' ASSIGN CHAR ';'{
+                    if (currentSymTable->isDefined($2)) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if(strcmp($1,"char")!=0)
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got char Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("char", $2, get<int>(result), $7);
+                }
                 | TYPE ID '[' expression ']' ASSIGN STRING ';'{
-                    // if (currentSymTable->isDefined($2)) {
-                    //     cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
-                    //     return -1;
-                    // }
-                    // else 
-                    // {
-                    //     if(strcmp($1,"string")!=0)
-                    //     {
-                    //         cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string Line: " << yylineno << endl;
-                    //         return -1;
-                    //     }
-                    //     else
-                    //     {
-                    //         currentSymTable->addVector("string", $2, get<int>($4));
-                    //     }
-                    // }
+                    if (currentSymTable->isDefined($2)) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if(strcmp($1,"string")!=0)
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("string", $2, get<int>(result), $7);
                 }
                 | BOOL BOOLID '[' expression ']' ';'{
                     if (currentSymTable->isDefined($2)) {
