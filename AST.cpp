@@ -27,10 +27,9 @@ ASTNode::ASTNode(bool val, bool isBool)
     value.boolVal = val;
 }
 
-
 ASTNode::ASTNode(const string &val)
 {
-    type=NodeType::IDENTIFIER;
+    type = NodeType::IDENTIFIER;
     value.stringVal = new string(val);
 }
 
@@ -71,207 +70,50 @@ Value ASTNode::evaluate(SymTable &symTable)
     case NodeType::BOOL:
         evaluatedResult = value.boolVal;
         return evaluatedResult;
-    case NodeType::IDENTIFIER: {
+    case NodeType::CHAR:
+        evaluatedResult = value.charVal;
+        return evaluatedResult;
+    case NodeType::STRING:
+        evaluatedResult = *value.stringVal;
+        return evaluatedResult;
+    case NodeType::IDENTIFIER:
+    {
         Value symValue = symTable.getValue(*value.stringVal);
-        
-        if (holds_alternative<int>(symValue)) {
+        if (holds_alternative<int>(symValue))
+        {
             type = NodeType::INT;
             evaluatedResult = get<int>(symValue);
-        } else if (holds_alternative<float>(symValue)) {
+        }
+        else if (holds_alternative<float>(symValue))
+        {
             type = NodeType::FLOAT;
             evaluatedResult = get<float>(symValue);
-        } else if (holds_alternative<bool>(symValue)) {
+        }
+        else if (holds_alternative<bool>(symValue))
+        {
             type = NodeType::BOOL;
             evaluatedResult = get<bool>(symValue);
         }
-        else if (holds_alternative<char>(symValue)) {
+        else if (holds_alternative<char>(symValue))
+        {
             type = NodeType::CHAR;
             evaluatedResult = get<char>(symValue);
         }
-        else if(holds_alternative<string>(symValue))
+        else if (holds_alternative<string>(symValue))
         {
             type = NodeType::STRING;
             evaluatedResult = get<string>(symValue);
         }
-        else {
-            throw runtime_error("Unknown type for identifier: " + *value.stringVal);
+        else
+        {
+            cout << "Error: Unsupported type for variable '" << *value.stringVal << "\n";
         }
         return evaluatedResult;
     }
     case NodeType::OPERATOR:
     {
         auto leftVal = left->evaluate(symTable);
-        if (right)
-        {
-            auto rightVal = right->evaluate(symTable);
-            switch (value.op)
-            {
-            case Operator::ADD:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) + get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::SUBTRACT:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) - get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) - get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::MULTIPLY:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) * get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) * get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::DIVIDE:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) / get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) / get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::MODULO:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) % get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::POWER:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = static_cast<int>(pow(get<int>(leftVal), get<int>(rightVal)));
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = static_cast<float>(pow(get<float>(leftVal), get<float>(rightVal)));
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::EQ:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) == get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) == get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<bool>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<bool>(leftVal) == get<bool>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::NEQ:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) != get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) != get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<bool>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<bool>(leftVal) != get<bool>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::GT:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) > get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) > get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::LT:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) < get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) < get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::GE:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) >= get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) >= get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::LE:
-                if (checkOperands<int>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<int>(leftVal) <= get<int>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<float>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<float>(leftVal) <= get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::AND:
-                if (checkOperands<bool>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<bool>(leftVal) && get<bool>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            case Operator::OR:
-                if (checkOperands<bool>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<bool>(leftVal) || get<bool>(rightVal);
-                    return evaluatedResult;
-                }
-                break;
-            }
-        }
-        else
+        if (!right)
         {
             switch (value.op)
             {
@@ -286,19 +128,210 @@ Value ASTNode::evaluate(SymTable &symTable)
                     evaluatedResult = -get<float>(leftVal);
                     return evaluatedResult;
                 }
-                break;
+                cout << "Error: Unsupported type for unary operator '-'\n";
+                return monostate{};
             case Operator::NOT:
                 if (holds_alternative<bool>(leftVal))
                 {
                     evaluatedResult = !get<bool>(leftVal);
                     return evaluatedResult;
                 }
-                break;
+                cout << "Error: Unsupported type for unary operator '!'\n";
+                return monostate{};
+            default:
+                cout << "Error: Unsupported operator!" << endl;
+                return monostate{};
             }
+        }
+
+        auto rightVal = right->evaluate(symTable);
+        switch (value.op)
+        {
+        case Operator::ADD:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) + get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '+'\n";
+            return monostate{};
+        case Operator::SUBTRACT:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) - get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) - get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '-'\n";
+            return monostate{};
+        case Operator::MULTIPLY:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) * get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) * get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '*'\n";
+            return monostate{};
+        case Operator::DIVIDE:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) / get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) / get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '/'\n";
+            return monostate{};
+        case Operator::MODULO:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) % get<int>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '%'\n";
+            return monostate{};
+        case Operator::POWER:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = static_cast<int>(pow(get<int>(leftVal), get<int>(rightVal)));
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = static_cast<float>(pow(get<float>(leftVal), get<float>(rightVal)));
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '^'\n";
+            return monostate{};
+        case Operator::EQ:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) == get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) == get<float>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<bool>(leftVal, rightVal))
+            {
+                evaluatedResult = get<bool>(leftVal) == get<bool>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '=='\n";
+            return monostate{};
+        case Operator::NEQ:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) != get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) != get<float>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<bool>(leftVal, rightVal))
+            {
+                evaluatedResult = get<bool>(leftVal) != get<bool>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '!='\n";
+            return monostate{};
+        case Operator::GT:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) > get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) > get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '>'\n";
+            return monostate{};
+        case Operator::LT:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) < get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) < get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '<'\n";
+            return monostate{};
+        case Operator::GE:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) >= get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) >= get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '>='\n";
+            return monostate{};
+        case Operator::LE:
+            if (checkOperands<int>(leftVal, rightVal))
+            {
+                evaluatedResult = get<int>(leftVal) <= get<int>(rightVal);
+                return evaluatedResult;
+            }
+            if (checkOperands<float>(leftVal, rightVal))
+            {
+                evaluatedResult = get<float>(leftVal) <= get<float>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '<='\n";
+            return monostate{};
+        case Operator::AND:
+            if (checkOperands<bool>(leftVal, rightVal))
+            {
+                evaluatedResult = get<bool>(leftVal) && get<bool>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '&&'\n";
+            return monostate{};
+        case Operator::OR:
+            if (checkOperands<bool>(leftVal, rightVal))
+            {
+                evaluatedResult = get<bool>(leftVal) || get<bool>(rightVal);
+                return evaluatedResult;
+            }
+            cout << "Error: Unsupported operands for operator '||'\n";
+            return monostate{};
+        default:
+            cout << "Error: Unsupported operator!" << endl;
+            return monostate{};
         }
     }
     default:
-        return 0;
+        cout << "Error: Unsupported node type!" << endl;
+        return monostate{};
     }
 }
 
@@ -316,38 +349,39 @@ void ASTNode::printResult() const
     {
         cout << "PRINT (bool): " << (get<bool>(evaluatedResult) ? "true" : "false") << endl;
     }
-    else if(holds_alternative<char>(evaluatedResult))
+    else if (holds_alternative<char>(evaluatedResult))
     {
         cout << "PRINT (char): " << get<char>(evaluatedResult) << endl;
     }
-    else if(holds_alternative<string>(evaluatedResult))
+    else if (holds_alternative<string>(evaluatedResult))
     {
-        cout << "PRINT (string): "<< get<string>(evaluatedResult) << endl;
+        cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
     }
-    else{
+    else
+    {
         cout << "PRINT (undefined): " << endl;
     }
 }
 
 string ASTNode::getType() const
 {
-    if(holds_alternative<int>(evaluatedResult))
+    if (holds_alternative<int>(evaluatedResult))
     {
         return "int";
     }
-    else if(holds_alternative<float>(evaluatedResult))
+    else if (holds_alternative<float>(evaluatedResult))
     {
         return "float";
     }
-    else if(holds_alternative<bool>(evaluatedResult))
+    else if (holds_alternative<bool>(evaluatedResult))
     {
         return "bool";
     }
-    else if(holds_alternative<char>(evaluatedResult))
+    else if (holds_alternative<char>(evaluatedResult))
     {
         return "char";
     }
-    else if(holds_alternative<string>(evaluatedResult))
+    else if (holds_alternative<string>(evaluatedResult))
     {
         return "string";
     }

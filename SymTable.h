@@ -14,7 +14,7 @@ using namespace std;
 #define SCOPE_FILE2 "scopes2.txt"
 #define SCOPE_TREE_FILE "scope_tree.txt"
 
-using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
+using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>, monostate>;
 //using VectorValue=variant<int, float, bool, char, string>;
 
 class ParamList {

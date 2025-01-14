@@ -2,5 +2,6 @@ main
 {
    char c='a';
    char b=c;
-   Print(b);
+   int x=1;
+   Print(x+13);
 }

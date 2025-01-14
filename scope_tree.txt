@@ -4,10 +4,13 @@
  value = a
       +variable: b : char
  value = a
+      +variable: x : int
+ value = 1
 === main ===
   main: main
   variable: b : char = a
   variable: c : char = a
+  variable: x : int = 1
 
       <Leaving main scope: main
 === global ===

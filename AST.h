@@ -18,6 +18,7 @@ public:
         int intVal;
         float floatVal;
         bool boolVal;
+        char charVal;
         string* stringVal;
         Operator op;
     } value;
