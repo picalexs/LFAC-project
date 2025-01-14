@@ -1,9 +1,5 @@
 main
 {
-    bool b=false&&true||true;
-    bool c=b;
-    Print(c);
-
     int n=10;
     int x=n;
     Print(x);

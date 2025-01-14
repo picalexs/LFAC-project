@@ -65,24 +65,25 @@ extern int yydebug;
     LE = 266,                      /* LE  */
     GE = 267,                      /* GE  */
     ID = 268,                      /* ID  */
-    CLASS = 269,                   /* CLASS  */
-    MAIN = 270,                    /* MAIN  */
-    IF = 271,                      /* IF  */
-    ELSE = 272,                    /* ELSE  */
-    WHILE = 273,                   /* WHILE  */
-    FOR = 274,                     /* FOR  */
-    PRINT = 275,                   /* PRINT  */
-    TYPEOF = 276,                  /* TYPEOF  */
-    FUNC = 277,                    /* FUNC  */
-    RETURN = 278,                  /* RETURN  */
-    TYPE = 279,                    /* TYPE  */
-    INT = 280,                     /* INT  */
-    FLOAT = 281,                   /* FLOAT  */
-    CHAR = 282,                    /* CHAR  */
-    STRING = 283,                  /* STRING  */
-    TRUE = 284,                    /* TRUE  */
-    FALSE = 285,                   /* FALSE  */
-    BOOL = 286                     /* BOOL  */
+    BOOLID = 269,                  /* BOOLID  */
+    CLASS = 270,                   /* CLASS  */
+    MAIN = 271,                    /* MAIN  */
+    IF = 272,                      /* IF  */
+    ELSE = 273,                    /* ELSE  */
+    WHILE = 274,                   /* WHILE  */
+    FOR = 275,                     /* FOR  */
+    PRINT = 276,                   /* PRINT  */
+    TYPEOF = 277,                  /* TYPEOF  */
+    FUNC = 278,                    /* FUNC  */
+    RETURN = 279,                  /* RETURN  */
+    TYPE = 280,                    /* TYPE  */
+    INT = 281,                     /* INT  */
+    FLOAT = 282,                   /* FLOAT  */
+    CHAR = 283,                    /* CHAR  */
+    STRING = 284,                  /* STRING  */
+    TRUE = 285,                    /* TRUE  */
+    FALSE = 286,                   /* FALSE  */
+    BOOL = 287                     /* BOOL  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -91,7 +92,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 38 "limbaj.y"
+#line 40 "limbaj.y"
 
     char* valtype;
     class ASTNode* node;
@@ -101,7 +102,7 @@ union YYSTYPE
     char charval;
     char* string;
 
-#line 105 "limbaj.tab.h"
+#line 106 "limbaj.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

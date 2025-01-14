@@ -53,6 +53,11 @@
 "]" { return ']'; }
 "." { return '.'; }
 
+[A-Z_][A-Z0-9_]* {
+    yylval.string = strdup(yytext);
+    return BOOLID;
+}
+
 [a-zA-Z_][a-zA-Z0-9_]* {
     yylval.string = strdup(yytext);
     return ID;
