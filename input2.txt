@@ -1,6 +1,6 @@
 main
 {
-    int n=10;
-    int x=n;
-    Print(x);
+   char c='a';
+   char b=c;
+   Print(b);
 }

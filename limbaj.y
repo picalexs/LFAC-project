@@ -171,6 +171,24 @@ var_declaration : TYPE ID ';'
                         }
                     }
                 }
+                | TYPE ID '[' expression ']' ASSIGN STRING ';'{
+                    // if (currentSymTable->isDefined($2)) {
+                    //     cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                    //     errorCount++;
+                    // }
+                    // else 
+                    // {
+                    //     if(strcmp($1,"string")!=0)
+                    //     {
+                    //         cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string"<<endl;
+                    //         errorCount++;
+                    //     }
+                    //     else
+                    //     {
+                    //         currentSymTable->addVector("string", $2, get<int>($4));
+                    //     }
+                    // }
+                }
                 | BOOL BOOLID '[' expression ']' ';'{
                     if (currentSymTable->isDefined($2)) {
                         cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
@@ -405,10 +423,9 @@ assignment : left_value ASSIGN expression {
            | left_value ASSIGN STRING {
                 $1->evaluate(*currentSymTable);
                 string ltype=$1->getType();
-                string rtype="string";
-                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
-                if (ltype != rtype) {
-                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
+                cout<<"Assignment: "<<ltype<<" string"<<endl;
+                if (strcmp("string",ltype.c_str())!=0) {
+                    cout << "Error: Assignment type mismatch. Expected string but got " << $1 << endl;
                     errorCount++;
                 }
            }
@@ -431,7 +448,7 @@ left_value : ID
                     cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                     errorCount++;
                 }
-                $$=new ASTNode($1, true);
+                $$=new ASTNode($1);
             }
             | ID '[' expression ']'
             {
@@ -439,7 +456,7 @@ left_value : ID
                     cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
                     errorCount++;
                 }
-                $$=new ASTNode($1, true);
+                $$=new ASTNode($1);
             }
             | BOOL ID{
                 // if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
@@ -598,7 +615,7 @@ expression : expression '+' expression {
                     cout << "Error: Identifier '" << $1 << "' not defined." << endl;
                     errorCount++;
                 }
-               $$ = new ASTNode($1, true);
+               $$ = new ASTNode($1);
            }
            | INT {
                $$ = new ASTNode($1);
@@ -630,7 +647,7 @@ boolean_expression : TRUE {
                             errorCount++;
                         }
                         else{
-                            $$ = new ASTNode($1, true);
+                            $$ = new ASTNode($1);
                         }
                    }
                    | expression '>' expression {

@@ -11,47 +11,27 @@ bool checkOperands(const Value &leftVal, const Value &rightVal)
 
 ASTNode::ASTNode(int val)
 {
-    cout<<"int constructor"<<endl;
     type = NodeType::INT;
     value.intVal = val;
 }
 
 ASTNode::ASTNode(float val)
 {
-    cout<<"float constructor"<<endl;
     type = NodeType::FLOAT;
     value.floatVal = val;
 }
 
 ASTNode::ASTNode(bool val, bool isBool)
 {
-    cout<<"bool constructor"<<endl;
     type = NodeType::BOOL;
     value.boolVal = val;
 }
 
-ASTNode::ASTNode(char val)
-{
-    cout<<"char constructor"<<endl;
-    type = NodeType::CHAR;
-    value.charVal = val;
-}
 
 ASTNode::ASTNode(const string &val)
 {
-    cout<<"string constructor"<<endl;
-    type = NodeType::STRING;
+    type=NodeType::IDENTIFIER;
     value.stringVal = new string(val);
-}
-
-ASTNode::ASTNode(const string &id, bool isIdentifier)
-{
-    if (isIdentifier)
-    {
-        cout<<"identifier constructor"<<endl;
-        type = NodeType::IDENTIFIER;
-        value.stringVal = new string(id);
-    }
 }
 
 ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)
@@ -64,7 +44,7 @@ ASTNode::ASTNode(Operator op, ASTNode *left, ASTNode *right)
 
 ASTNode::~ASTNode()
 {
-    if (type == NodeType::STRING || type == NodeType::IDENTIFIER)
+    if (type == NodeType::IDENTIFIER)
     {
         delete value.stringVal;
     }
@@ -83,23 +63,15 @@ Value ASTNode::evaluate(SymTable &symTable)
     switch (type)
     {
     case NodeType::INT:
-        cout<<"INT: "<<value.intVal<<endl;
         evaluatedResult = value.intVal;
         return evaluatedResult;
     case NodeType::FLOAT:
-        cout<<"FLOAT: "<<value.floatVal<<endl;
         evaluatedResult = value.floatVal;
         return evaluatedResult;
     case NodeType::BOOL:
-        cout<<"BOOL: "<<value.boolVal<<endl;
         evaluatedResult = value.boolVal;
         return evaluatedResult;
-    case NodeType::STRING:
-        cout<<"STRING: "<<*value.stringVal<<endl;
-        evaluatedResult = *value.stringVal;
-        return evaluatedResult;
     case NodeType::IDENTIFIER: {
-        cout << "IDENTIFIER: " << *value.stringVal << endl;
         Value symValue = symTable.getValue(*value.stringVal);
         
         if (holds_alternative<int>(symValue)) {
@@ -111,10 +83,17 @@ Value ASTNode::evaluate(SymTable &symTable)
         } else if (holds_alternative<bool>(symValue)) {
             type = NodeType::BOOL;
             evaluatedResult = get<bool>(symValue);
-        } else if (holds_alternative<string>(symValue)) {
+        }
+        else if (holds_alternative<char>(symValue)) {
+            type = NodeType::CHAR;
+            evaluatedResult = get<char>(symValue);
+        }
+        else if(holds_alternative<string>(symValue))
+        {
             type = NodeType::STRING;
             evaluatedResult = get<string>(symValue);
-        } else {
+        }
+        else {
             throw runtime_error("Unknown type for identifier: " + *value.stringVal);
         }
         return evaluatedResult;
@@ -136,11 +115,6 @@ Value ASTNode::evaluate(SymTable &symTable)
                 else if (checkOperands<float>(leftVal, rightVal))
                 {
                     evaluatedResult = get<float>(leftVal) + get<float>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<string>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<string>(leftVal) + get<string>(rightVal);
                     return evaluatedResult;
                 }
                 break;
@@ -215,11 +189,6 @@ Value ASTNode::evaluate(SymTable &symTable)
                     evaluatedResult = get<bool>(leftVal) == get<bool>(rightVal);
                     return evaluatedResult;
                 }
-                else if (checkOperands<string>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<string>(leftVal) == get<string>(rightVal);
-                    return evaluatedResult;
-                }
                 break;
             case Operator::NEQ:
                 if (checkOperands<int>(leftVal, rightVal))
@@ -235,11 +204,6 @@ Value ASTNode::evaluate(SymTable &symTable)
                 else if (checkOperands<bool>(leftVal, rightVal))
                 {
                     evaluatedResult = get<bool>(leftVal) != get<bool>(rightVal);
-                    return evaluatedResult;
-                }
-                else if (checkOperands<string>(leftVal, rightVal))
-                {
-                    evaluatedResult = get<string>(leftVal) != get<string>(rightVal);
                     return evaluatedResult;
                 }
                 break;
@@ -356,9 +320,12 @@ void ASTNode::printResult() const
     {
         cout << "PRINT (char): " << get<char>(evaluatedResult) << endl;
     }
-    else if (holds_alternative<string>(evaluatedResult))
+    else if(holds_alternative<string>(evaluatedResult))
     {
-        cout << "PRINT (string): " << get<string>(evaluatedResult) << endl;
+        cout << "PRINT (string): "<< get<string>(evaluatedResult) << endl;
+    }
+    else{
+        cout << "PRINT (undefined): " << endl;
     }
 }
 

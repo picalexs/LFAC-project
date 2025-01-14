@@ -1,9 +1,16 @@
    >Entering global scope: Global
       >Entering main scope: main
-      +variable: n : int
- value = 10
+      +variable: c : char
+ value = a
+      +variable: b : char
+ value = a
 === main ===
   main: main
-  variable: n : int = 10
+  variable: b : char = a
+  variable: c : char = a
 
       <Leaving main scope: main
+=== global ===
+ global: Global
+
+   <Leaving global scope: Global
