@@ -106,7 +106,8 @@ Value ASTNode::evaluate(SymTable &symTable)
         }
         else
         {
-            cout << "Error: Unsupported type for variable '" << *value.stringVal << "\n";
+            cout << "Error: Unsupported type for variable '" << *value.stringVal << "'\n";
+            return monostate{};
         }
         return evaluatedResult;
     }

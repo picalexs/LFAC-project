@@ -543,7 +543,7 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  3
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   611
+#define YYLAST   617
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  50
@@ -552,7 +552,7 @@ union yyalloc
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  121
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  250
+#define YYNSTATES  247
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   287
@@ -605,18 +605,18 @@ static const yytype_int8 yytranslate[] =
 static const yytype_int16 yyrline[] =
 {
        0,    66,    66,    66,    78,    79,    82,    83,    86,    94,
-     115,   130,   145,   168,   186,   201,   219,   233,   249,   250,
-     253,   254,   259,   258,   281,   280,   293,   294,   297,   298,
-     303,   302,   316,   317,   320,   321,   322,   327,   326,   339,
-     340,   341,   344,   350,   349,   360,   361,   362,   363,   367,
-     368,   369,   370,   371,   375,   376,   377,   378,   381,   392,
-     402,   411,   424,   432,   440,   447,   455,   460,   461,   466,
-     470,   465,   476,   479,   478,   490,   489,   501,   500,   511,
-     512,   515,   524,   527,   530,   534,   540,   544,   548,   551,
-     556,   559,   560,   561,   562,   563,   567,   570,   573,   576,
-     579,   582,   585,   588,   591,   599,   602,   605,   608,   613,
-     616,   619,   622,   632,   635,   638,   641,   644,   647,   650,
-     653,   656
+     115,   130,   149,   181,   199,   219,   244,   258,   274,   275,
+     278,   279,   284,   283,   303,   302,   315,   316,   319,   320,
+     325,   324,   338,   339,   342,   343,   344,   349,   348,   361,
+     362,   363,   366,   372,   371,   382,   383,   384,   385,   389,
+     390,   391,   392,   393,   397,   398,   399,   400,   403,   423,
+     437,   450,   466,   474,   482,   489,   497,   502,   503,   508,
+     512,   507,   518,   521,   520,   532,   531,   543,   542,   553,
+     554,   557,   566,   569,   572,   576,   582,   586,   590,   593,
+     598,   601,   602,   603,   604,   605,   609,   612,   615,   618,
+     621,   624,   627,   630,   633,   641,   644,   647,   650,   655,
+     658,   661,   664,   672,   675,   678,   681,   684,   687,   690,
+     693,   696
 };
 #endif
 
@@ -659,7 +659,7 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-197)
+#define YYPACT_NINF (-194)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
@@ -673,31 +673,31 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-    -197,    32,    42,  -197,    53,   -16,    42,  -197,  -197,    58,
-      68,    76,   -16,  -197,  -197,   101,    64,    73,    49,    97,
-      76,  -197,  -197,   208,  -197,     1,   174,   256,   174,   109,
-     124,  -197,  -197,   132,   113,  -197,  -197,   207,  -197,  -197,
-     174,   174,    -3,  -197,  -197,   136,   150,  -197,  -197,   123,
-      30,   256,   256,  -197,  -197,  -197,   552,    77,    51,   147,
-    -197,   129,   146,  -197,  -197,  -197,   596,   256,   149,  -197,
-    -197,   174,   174,   174,   174,   174,   174,  -197,     2,  -197,
-     486,    -6,   174,   174,   174,   174,   174,   174,  -197,   256,
-     256,     7,   129,   548,   151,     5,  -197,   164,  -197,    33,
-     552,    86,   166,   311,   311,   173,   173,   173,   173,  -197,
-     287,  -197,   562,   562,   562,   562,   562,   562,  -197,   170,
-    -197,   256,    34,    -2,   169,   179,   182,   212,   221,   233,
-     174,    96,  -197,   304,   206,  -197,  -197,   230,   235,  -197,
-    -197,  -197,  -197,  -197,  -197,  -197,  -197,  -197,  -197,   129,
-     129,  -197,   256,   256,   241,   583,   187,  -197,   174,   174,
-     256,   256,   -16,   197,   237,   562,  -197,  -197,   242,  -197,
-    -197,   245,   243,  -197,    37,   552,    86,    63,  -197,  -197,
-    -197,   248,    60,    67,   127,   141,   256,   251,   258,   508,
-     172,   259,   275,   530,   184,  -197,  -197,  -197,   552,    86,
-     548,  -197,  -197,   548,  -197,  -197,  -197,  -197,   246,  -197,
-    -197,  -197,  -197,  -197,  -197,  -197,  -197,   325,   274,   346,
-     276,   277,    70,  -197,   548,  -197,   548,   548,   -36,   279,
-     291,  -197,   367,   388,   409,  -197,  -197,  -197,  -197,   285,
-     280,   548,  -197,  -197,   430,   290,  -197,   548,   451,  -197
+    -194,     7,    51,  -194,    65,   -15,    51,  -194,  -194,    71,
+      77,    73,   -15,  -194,  -194,    16,     2,    39,    74,    87,
+      73,  -194,  -194,    92,  -194,   162,    56,   289,    56,    95,
+     106,  -194,  -194,   120,   102,  -194,  -194,    93,  -194,  -194,
+      56,    56,    -8,  -194,  -194,   127,   129,  -194,  -194,   583,
+       6,   289,   289,  -194,  -194,  -194,   552,   104,    31,   142,
+    -194,   113,   135,  -194,  -194,  -194,   602,   289,   144,  -194,
+    -194,    56,    56,    56,    56,    56,    56,  -194,    27,  -194,
+     486,   137,    56,    56,    56,    56,    56,    56,  -194,   289,
+     289,    28,   113,   548,   146,     1,  -194,   149,  -194,     4,
+     552,     5,   161,   213,   213,   180,   180,   180,   180,  -194,
+      66,  -194,   562,   562,   562,   562,   562,   562,  -194,   173,
+    -194,   289,    11,     8,   159,   221,   233,   236,   237,   240,
+      56,  -194,   304,   193,  -194,  -194,   217,   229,  -194,  -194,
+    -194,  -194,  -194,  -194,  -194,  -194,  -194,  -194,   113,   113,
+    -194,   289,   289,   242,   596,   169,  -194,    56,    56,   289,
+     289,   -15,   172,   241,   562,  -194,   244,  -194,  -194,   248,
+     246,  -194,    35,   552,     5,    40,  -194,  -194,  -194,   247,
+      60,    68,   195,   211,   289,   250,   254,   508,   222,   255,
+     256,   530,   234,  -194,  -194,  -194,   552,     5,   548,  -194,
+    -194,   548,  -194,  -194,  -194,  -194,   184,  -194,  -194,  -194,
+    -194,  -194,  -194,  -194,  -194,   325,   259,   346,   260,   261,
+     198,  -194,   548,  -194,   548,   548,    44,   257,  -194,   367,
+     388,   409,  -194,  -194,  -194,  -194,   262,   230,   548,  -194,
+    -194,   430,   276,  -194,   548,   451,  -194
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -717,39 +717,39 @@ static const yytype_int8 yydefact[] =
        0,     0,    41,     0,     0,     0,    39,     0,   103,     0,
       92,    94,    67,    96,    97,    98,    99,   100,   101,    11,
        0,   111,   113,   114,   117,   118,   116,   115,   119,   120,
-      14,     0,     0,    62,     0,     0,     0,     0,     0,     0,
-       0,     0,    54,     0,     0,    48,    49,     0,    53,    55,
-      56,    57,    50,    51,    79,    80,    52,    42,    37,     0,
-      41,    81,     0,    95,     0,     0,     0,    22,     0,     0,
-       0,     0,     0,     0,     0,    90,    64,    44,     0,    47,
-      46,     0,     0,    40,     0,    91,    93,     0,    13,    12,
-      15,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-       0,     0,     0,     0,     0,    45,    61,    60,    58,    59,
-       0,    24,    68,     0,    63,    65,    69,    75,     0,    82,
-      83,    84,    85,    89,    88,    86,    87,     0,     0,     0,
-       0,     0,     0,    38,     0,    23,     0,     0,    62,     0,
-       0,    66,     0,     0,     0,    77,    25,    70,    76,     0,
-      72,     0,    73,    71,     0,     0,    78,     0,     0,    74
+      14,     0,     0,    62,    64,     0,     0,     0,     0,     0,
+       0,    54,     0,     0,    48,    49,     0,    53,    55,    56,
+      57,    50,    51,    79,    80,    52,    42,    37,     0,    41,
+      81,     0,    95,     0,     0,     0,    22,     0,     0,     0,
+       0,     0,     0,     0,    90,    44,     0,    47,    46,     0,
+       0,    40,     0,    91,    93,     0,    13,    12,    15,     0,
+       0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    45,    61,    60,    58,    59,     0,    24,
+      68,     0,    63,    65,    69,    75,     0,    82,    83,    84,
+      85,    89,    88,    86,    87,     0,     0,     0,     0,     0,
+       0,    38,     0,    23,     0,     0,    62,     0,    66,     0,
+       0,     0,    77,    25,    70,    76,     0,    72,     0,    73,
+      71,     0,     0,    78,     0,     0,    74
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int16 yypgoto[] =
 {
-    -197,  -197,  -197,  -197,  -197,    -4,  -197,  -197,   292,  -197,
-    -197,  -197,  -197,  -197,   308,  -197,  -197,   273,  -197,  -197,
-     -89,   175,  -197,  -197,  -196,  -131,  -128,    93,  -197,   -79,
-    -197,  -197,  -197,  -197,  -197,  -197,  -197,  -197,  -197,  -197,
-     -43,  -197,  -197,  -197,   168,   145,   -27
+    -194,  -194,  -194,  -194,  -194,    -3,  -194,  -194,   253,  -194,
+    -194,  -194,  -194,  -194,   290,  -194,  -194,   258,  -194,  -194,
+     -89,   150,  -194,  -194,  -193,  -131,  -128,    79,  -194,   -76,
+    -194,  -194,  -194,  -194,  -194,  -194,  -194,  -194,  -194,  -194,
+     -51,  -194,  -194,  -194,   145,   156,   -27
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_uint8 yydefgoto[] =
 {
-       0,     1,     2,    11,    12,   132,    19,    20,    21,   181,
-      36,   218,     5,     6,     7,    15,    37,    38,    39,   172,
-      95,    96,    31,    93,   133,   134,   135,   136,   137,    47,
-     139,   220,   240,   243,   245,   140,   221,   141,   239,   142,
-      48,   144,   145,   146,    99,    56,   101
+       0,     1,     2,    11,    12,   131,    19,    20,    21,   179,
+      36,   216,     5,     6,     7,    15,    37,    38,    39,   170,
+      95,    96,    31,    93,   132,   133,   134,   135,   136,    47,
+     138,   218,   237,   240,   242,   139,   219,   140,   236,   141,
+      48,   143,   144,   145,    99,    56,   101
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -757,106 +757,106 @@ static const yytype_uint8 yydefgoto[] =
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int16 yytable[] =
 {
-      57,    13,   168,   122,   217,   169,    40,   219,    22,   111,
-     158,    67,    67,    68,   138,    41,    89,    90,   109,    35,
-     148,   110,     9,   120,    79,    81,   121,    42,   232,    10,
-     233,   234,     3,    35,    71,    72,    73,    74,    75,    76,
-      43,    44,    45,    46,   158,   244,    68,    68,   151,   157,
-     143,   248,   201,   149,   138,    71,    72,    73,    74,    75,
-      76,   174,   118,   119,    71,    72,    73,    74,    75,    76,
-       4,    71,    72,    73,    74,    75,    76,    78,   202,     8,
-      24,   152,   149,    25,    16,   149,   168,    29,   168,   169,
-     143,   169,    27,    88,   156,    17,   228,   124,    91,    89,
-      90,   168,   168,   168,   169,   169,   169,   204,    89,    90,
-      26,   152,    18,   168,   205,   229,   169,   168,    23,    28,
-     169,   138,   166,    17,   138,   176,    30,    71,    72,    73,
-      74,    75,    76,   184,   185,    59,   190,   194,   138,    77,
-     138,    60,   206,   231,   199,   138,    61,   138,   138,    89,
-      90,    62,    69,   138,   138,   138,   207,   143,   186,   208,
-     143,    92,   138,    89,    90,   138,    70,    94,   138,   138,
-      49,    50,    97,    58,   143,   102,   143,   147,   150,    40,
-     153,   143,    76,   143,   143,    65,    66,   212,    41,   143,
-     143,   143,    89,   160,    89,    90,   161,    80,   143,   216,
-      42,   143,    40,   180,   143,   143,    89,    90,    51,    89,
-      90,    52,   100,    43,    44,   159,   103,   104,   105,   106,
-     107,   108,   170,    42,    53,    63,   162,   112,   113,   114,
-     115,   116,   117,    33,    33,   163,    43,    44,   187,   188,
-      54,    55,    40,    34,    34,     9,     9,   164,    51,   171,
-      40,    52,    10,    10,   -66,   155,    51,   178,   195,    52,
-     200,    40,   222,    42,    53,   203,   209,    51,    89,    90,
-      52,    42,    53,   210,   213,   165,    43,    44,   191,   192,
-      54,    55,    42,    53,    43,    44,   196,   197,    54,    55,
-     214,   224,    40,   226,   227,    43,    44,   175,   100,    54,
-      55,    41,   241,   182,   183,   166,   235,   247,   189,   193,
-      64,   242,    32,    42,    14,   230,   198,    73,    74,    75,
-      76,   177,   167,     0,   173,     0,    43,    44,     0,   154,
-     123,   124,     0,     0,   125,     0,   126,   127,   128,   129,
-       0,   130,     9,   223,     0,     0,     0,     0,     0,   131,
+      57,   166,    13,   122,   167,   215,    67,     3,   217,    22,
+      71,    72,    73,    74,    75,    76,   147,   137,    24,   150,
+      35,    25,    67,     9,    79,    81,   156,    89,    90,   229,
+      10,   230,   231,    23,    35,    71,    72,    73,    74,    75,
+      76,    68,   142,   109,   120,   241,   110,   121,    26,   148,
+     199,   245,   151,    78,   157,   200,   137,    68,    27,   148,
+     172,    40,   118,   119,    71,    72,    73,    74,    75,    76,
+      41,    40,    71,    72,    73,    74,    75,    76,    91,     4,
+      41,   142,    42,   148,   166,    28,   166,   167,   151,   167,
+     157,     8,    42,    68,   155,    43,    44,    16,   166,   166,
+     166,   167,   167,   167,    17,    43,    44,   202,   153,    18,
+     166,    63,    29,   167,   166,   203,    30,   167,    33,    33,
+      88,    59,   137,    60,   174,   137,    89,    90,    34,    34,
+       9,     9,   182,   183,    61,   188,   192,    10,    10,   137,
+      62,   137,   197,    69,   228,    70,   137,   142,   137,   137,
+     142,    94,   111,   137,   137,   137,    92,   206,   184,    89,
+      90,    97,   137,   149,   142,   137,   142,    40,   137,   137,
+     102,   142,   146,   142,   142,   152,    41,    40,   142,   142,
+     142,    49,    50,    51,    58,   178,    52,   142,    42,    76,
+     142,    89,    90,   142,   142,    89,    65,    66,    42,    53,
+     220,    43,    44,    45,    46,   158,    89,    90,    80,   168,
+     204,    43,    44,   185,   186,    54,    55,    89,    90,    73,
+      74,    75,    76,   100,   226,   124,   205,   103,   104,   105,
+     106,   107,   108,    89,    90,   159,   169,   210,   112,   113,
+     114,   115,   116,   117,    89,    90,    40,   160,   -66,   214,
+     161,   162,    51,    40,   163,    52,    89,    90,   176,    51,
+     193,   239,    52,   198,   201,   207,   154,    42,    53,   208,
+     211,   212,   232,    32,    42,    53,   222,   224,   225,   238,
+      43,    44,   189,   190,    54,    55,   164,    43,    44,   194,
+     195,    54,    55,   244,    40,    64,    14,   175,   171,   227,
+      51,     0,     0,    52,     0,     0,     0,   173,   100,     0,
+       0,     0,     0,   180,   181,    42,    53,     0,   187,   191,
+       0,     0,   165,     0,     0,   196,     0,     0,    43,    44,
+     123,   124,    54,    55,   125,     0,   126,   127,   128,   129,
+       0,   130,     9,   221,     0,     0,     0,     0,     0,    10,
        0,   123,   124,     0,     0,   125,     0,   126,   127,   128,
-     129,     0,   130,     9,   225,     0,     0,     0,     0,     0,
-     131,     0,   123,   124,     0,     0,   125,     0,   126,   127,
-     128,   129,     0,   130,     9,   236,     0,     0,     0,     0,
-       0,   131,     0,   123,   124,     0,     0,   125,     0,   126,
-     127,   128,   129,     0,   130,     9,   237,     0,     0,     0,
-       0,     0,   131,     0,   123,   124,     0,     0,   125,     0,
-     126,   127,   128,   129,     0,   130,     9,   238,     0,     0,
-       0,     0,     0,   131,     0,   123,   124,     0,     0,   125,
-       0,   126,   127,   128,   129,     0,   130,     9,   246,     0,
-       0,     0,     0,     0,   131,     0,   123,   124,     0,     0,
-     125,     0,   126,   127,   128,   129,     0,   130,     9,   249,
-       0,     0,     0,     0,     0,   131,     0,   123,   124,     0,
+     129,     0,   130,     9,   223,     0,     0,     0,     0,     0,
+      10,     0,   123,   124,     0,     0,   125,     0,   126,   127,
+     128,   129,     0,   130,     9,   233,     0,     0,     0,     0,
+       0,    10,     0,   123,   124,     0,     0,   125,     0,   126,
+     127,   128,   129,     0,   130,     9,   234,     0,     0,     0,
+       0,     0,    10,     0,   123,   124,     0,     0,   125,     0,
+     126,   127,   128,   129,     0,   130,     9,   235,     0,     0,
+       0,     0,     0,    10,     0,   123,   124,     0,     0,   125,
+       0,   126,   127,   128,   129,     0,   130,     9,   243,     0,
+       0,     0,     0,     0,    10,     0,   123,   124,     0,     0,
+     125,     0,   126,   127,   128,   129,     0,   130,     9,   246,
+       0,     0,     0,     0,     0,    10,     0,   123,   124,     0,
        0,   125,     0,   126,   127,   128,   129,     0,   130,     9,
-      71,    72,    73,    74,    75,    76,   131,     0,    82,    83,
+      71,    72,    73,    74,    75,    76,    10,     0,    82,    83,
        0,    98,     0,     0,     0,     0,    84,    85,     0,     0,
       86,    87,    71,    72,    73,    74,    75,    76,     0,     0,
-      82,    83,     0,   211,     0,     0,     0,     0,    84,    85,
+      82,    83,     0,   209,     0,     0,     0,     0,    84,    85,
        0,     0,    86,    87,    71,    72,    73,    74,    75,    76,
-       0,     0,    82,    83,     0,   215,     0,     0,     0,     0,
+       0,     0,    82,    83,     0,   213,     0,     0,     0,     0,
       84,    85,     0,     0,    86,    87,    71,    72,    73,    74,
       75,    76,     0,     0,    82,    83,    71,    72,    73,    74,
       75,    76,    84,    85,   123,   124,    86,    87,   125,     0,
      126,   127,   128,   129,     0,   130,     9,    71,    72,    73,
-      74,    75,    76,   131,     0,     0,     0,     0,     0,   179,
-      71,    72,    73,    74,    75,    76,     0,     0,     0,     0,
-       0,    98
+      74,    75,    76,    10,     0,     0,     0,     0,     0,    77,
+      71,    72,    73,    74,    75,    76,    71,    72,    73,    74,
+      75,    76,   177,     0,     0,     0,     0,    98
 };
 
 static const yytype_int16 yycheck[] =
 {
-      27,     5,   133,    92,   200,   133,     5,   203,    12,    15,
-      46,    14,    14,    49,    93,    14,    22,    23,    16,    23,
-      15,    19,    38,    16,    51,    52,    19,    26,   224,    45,
-     226,   227,     0,    37,     4,     5,     6,     7,     8,     9,
-      39,    40,    41,    42,    46,   241,    49,    49,    15,    15,
-      93,   247,    15,    48,   133,     4,     5,     6,     7,     8,
-       9,   150,    89,    90,     4,     5,     6,     7,     8,     9,
-      28,     4,     5,     6,     7,     8,     9,    47,    15,    26,
-      16,    48,    48,    19,    26,    48,   217,    38,   219,   217,
-     133,   219,    19,    16,   121,    27,    26,    27,    47,    22,
-      23,   232,   233,   234,   232,   233,   234,    47,    22,    23,
-      46,    48,    36,   244,    47,    45,   244,   248,    17,    46,
-     248,   200,    26,    27,   203,   152,    29,     4,     5,     6,
-       7,     8,     9,   160,   161,    26,   163,   164,   217,    16,
-     219,    17,    15,   222,   171,   224,    14,   226,   227,    22,
-      23,    38,    16,   232,   233,   234,    15,   200,   162,   186,
-     203,    14,   241,    22,    23,   244,    16,    38,   247,   248,
-      25,    26,    26,    28,   217,    26,   219,    26,    14,     5,
-      14,   224,     9,   226,   227,    40,    41,    15,    14,   232,
-     233,   234,    22,    14,    22,    23,    14,    52,   241,    15,
-      26,   244,     5,    16,   247,   248,    22,    23,    11,    22,
-      23,    14,    67,    39,    40,    46,    71,    72,    73,    74,
-      75,    76,    16,    26,    27,    18,    14,    82,    83,    84,
-      85,    86,    87,    26,    26,    14,    39,    40,    41,    42,
-      43,    44,     5,    36,    36,    38,    38,    14,    11,    19,
-       5,    14,    45,    45,    19,   110,    11,    16,    16,    14,
-      17,     5,    16,    26,    27,    17,    15,    11,    22,    23,
-      14,    26,    27,    15,    15,   130,    39,    40,    41,    42,
-      43,    44,    26,    27,    39,    40,    41,    42,    43,    44,
-      15,    17,     5,    17,    17,    39,    40,   152,   153,    43,
-      44,    14,    17,   158,   159,    26,    15,    17,   163,   164,
-      37,    31,    20,    26,     6,   222,   171,     6,     7,     8,
-       9,   153,    18,    -1,   149,    -1,    39,    40,    -1,    42,
-      26,    27,    -1,    -1,    30,    -1,    32,    33,    34,    35,
+      27,   132,     5,    92,   132,   198,    14,     0,   201,    12,
+       4,     5,     6,     7,     8,     9,    15,    93,    16,    15,
+      23,    19,    14,    38,    51,    52,    15,    22,    23,   222,
+      45,   224,   225,    17,    37,     4,     5,     6,     7,     8,
+       9,    49,    93,    16,    16,   238,    19,    19,    46,    48,
+      15,   244,    48,    47,    46,    15,   132,    49,    19,    48,
+     149,     5,    89,    90,     4,     5,     6,     7,     8,     9,
+      14,     5,     4,     5,     6,     7,     8,     9,    47,    28,
+      14,   132,    26,    48,   215,    46,   217,   215,    48,   217,
+      46,    26,    26,    49,   121,    39,    40,    26,   229,   230,
+     231,   229,   230,   231,    27,    39,    40,    47,    42,    36,
+     241,    18,    38,   241,   245,    47,    29,   245,    26,    26,
+      16,    26,   198,    17,   151,   201,    22,    23,    36,    36,
+      38,    38,   159,   160,    14,   162,   163,    45,    45,   215,
+      38,   217,   169,    16,   220,    16,   222,   198,   224,   225,
+     201,    38,    15,   229,   230,   231,    14,   184,   161,    22,
+      23,    26,   238,    14,   215,   241,   217,     5,   244,   245,
+      26,   222,    26,   224,   225,    14,    14,     5,   229,   230,
+     231,    25,    26,    11,    28,    16,    14,   238,    26,     9,
+     241,    22,    23,   244,   245,    22,    40,    41,    26,    27,
+      16,    39,    40,    41,    42,    46,    22,    23,    52,    16,
+      15,    39,    40,    41,    42,    43,    44,    22,    23,     6,
+       7,     8,     9,    67,    26,    27,    15,    71,    72,    73,
+      74,    75,    76,    22,    23,    14,    19,    15,    82,    83,
+      84,    85,    86,    87,    22,    23,     5,    14,    19,    15,
+      14,    14,    11,     5,    14,    14,    22,    23,    16,    11,
+      16,    31,    14,    17,    17,    15,   110,    26,    27,    15,
+      15,    15,    15,    20,    26,    27,    17,    17,    17,    17,
+      39,    40,    41,    42,    43,    44,   130,    39,    40,    41,
+      42,    43,    44,    17,     5,    37,     6,   152,   148,   220,
+      11,    -1,    -1,    14,    -1,    -1,    -1,   151,   152,    -1,
+      -1,    -1,    -1,   157,   158,    26,    27,    -1,   162,   163,
+      -1,    -1,    18,    -1,    -1,   169,    -1,    -1,    39,    40,
+      26,    27,    43,    44,    30,    -1,    32,    33,    34,    35,
       -1,    37,    38,    18,    -1,    -1,    -1,    -1,    -1,    45,
       -1,    26,    27,    -1,    -1,    30,    -1,    32,    33,    34,
       35,    -1,    37,    38,    18,    -1,    -1,    -1,    -1,    -1,
@@ -883,8 +883,8 @@ static const yytype_int16 yycheck[] =
        8,     9,    20,    21,    26,    27,    24,    25,    30,    -1,
       32,    33,    34,    35,    -1,    37,    38,     4,     5,     6,
        7,     8,     9,    45,    -1,    -1,    -1,    -1,    -1,    16,
-       4,     5,     6,     7,     8,     9,    -1,    -1,    -1,    -1,
-      -1,    15
+       4,     5,     6,     7,     8,     9,     4,     5,     6,     7,
+       8,     9,    16,    -1,    -1,    -1,    -1,    15
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -904,18 +904,18 @@ static const yytype_int8 yystos[] =
       95,    96,    26,    95,    95,    95,    95,    95,    95,    16,
       19,    15,    95,    95,    95,    95,    95,    95,    96,    96,
       16,    19,    70,    26,    27,    30,    32,    33,    34,    35,
-      37,    45,    55,    74,    75,    76,    77,    78,    79,    80,
-      85,    87,    89,    90,    91,    92,    93,    26,    15,    48,
-      14,    15,    48,    14,    42,    95,    96,    15,    46,    46,
-      14,    14,    14,    14,    14,    95,    26,    18,    75,    76,
-      16,    19,    69,    71,    70,    95,    96,    94,    16,    16,
-      16,    59,    95,    95,    96,    96,    55,    41,    42,    95,
-      96,    41,    42,    95,    96,    16,    41,    42,    95,    96,
-      17,    15,    15,    17,    47,    47,    15,    15,    96,    15,
-      15,    15,    15,    15,    15,    15,    15,    74,    61,    74,
-      81,    86,    16,    18,    17,    18,    17,    17,    26,    45,
-      77,    79,    74,    74,    74,    15,    18,    18,    18,    88,
-      82,    17,    31,    83,    74,    84,    18,    17,    74,    18
+      37,    55,    74,    75,    76,    77,    78,    79,    80,    85,
+      87,    89,    90,    91,    92,    93,    26,    15,    48,    14,
+      15,    48,    14,    42,    95,    96,    15,    46,    46,    14,
+      14,    14,    14,    14,    95,    18,    75,    76,    16,    19,
+      69,    71,    70,    95,    96,    94,    16,    16,    16,    59,
+      95,    95,    96,    96,    55,    41,    42,    95,    96,    41,
+      42,    95,    96,    16,    41,    42,    95,    96,    17,    15,
+      15,    17,    47,    47,    15,    15,    96,    15,    15,    15,
+      15,    15,    15,    15,    15,    74,    61,    74,    81,    86,
+      16,    18,    17,    18,    17,    17,    26,    77,    79,    74,
+      74,    74,    15,    18,    18,    18,    88,    82,    17,    31,
+      83,    74,    84,    18,    17,    74,    18
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
@@ -945,7 +945,7 @@ static const yytype_int8 yyr2[] =
        0,     6,     2,     1,     1,     1,     1,     0,     8,     1,
        3,     0,     2,     0,     5,     3,     2,     2,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     3,     3,
-       3,     3,     1,     4,     2,     4,     1,     3,     6,     0,
+       3,     3,     1,     4,     1,     4,     1,     3,     6,     0,
        0,    10,     0,     0,     5,     0,     8,     0,    11,     1,
        1,     4,     4,     4,     4,     4,     4,     4,     4,     4,
        2,     3,     1,     3,     1,     0,     3,     3,     3,     3,
@@ -1436,7 +1436,7 @@ yyreduce:
 #line 87 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-1].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-1].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-1].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVar((yyvsp[-2].valtype), (yyvsp[-1].string));
@@ -1448,20 +1448,20 @@ yyreduce:
 #line 95 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-3].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
                     
                     auto result=(yyvsp[-1].node)->evaluate(*currentSymTable);
                     if(holds_alternative<monostate>(result)){
-                        cout<<"Error: Evaluation error occured!"<<endl;
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
                         return -1;
                     }
 
                     string rtype=(yyvsp[-1].node)->getType();
                     if(strcmp((yyvsp[-4].valtype),rtype.c_str())!=0)
                     {
-                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got "<<rtype<<endl;
+                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got "<<rtype<<". Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVar((yyvsp[-4].valtype), (yyvsp[-3].string), result);
@@ -1473,13 +1473,13 @@ yyreduce:
 #line 116 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-3].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     auto result=(yyvsp[-1].node)->evaluate(*currentSymTable);
                     if(holds_alternative<monostate>(result)){
-                        cout<<"Error: Evaluation error occured!"<<endl;
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
                         return -1;
                     }
                     string rtype=(yyvsp[-1].node)->getType();
@@ -1492,60 +1492,73 @@ yyreduce:
 #line 131 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-4].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-4].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-4].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     auto result=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     if((yyvsp[-2].node)->getType() != "int")
                     {
-                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVector((yyvsp[-5].valtype), (yyvsp[-4].string), get<int>(result));
                 }
-#line 1508 "limbaj.tab.c"
+#line 1512 "limbaj.tab.c"
     break;
 
   case 12: /* var_declaration: TYPE ID '[' expression ']' ASSIGN expression ';'  */
-#line 146 "limbaj.y"
+#line 150 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-6].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-6].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-6].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     auto result=(yyvsp[-4].node)->evaluate(*currentSymTable);
-                    auto valueResult = (yyvsp[-1].node)->evaluate(*currentSymTable);
-                    string rtype=(yyvsp[-1].node)->getType();
-
-                    if(strcmp((yyvsp[-7].valtype),rtype.c_str())!=0 || strcmp((yyvsp[-7].valtype),"bool")==0 || rtype=="bool")
-                    {
-                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-7].valtype)<<" but got "<<rtype<<endl;
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
                         return -1;
                     }
                     if((yyvsp[-4].node)->getType() != "int")
                     {
-                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto valueResult = (yyvsp[-1].node)->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(valueResult)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    string rtype=(yyvsp[-1].node)->getType();
+
+                    if(strcmp((yyvsp[-7].valtype),rtype.c_str())!=0 || strcmp((yyvsp[-7].valtype),"bool")==0 || rtype=="bool")
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-7].valtype)<<" but got "<<rtype<<". Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVector((yyvsp[-7].valtype), (yyvsp[-6].string), get<int>(result), valueResult);
                 }
-#line 1535 "limbaj.tab.c"
+#line 1548 "limbaj.tab.c"
     break;
 
   case 13: /* var_declaration: TYPE ID '[' expression ']' ASSIGN STRING ';'  */
-#line 168 "limbaj.y"
+#line 181 "limbaj.y"
                                                               {
                     // if (currentSymTable->isDefined($2)) {
-                    //     cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
+                    //     cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                     //     return -1;
                     // }
                     // else 
                     // {
                     //     if(strcmp($1,"string")!=0)
                     //     {
-                    //         cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string"<<endl;
+                    //         cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string Line: " << yylineno << endl;
                     //         return -1;
                     //     }
                     //     else
@@ -1554,659 +1567,687 @@ yyreduce:
                     //     }
                     // }
                 }
-#line 1558 "limbaj.tab.c"
+#line 1571 "limbaj.tab.c"
     break;
 
   case 14: /* var_declaration: BOOL BOOLID '[' expression ']' ';'  */
-#line 186 "limbaj.y"
+#line 199 "limbaj.y"
                                                     {
                     if (currentSymTable->isDefined((yyvsp[-4].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-4].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-4].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     auto result=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+
                     string rtype=(yyvsp[-2].node)->getType();
                     if((yyvsp[-2].node)->getType() != "int")
                     {
-                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVector("bool", (yyvsp[-4].string), get<int>(result));
                 }
-#line 1578 "limbaj.tab.c"
+#line 1596 "limbaj.tab.c"
     break;
 
   case 15: /* var_declaration: BOOL BOOLID '[' expression ']' ASSIGN boolean_expression ';'  */
-#line 202 "limbaj.y"
+#line 220 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-6].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-6].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-6].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     auto result=(yyvsp[-4].node)->evaluate(*currentSymTable);
-                    auto valueResult = (yyvsp[-1].node)->evaluate(*currentSymTable);
-                    string rtype=(yyvsp[-1].node)->getType();
-
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     if((yyvsp[-4].node)->getType() != "int")
                     {
-                        cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto valueResult = (yyvsp[-1].node)->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(valueResult)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVector("bool", (yyvsp[-6].string), get<int>(result), valueResult);
                 }
-#line 1600 "limbaj.tab.c"
+#line 1625 "limbaj.tab.c"
     break;
 
   case 16: /* var_declaration: TYPE ID ASSIGN CHAR ';'  */
-#line 220 "limbaj.y"
+#line 245 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-3].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
 
                     if(strcmp((yyvsp[-4].valtype),"char")!=0)
                     {
-                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got char"<<endl;
+                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got char Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVar((yyvsp[-4].valtype), (yyvsp[-3].string), (yyvsp[-1].charval));
                 }
-#line 1618 "limbaj.tab.c"
+#line 1643 "limbaj.tab.c"
     break;
 
   case 17: /* var_declaration: TYPE ID ASSIGN STRING ';'  */
-#line 234 "limbaj.y"
+#line 259 "limbaj.y"
                 {
                     if (currentSymTable->isDefined((yyvsp[-3].string))) {
-                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones." << endl;
+                        cout << "Error: Variable '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
                         return -1;
                     }
                     if(strcmp((yyvsp[-4].valtype),"string")!=0)
                     {
-                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got string"<<endl;
+                        cout<<"Error: Assignment type mismatch. Expected "<<(yyvsp[-4].valtype)<<" but got string Line: " << yylineno << endl;
                         return -1;
                     }
                     currentSymTable->addVar((yyvsp[-4].valtype), (yyvsp[-3].string), (yyvsp[-1].string));
                 }
-#line 1635 "limbaj.tab.c"
-    break;
-
-  case 22: /* $@2: %empty  */
-#line 259 "limbaj.y"
-    {
-        if (currentSymTable->isDefined((yyvsp[-3].string))) 
-        {
-            cout << "Error: Function '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones." << endl;
-            return -1;
-        }
-        else 
-        {
-             /* currentSymTable->addFunc($2, $3); */
-            currentSymTable->enterScope((yyvsp[-3].string),"function");
-        }
-    }
-#line 1652 "limbaj.tab.c"
-    break;
-
-  case 23: /* func_definition: FUNC TYPE ID '(' parameter_list ')' $@2 BGIN statement_list END  */
-#line 272 "limbaj.y"
-    {
-        currentSymTable->leaveScope();
-    }
 #line 1660 "limbaj.tab.c"
     break;
 
+  case 22: /* $@2: %empty  */
+#line 284 "limbaj.y"
+    {
+        if (currentSymTable->isDefined((yyvsp[-3].string))) 
+        {
+            cout << "Error: Function '" << (yyvsp[-3].string) << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+            return -1;
+        }
+        /* currentSymTable->addFunc($2, $3); */
+        currentSymTable->enterScope((yyvsp[-3].string),"function");
+    }
+#line 1674 "limbaj.tab.c"
+    break;
+
+  case 23: /* func_definition: FUNC TYPE ID '(' parameter_list ')' $@2 BGIN statement_list END  */
+#line 294 "limbaj.y"
+    {
+        currentSymTable->leaveScope();
+    }
+#line 1682 "limbaj.tab.c"
+    break;
+
   case 24: /* $@3: %empty  */
-#line 281 "limbaj.y"
+#line 303 "limbaj.y"
     {
         currentSymTable->addMethod((yyvsp[-4].valtype), (yyvsp[-3].string));
         currentSymTable->enterScope((yyvsp[-3].string),"method");
     }
-#line 1669 "limbaj.tab.c"
+#line 1691 "limbaj.tab.c"
     break;
 
   case 25: /* method_definition: FUNC TYPE ID '(' parameter_list ')' $@3 BGIN statement_list END  */
-#line 286 "limbaj.y"
+#line 308 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1677 "limbaj.tab.c"
+#line 1699 "limbaj.tab.c"
     break;
 
   case 30: /* $@4: %empty  */
-#line 303 "limbaj.y"
+#line 325 "limbaj.y"
     {
         currentSymTable->addClass((yyvsp[0].string));
         currentSymTable->enterScope((yyvsp[0].string), "class");
     }
-#line 1686 "limbaj.tab.c"
+#line 1708 "limbaj.tab.c"
     break;
 
   case 31: /* class_definition: CLASS ID $@4 BGIN class_body END  */
-#line 310 "limbaj.y"
-    {
-        currentSymTable->leaveScope();
-    }
-#line 1694 "limbaj.tab.c"
-    break;
-
-  case 37: /* $@5: %empty  */
-#line 327 "limbaj.y"
-    {
-        currentSymTable->addConstructor((yyvsp[-3].string));
-        currentSymTable->enterScope((yyvsp[-3].string), "constructor"); 
-    }
-#line 1703 "limbaj.tab.c"
-    break;
-
-  case 38: /* constructor_definition: ID '(' parameter_list ')' $@5 BGIN statement_list END  */
 #line 332 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1711 "limbaj.tab.c"
+#line 1716 "limbaj.tab.c"
     break;
 
-  case 43: /* $@6: %empty  */
-#line 350 "limbaj.y"
+  case 37: /* $@5: %empty  */
+#line 349 "limbaj.y"
     {
-        currentSymTable->enterScope("main", "main");
+        currentSymTable->addConstructor((yyvsp[-3].string));
+        currentSymTable->enterScope((yyvsp[-3].string), "constructor"); 
     }
-#line 1719 "limbaj.tab.c"
+#line 1725 "limbaj.tab.c"
     break;
 
-  case 44: /* main_function: MAIN BGIN $@6 statement_list END  */
+  case 38: /* constructor_definition: ID '(' parameter_list ')' $@5 BGIN statement_list END  */
 #line 354 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1727 "limbaj.tab.c"
+#line 1733 "limbaj.tab.c"
+    break;
+
+  case 43: /* $@6: %empty  */
+#line 372 "limbaj.y"
+    {
+        currentSymTable->enterScope("main", "main");
+    }
+#line 1741 "limbaj.tab.c"
+    break;
+
+  case 44: /* main_function: MAIN BGIN $@6 statement_list END  */
+#line 376 "limbaj.y"
+    {
+        currentSymTable->leaveScope();
+    }
+#line 1749 "limbaj.tab.c"
     break;
 
   case 58: /* assignment: left_value ASSIGN expression  */
-#line 381 "limbaj.y"
+#line 403 "limbaj.y"
                                           {
-                (yyvsp[-2].node)->evaluate(*currentSymTable);
-                (yyvsp[0].node)->evaluate(*currentSymTable);
+                auto lResult=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto rResult=(yyvsp[0].node)->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(rResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype=(yyvsp[0].node)->getType();
-                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
                 if (ltype != rtype) {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
            }
-#line 1743 "limbaj.tab.c"
+#line 1774 "limbaj.tab.c"
     break;
 
   case 59: /* assignment: left_value ASSIGN boolean_expression  */
-#line 392 "limbaj.y"
+#line 423 "limbaj.y"
                                                   {
-                (yyvsp[-2].node)->evaluate(*currentSymTable);
+                auto lResult=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype="bool";
-                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
                 if (ltype != rtype) {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
            }
-#line 1758 "limbaj.tab.c"
+#line 1793 "limbaj.tab.c"
     break;
 
   case 60: /* assignment: left_value ASSIGN STRING  */
-#line 402 "limbaj.y"
+#line 437 "limbaj.y"
                                       {
-                (yyvsp[-2].node)->evaluate(*currentSymTable);
+                auto lResult=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
                 string ltype=(yyvsp[-2].node)->getType();
-                cout<<"Assignment: "<<ltype<<" string"<<endl;
                 if (strcmp("string",ltype.c_str())!=0) {
                     cout << "Error: Assignment type mismatch. Expected string but got " << (yyvsp[-2].node) << endl;
                     return -1;
                 }
            }
-#line 1772 "limbaj.tab.c"
+#line 1811 "limbaj.tab.c"
     break;
 
   case 61: /* assignment: left_value ASSIGN CHAR  */
-#line 411 "limbaj.y"
+#line 450 "limbaj.y"
                                     {
-                (yyvsp[-2].node)->evaluate(*currentSymTable);
+                auto lResult=(yyvsp[-2].node)->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
                 string ltype=(yyvsp[-2].node)->getType();
                 string rtype="char";
-                cout<<"Assignment: "<<ltype<<" "<<rtype<<endl;
                 if (ltype != rtype) {
                     cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << endl;
                     return -1;
                 }
            }
-#line 1787 "limbaj.tab.c"
+#line 1830 "limbaj.tab.c"
     break;
 
   case 62: /* left_value: ID  */
-#line 425 "limbaj.y"
+#line 467 "limbaj.y"
             {
-                if (!currentSymTable->isUsedBeforeDefined((yyvsp[0].string), "variable")) {
-                    cout << "Error: Variable '" << (yyvsp[0].string) << "' used before being defined." << endl;
+                if (!currentSymTable->isUsedBeforeDefined((yyvsp[0].string), "identifier")) {
+                    cout << "Error: Variable '" << (yyvsp[0].string) << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
                 (yyval.node)=new ASTNode((yyvsp[0].string));
             }
-#line 1799 "limbaj.tab.c"
+#line 1842 "limbaj.tab.c"
     break;
 
   case 63: /* left_value: ID '[' expression ']'  */
-#line 433 "limbaj.y"
+#line 475 "limbaj.y"
             {
-                if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "variable")) {
-                    cout << "Error: Variable '" << (yyvsp[-3].string) << "' used before being defined." << endl;
+                if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "identifier")) {
+                    cout << "Error: Variable '" << (yyvsp[-3].string) << "' used before being defined. Line: " << yylineno << endl;
                     return -1;
                 }
                 (yyval.node)=new ASTNode((yyvsp[-3].string));
             }
-#line 1811 "limbaj.tab.c"
+#line 1854 "limbaj.tab.c"
     break;
 
-  case 64: /* left_value: BOOL ID  */
-#line 440 "limbaj.y"
-                     {
-                // if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                //     cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                //     return -1;
-                // }
-                // $$=new ASTNode($1, true);
+  case 64: /* left_value: BOOLID  */
+#line 482 "limbaj.y"
+                    {
+                if (!currentSymTable->isUsedBeforeDefined((yyvsp[0].string), "identifier")) {
+                    cout << "Error: Variable '" << (yyvsp[0].string) << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                (yyval.node)=new ASTNode((yyvsp[0].string));
             }
-#line 1823 "limbaj.tab.c"
+#line 1866 "limbaj.tab.c"
     break;
 
   case 65: /* left_value: BOOLID '[' expression ']'  */
-#line 448 "limbaj.y"
+#line 490 "limbaj.y"
             {
-                // if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                //     cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                //     return -1;
-                // }
-                // $$=new ASTNode($1, true);
+                if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "identifier")) {
+                    cout << "Error: Variable '" << (yyvsp[-3].string) << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                (yyval.node)=new ASTNode((yyvsp[-3].string));
             }
-#line 1835 "limbaj.tab.c"
+#line 1878 "limbaj.tab.c"
     break;
 
   case 66: /* left_value: object_access  */
-#line 455 "limbaj.y"
+#line 497 "limbaj.y"
                            {
                 (yyval.node)=nullptr;
             }
-#line 1843 "limbaj.tab.c"
+#line 1886 "limbaj.tab.c"
     break;
 
   case 69: /* $@7: %empty  */
-#line 466 "limbaj.y"
+#line 508 "limbaj.y"
     {
         currentSymTable->enterScope("IF","block");
     }
-#line 1851 "limbaj.tab.c"
+#line 1894 "limbaj.tab.c"
     break;
 
   case 70: /* $@8: %empty  */
-#line 470 "limbaj.y"
+#line 512 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1859 "limbaj.tab.c"
+#line 1902 "limbaj.tab.c"
     break;
 
   case 73: /* $@9: %empty  */
-#line 479 "limbaj.y"
+#line 521 "limbaj.y"
     {
         currentSymTable->enterScope("ELSE","block");                
     }
-#line 1867 "limbaj.tab.c"
+#line 1910 "limbaj.tab.c"
     break;
 
   case 74: /* else_statement: ELSE $@9 BGIN statement_list END  */
-#line 483 "limbaj.y"
+#line 525 "limbaj.y"
     {
         currentSymTable->leaveScope();
     }
-#line 1875 "limbaj.tab.c"
-    break;
-
-  case 75: /* $@10: %empty  */
-#line 490 "limbaj.y"
-    {
-        currentSymTable->enterScope("WHILE","block");
-    }
-#line 1883 "limbaj.tab.c"
-    break;
-
-  case 76: /* while_statement: WHILE '(' boolean_expression ')' $@10 BGIN statement_list END  */
-#line 494 "limbaj.y"
-    {
-        currentSymTable->leaveScope();
-    }
-#line 1891 "limbaj.tab.c"
-    break;
-
-  case 77: /* $@11: %empty  */
-#line 501 "limbaj.y"
-    {
-        currentSymTable->enterScope("FOR","block");
-    }
-#line 1899 "limbaj.tab.c"
-    break;
-
-  case 78: /* for_statement: FOR '(' var_declaration boolean_expression ';' assignment ')' $@11 BGIN statement_list END  */
-#line 505 "limbaj.y"
-    {
-        currentSymTable->leaveScope();
-    }
-#line 1907 "limbaj.tab.c"
-    break;
-
-  case 81: /* function_call: ID '(' argument_list ')'  */
-#line 516 "limbaj.y"
-              {
-                  if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "function")) {
-                      cout << "Error: Function '" << (yyvsp[-3].string) << "' called before being defined." << endl;
-                      return -1;
-                  }
-              }
 #line 1918 "limbaj.tab.c"
     break;
 
-  case 82: /* print_statement: PRINT '(' CHAR ')'  */
-#line 524 "limbaj.y"
-                                    {
-                    cout << "Print (char): " << (yyvsp[-1].charval) << endl;
-                }
+  case 75: /* $@10: %empty  */
+#line 532 "limbaj.y"
+    {
+        currentSymTable->enterScope("WHILE","block");
+    }
 #line 1926 "limbaj.tab.c"
     break;
 
-  case 83: /* print_statement: PRINT '(' STRING ')'  */
-#line 527 "limbaj.y"
-                                      {
-                    cout << "Print (string): " << (yyvsp[-1].string) << endl;
-                }
+  case 76: /* while_statement: WHILE '(' boolean_expression ')' $@10 BGIN statement_list END  */
+#line 536 "limbaj.y"
+    {
+        currentSymTable->leaveScope();
+    }
 #line 1934 "limbaj.tab.c"
     break;
 
+  case 77: /* $@11: %empty  */
+#line 543 "limbaj.y"
+    {
+        currentSymTable->enterScope("FOR","block");
+    }
+#line 1942 "limbaj.tab.c"
+    break;
+
+  case 78: /* for_statement: FOR '(' var_declaration boolean_expression ';' assignment ')' $@11 BGIN statement_list END  */
+#line 547 "limbaj.y"
+    {
+        currentSymTable->leaveScope();
+    }
+#line 1950 "limbaj.tab.c"
+    break;
+
+  case 81: /* function_call: ID '(' argument_list ')'  */
+#line 558 "limbaj.y"
+              {
+                  if (!currentSymTable->isUsedBeforeDefined((yyvsp[-3].string), "function")) {
+                      cout << "Error: Function '" << (yyvsp[-3].string) << "' called before being defined. Line: " << yylineno << endl;
+                      return -1;
+                  }
+              }
+#line 1961 "limbaj.tab.c"
+    break;
+
+  case 82: /* print_statement: PRINT '(' CHAR ')'  */
+#line 566 "limbaj.y"
+                                    {
+                    cout << "Print (char): " << (yyvsp[-1].charval) << endl;
+                }
+#line 1969 "limbaj.tab.c"
+    break;
+
+  case 83: /* print_statement: PRINT '(' STRING ')'  */
+#line 569 "limbaj.y"
+                                      {
+                    cout << "Print (string): " << (yyvsp[-1].string) << endl;
+                }
+#line 1977 "limbaj.tab.c"
+    break;
+
   case 84: /* print_statement: PRINT '(' expression ')'  */
-#line 530 "limbaj.y"
+#line 572 "limbaj.y"
                                           {
                     (yyvsp[-1].node)->evaluate(*currentSymTable);
                     (yyvsp[-1].node)->printResult();
                 }
-#line 1943 "limbaj.tab.c"
+#line 1986 "limbaj.tab.c"
     break;
 
   case 85: /* print_statement: PRINT '(' boolean_expression ')'  */
-#line 534 "limbaj.y"
+#line 576 "limbaj.y"
                                                   {
                     (yyvsp[-1].node)->evaluate(*currentSymTable);
                     (yyvsp[-1].node)->printResult();
                 }
-#line 1952 "limbaj.tab.c"
+#line 1995 "limbaj.tab.c"
     break;
 
   case 86: /* type_of_statement: TYPEOF '(' expression ')'  */
-#line 540 "limbaj.y"
+#line 582 "limbaj.y"
                                              {
                         (yyvsp[-1].node)->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<(yyvsp[-1].node)->getType()<<endl;
                   }
-#line 1961 "limbaj.tab.c"
+#line 2004 "limbaj.tab.c"
     break;
 
   case 87: /* type_of_statement: TYPEOF '(' boolean_expression ')'  */
-#line 544 "limbaj.y"
+#line 586 "limbaj.y"
                                                      {
                         (yyvsp[-1].node)->evaluate(*currentSymTable);
                         cout<<"TypeOf: "<<(yyvsp[-1].node)->getType()<<endl;
                   }
-#line 1970 "limbaj.tab.c"
+#line 2013 "limbaj.tab.c"
     break;
 
   case 88: /* type_of_statement: TYPEOF '(' STRING ')'  */
-#line 548 "limbaj.y"
+#line 590 "limbaj.y"
                                          {
                         cout<<"TypeOf: string"<<endl;
                   }
-#line 1978 "limbaj.tab.c"
+#line 2021 "limbaj.tab.c"
     break;
 
   case 89: /* type_of_statement: TYPEOF '(' CHAR ')'  */
-#line 551 "limbaj.y"
+#line 593 "limbaj.y"
                                        {
                         cout<<"TypeOf: char"<<endl;
                   }
-#line 1986 "limbaj.tab.c"
+#line 2029 "limbaj.tab.c"
     break;
 
   case 96: /* expression: expression '+' expression  */
-#line 567 "limbaj.y"
+#line 609 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::ADD, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 1994 "limbaj.tab.c"
+#line 2037 "limbaj.tab.c"
     break;
 
   case 97: /* expression: expression '-' expression  */
-#line 570 "limbaj.y"
+#line 612 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::SUBTRACT, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 2002 "limbaj.tab.c"
+#line 2045 "limbaj.tab.c"
     break;
 
   case 98: /* expression: expression '*' expression  */
-#line 573 "limbaj.y"
+#line 615 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::MULTIPLY, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 2010 "limbaj.tab.c"
+#line 2053 "limbaj.tab.c"
     break;
 
   case 99: /* expression: expression '/' expression  */
-#line 576 "limbaj.y"
+#line 618 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::DIVIDE, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 2018 "limbaj.tab.c"
+#line 2061 "limbaj.tab.c"
     break;
 
   case 100: /* expression: expression '%' expression  */
-#line 579 "limbaj.y"
+#line 621 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::MODULO, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 2026 "limbaj.tab.c"
+#line 2069 "limbaj.tab.c"
     break;
 
   case 101: /* expression: expression '^' expression  */
-#line 582 "limbaj.y"
+#line 624 "limbaj.y"
                                        {
                (yyval.node) = new ASTNode(ASTNode::Operator::POWER, (yyvsp[-2].node), (yyvsp[0].node));
            }
-#line 2034 "limbaj.tab.c"
+#line 2077 "limbaj.tab.c"
     break;
 
   case 102: /* expression: '-' expression  */
-#line 585 "limbaj.y"
+#line 627 "limbaj.y"
                                          {
                (yyval.node) = new ASTNode(ASTNode::Operator::UMINUS, (yyvsp[0].node), nullptr);
            }
-#line 2042 "limbaj.tab.c"
+#line 2085 "limbaj.tab.c"
     break;
 
   case 103: /* expression: '(' expression ')'  */
-#line 588 "limbaj.y"
+#line 630 "limbaj.y"
                                 {
                (yyval.node) = (yyvsp[-1].node);
            }
-#line 2050 "limbaj.tab.c"
+#line 2093 "limbaj.tab.c"
     break;
 
   case 104: /* expression: ID  */
-#line 591 "limbaj.y"
+#line 633 "limbaj.y"
                 {
                 if (!currentSymTable->existsId((yyvsp[0].string))) 
                 {
-                    cout << "Error: Identifier '" << (yyvsp[0].string) << "' not defined." << endl;
+                    cout << "Error: Identifier '" << (yyvsp[0].string) << "' not defined. Line: " << yylineno << endl;
                     return -1;
                 }
                (yyval.node) = new ASTNode((yyvsp[0].string));
            }
-#line 2063 "limbaj.tab.c"
+#line 2106 "limbaj.tab.c"
     break;
 
   case 105: /* expression: INT  */
-#line 599 "limbaj.y"
+#line 641 "limbaj.y"
                  {
                (yyval.node) = new ASTNode((yyvsp[0].intval));
            }
-#line 2071 "limbaj.tab.c"
+#line 2114 "limbaj.tab.c"
     break;
 
   case 106: /* expression: FLOAT  */
-#line 602 "limbaj.y"
+#line 644 "limbaj.y"
                    {
                (yyval.node) = new ASTNode((yyvsp[0].floatval));
            }
-#line 2079 "limbaj.tab.c"
+#line 2122 "limbaj.tab.c"
     break;
 
   case 107: /* expression: function_call  */
-#line 605 "limbaj.y"
+#line 647 "limbaj.y"
                           {
                 (yyval.node) = nullptr; //tmp
            }
-#line 2087 "limbaj.tab.c"
+#line 2130 "limbaj.tab.c"
     break;
 
   case 108: /* expression: object_access  */
-#line 608 "limbaj.y"
+#line 650 "limbaj.y"
                           {
                 (yyval.node) = nullptr; //tmp
            }
-#line 2095 "limbaj.tab.c"
+#line 2138 "limbaj.tab.c"
     break;
 
   case 109: /* boolean_expression: TRUE  */
-#line 613 "limbaj.y"
+#line 655 "limbaj.y"
                           {
                        (yyval.node) = new ASTNode(true, true);
                    }
-#line 2103 "limbaj.tab.c"
+#line 2146 "limbaj.tab.c"
     break;
 
   case 110: /* boolean_expression: FALSE  */
-#line 616 "limbaj.y"
+#line 658 "limbaj.y"
                            {
                        (yyval.node) = new ASTNode(false, false);
                    }
-#line 2111 "limbaj.tab.c"
+#line 2154 "limbaj.tab.c"
     break;
 
   case 111: /* boolean_expression: '(' boolean_expression ')'  */
-#line 619 "limbaj.y"
+#line 661 "limbaj.y"
                                                 {
                        (yyval.node) = (yyvsp[-1].node);
                    }
-#line 2119 "limbaj.tab.c"
+#line 2162 "limbaj.tab.c"
     break;
 
   case 112: /* boolean_expression: BOOLID  */
-#line 622 "limbaj.y"
+#line 664 "limbaj.y"
                             {
                         if (!currentSymTable->existsId((yyvsp[0].string))) 
                         {
-                            cout << "Error: Identifier '" << (yyvsp[0].string) << "' not defined." << endl;
+                            cout << "Error: Identifier '" << (yyvsp[0].string) << "' not defined. Line: " << yylineno << endl;
                             return -1;
                         }
-                        else{
-                            (yyval.node) = new ASTNode((yyvsp[0].string));
-                        }
+                        (yyval.node) = new ASTNode((yyvsp[0].string));
                    }
-#line 2134 "limbaj.tab.c"
+#line 2175 "limbaj.tab.c"
     break;
 
   case 113: /* boolean_expression: expression '>' expression  */
-#line 632 "limbaj.y"
+#line 672 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::GT, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2142 "limbaj.tab.c"
+#line 2183 "limbaj.tab.c"
     break;
 
   case 114: /* boolean_expression: expression '<' expression  */
-#line 635 "limbaj.y"
+#line 675 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::LT, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2150 "limbaj.tab.c"
+#line 2191 "limbaj.tab.c"
     break;
 
   case 115: /* boolean_expression: expression GE expression  */
-#line 638 "limbaj.y"
+#line 678 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::GE, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2158 "limbaj.tab.c"
+#line 2199 "limbaj.tab.c"
     break;
 
   case 116: /* boolean_expression: expression LE expression  */
-#line 641 "limbaj.y"
+#line 681 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::LE, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2166 "limbaj.tab.c"
+#line 2207 "limbaj.tab.c"
     break;
 
   case 117: /* boolean_expression: expression EQ expression  */
-#line 644 "limbaj.y"
+#line 684 "limbaj.y"
                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::EQ, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2174 "limbaj.tab.c"
+#line 2215 "limbaj.tab.c"
     break;
 
   case 118: /* boolean_expression: expression NEQ expression  */
-#line 647 "limbaj.y"
+#line 687 "limbaj.y"
                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::NEQ, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2182 "limbaj.tab.c"
+#line 2223 "limbaj.tab.c"
     break;
 
   case 119: /* boolean_expression: boolean_expression AND boolean_expression  */
-#line 650 "limbaj.y"
+#line 690 "limbaj.y"
                                                                {
                        (yyval.node) = new ASTNode(ASTNode::Operator::AND, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2190 "limbaj.tab.c"
+#line 2231 "limbaj.tab.c"
     break;
 
   case 120: /* boolean_expression: boolean_expression OR boolean_expression  */
-#line 653 "limbaj.y"
+#line 693 "limbaj.y"
                                                               {
                        (yyval.node) = new ASTNode(ASTNode::Operator::OR, (yyvsp[-2].node), (yyvsp[0].node));
                    }
-#line 2198 "limbaj.tab.c"
+#line 2239 "limbaj.tab.c"
     break;
 
   case 121: /* boolean_expression: '!' boolean_expression  */
-#line 656 "limbaj.y"
+#line 696 "limbaj.y"
                                             {
                       (yyval.node) = new ASTNode(ASTNode::Operator::NOT, (yyvsp[0].node), nullptr);
                    }
-#line 2206 "limbaj.tab.c"
+#line 2247 "limbaj.tab.c"
     break;
 
 
-#line 2210 "limbaj.tab.c"
+#line 2251 "limbaj.tab.c"
 
       default: break;
     }
@@ -2399,7 +2440,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 661 "limbaj.y"
+#line 701 "limbaj.y"
 
  /*____________________________________________________________________________________________________________*/
 

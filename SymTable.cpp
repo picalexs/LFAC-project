@@ -266,7 +266,7 @@ bool SymTable::existsClass(const string &className)
 
 bool SymTable::isUsedBeforeDefined(const string &id, const string &type)
 {
-    if (type == "variable")
+    if (type == "identifier")
     {
         return existsId(id);
     }
