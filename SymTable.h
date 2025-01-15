@@ -14,22 +14,22 @@ using namespace std;
 #define SCOPE_FILE2 "scopes2.txt"
 #define SCOPE_TREE_FILE "scope_tree.txt"
 
-using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>>;
-using VectorValue=variant<int, float, bool, char, string>;
+using Value = variant<int, float, bool, string, char, vector<int>, vector<float>, vector<bool>, vector<char>, vector<string>, monostate>;
 
 class ParamList {
     vector<string> types;
     vector<string> names;
 public:
     void addParam(const string &type, const string &name);
-    string toString() const;
+    const vector<string>& getTypes() const { return types; }
+    const vector<string>& getNames() const { return names; }
 };
 
 class IdInfo {
 public:
+    string name;
     string idType;
     string type;
-    string name;
     Value value;
     ParamList params;
 
@@ -52,36 +52,40 @@ class SymTable {
     stack<string> scopeTypes;
     string tableName;
 
-    int indentLevel = 0;
+    int indentLevel = 1;
 
 public:
     SymTable(const string &name) : tableName(name) {}
     ~SymTable() {}
 
-    void enterScope(const string &scopeName, const string &scopeType);
+    void enterScope(const string &scopeName, const string &scopeType, vector<tuple<string,string,string>> params={}, const string &funcType={});
     void leaveScope();
     string getScope();
 
-    bool existsId(const string &id);
-    VectorValue getIdValue(const string &id);
+    Value getValue(const string &id);
     string getType(const string &id);
-    VectorValue returnIdValue(const string &id, map<string, IdInfo> &vars);
-    bool isDefined(const string &id);
+    bool checkAssignmentType(const string &lhs, const string &rhs);
+    Value returnIdValueType(const string &id, map<string, IdInfo> &vars);
+    bool existsId(const string &id);
     bool existsFunc(const string &funcName);
     bool existsClass(const string &className);
-    bool isUsedBeforeDefined(const string &id, const string &type);
+    bool isDefined(const string &id, const string &type);
 
     void addEntity(const string &entityType, const string &name, const string &returnType = "");
     void addVar(const string &type, const string &name, const Value &value = {});
-    void addVector(const string &type, const string &name, int size, const VectorValue &defaultValue = VectorValue());
-    void addFunc(const string &returnType, const string &name);
+    void changeVar(const string &name, const Value &newValue);
+    void addVector(const string &type, const string &name, int size, const Value &defaultValue = Value());
+    void changeVectorElement(const string &name, int index, const Value &newValue);
+    Value getVectorElement(const string &name, int index);
+    void addFunc(const string &returnType, const string &name, const vector<pair<string, string>>& params);
+    bool checkParamTypes(const string &funcName, const vector<string> &params);
     void addClass(const string &name);
     void addConstructor(const string &name);
     void addMethod(const string &returnType, const string &name);
 
     bool removeId(const string &id);
 
-
+    void printFunction(const string &funcName, const string &returnType, const vector<pair<string, string>> &params);
     void printScope(const string &fileName, const string &scopeType, const map<string, map<string, IdInfo>> &scopes) const;
 
     void printGlobalScope(const string &fileName) const;

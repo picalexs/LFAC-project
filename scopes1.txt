@@ -1,12 +1,10 @@
 === Global Scope ===
-Global Scope: Global Scope
-  variable: n : int
-  variable: s : char
-  variable: x : bool
-  variable: y : char
-  variable: z : int
+ Global Scope: Global Scope
 
 === Class Scope ===
 
 === Function Scope ===
+ Function Scope: f
+  parameter: a : int = 0
+  variable: a2 : int = 102
 

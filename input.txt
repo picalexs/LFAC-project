@@ -1,12 +1,12 @@
 class MyClass {
     int x;
-    int y;
+    float y;
     MyClass() {
         int zet=9;
         x = 10;
         y = 20.5;
         if(x>y){
-            bool isthistrue=!true;
+            bool BOOL1=!true;
             Print(!false && true);
             x=x+1;
         }

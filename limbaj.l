@@ -5,7 +5,8 @@
 
 %option noyywrap
 %%
-"int"|"float"|"char"|"string"|"bool" { yylval.valtype = strdup(yytext); return TYPE; }
+"int"|"float"|"char"|"string" { yylval.valtype = strdup(yytext); return TYPE; }
+"bool" { yylval.valtype = strdup("bool"); return BOOL; }
 
 "class" { return CLASS; }
 "main" { return MAIN; }
@@ -22,8 +23,8 @@
 "Print" { return PRINT; }
 "TypeOf" { return TYPEOF; }
 
-"true" { yylval.intval = 1; return TRUE; }
-"false" { yylval.intval = 0; return FALSE; }
+"true" { yylval.boolval = 1; return TRUE; }
+"false" { yylval.boolval = 0; return FALSE; }
 
 "+" { return '+'; }
 "-" { return '-'; }
@@ -52,6 +53,11 @@
 "]" { return ']'; }
 "." { return '.'; }
 
+[A-Z_][A-Z0-9_]* {
+    yylval.string = strdup(yytext);
+    return BOOLID;
+}
+
 [a-zA-Z_][a-zA-Z0-9_]* {
     yylval.string = strdup(yytext);
     return ID;
@@ -62,7 +68,7 @@
     return INT;
 }
 
-(0|[1-9][0-9]*)(\.[0-9]*) {
+(0|[1-9][0-9]*)(\.[0-9]+) {
     yylval.floatval = atof(yytext);
     return FLOAT;
 }

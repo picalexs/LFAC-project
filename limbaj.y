@@ -3,6 +3,7 @@
     #include <cstring>
     #include <iostream>
     #include <vector>
+    #include <utility>
     using namespace std;
     
     extern FILE* yyin;
@@ -11,7 +12,6 @@
     extern int yylex();
     void yyerror(const char * s);
     class SymTable* current;
-    int errorCount = 0;
 
     SymTable globalSymTable("global");
     SymTable* currentSymTable = &globalSymTable;
@@ -21,6 +21,26 @@
         globalSymTable.printAskedScopes(); //cele cerute
         globalSymTable.printAllScopes(); //toate
     }
+
+    struct Param {
+        char* type;
+        char* name;
+        int size;// daca e vector
+    };
+
+    struct ParamListNonSTL {
+        Param* params;
+        int count;
+    };
+
+    struct Arg {
+        char* type;
+    };
+
+    struct ArgList {
+        Arg* args;
+        int count;
+    };
 %}
 
 %right '='
@@ -34,6 +54,8 @@
 %right '!'
 %left '>' '<' GE LE EQ NEQ
 %left '(' ')'
+%left ';'
+
 
 %union {
     char* valtype;
@@ -43,20 +65,31 @@
     bool boolval;
     char charval;
     char* string;
+
+    struct Param* param;
+    struct ParamListNonSTL* params;
+
+    struct Arg* arg;
+    struct ArgList* args;
 }
 
 %token BGIN END ASSIGN
 %token EQ NEQ AND OR LE GE
-%token<string> ID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN
+%token<string> ID BOOLID CLASS MAIN IF ELSE WHILE FOR PRINT TYPEOF FUNC RETURN 
 %token<valtype> TYPE
 
 %token<intval> INT
 %token<floatval> FLOAT
 %token<charval> CHAR
 %token<string> STRING
-%token<boolval> TRUE FALSE
-%type<node> expression boolean_expression
+%token<boolval> TRUE FALSE BOOL
+%type<node> boolean_expression expression assignment left_value
+%type<string> object_access function_call
 
+%type <params> parameter_list
+%type <param> parameter
+%type <args> argument_list
+%type <arg> argument
 
 %start PROGRAM
 
@@ -67,12 +100,9 @@ PROGRAM : {
         }
         class_section var_section func_section main_function
         {
-            if (errorCount == 0) 
-            {
-                currentSymTable->leaveScope();
-                cout << "The program is correct!" << endl;
-                printSymbolTables();
-            }
+            currentSymTable->leaveScope();
+            cout << "The program is correct!" << endl;
+            printSymbolTables();
         }
         ;
 
@@ -87,89 +117,216 @@ var_declarations : var_declarations var_declaration
 
 var_declaration : TYPE ID ';' 
                 {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
                     }
-                    else {
-                        currentSymTable->addVar($1, $2);
-                    }
-                }
-                | TYPE ID '[' expression ']' ';'
-                {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
-                    }
-                    else {
-                        auto result=$4->evaluate(*currentSymTable);
-                        if($4->getType() == "int")
-                        {
-                            currentSymTable->addVector($1, $2, get<int>(result));
-                        }else{
-                            cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
-                        }
-                    }
-                }
-                | TYPE ID '[' expression ']' ASSIGN expression ';'
-                {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
-                    }
-                    else {
-                        auto result=$4->evaluate(*currentSymTable);
-                        auto valueResult = $7->evaluate(*currentSymTable);
-                        if($4->getType() == "int")
-                        {
-                            currentSymTable->addVector($1, $2, get<int>(result), valueResult);
-                        }else{
-                            cout<<"Error: Invalid array size! (size has to be of type int)"<<endl;
-                        }
-                    }
+                    currentSymTable->addVar($1, $2);
                 }
                 | TYPE ID ASSIGN expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
                     }
-                    else 
+                    
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    string rtype=$4->getType();
+                    if(strcmp($1,rtype.c_str())!=0)
                     {
-                        currentSymTable->addVar($1, $2, 101);
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<". Line: " << yylineno << endl;
+                        return -1;
                     }
+                    currentSymTable->addVar($1, $2, result);
                 }
-                | TYPE ID ASSIGN boolean_expression ';'
+                | BOOL BOOLID ASSIGN boolean_expression ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
                     }
-                    else 
+
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    string rtype=$4->getType();
+                    currentSymTable->addVar("bool", $2, result);
+                }
+                | TYPE ID '[' expression ']' ';'
+                {
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
                     {
-                        currentSymTable->addVar($1, $2, 1);
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
                     }
+                    currentSymTable->addVector($1, $2, get<int>(result));
+                }
+                | TYPE ID '[' expression ']' ASSIGN expression ';'
+                {
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto valueResult = $7->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(valueResult)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    string rtype=$7->getType();
+
+                    if(strcmp($1,rtype.c_str())!=0 || strcmp($1,"bool")==0 || rtype=="bool")
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got "<<rtype<<". Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector($1, $2, get<int>(result), valueResult);
+                }
+                | TYPE ID '[' expression ']' ASSIGN CHAR ';'{
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if(strcmp($1,"char")!=0)
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got char Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("char", $2, get<int>(result), $7);
+                }
+                | TYPE ID '[' expression ']' ASSIGN STRING ';'{
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if(strcmp($1,"string")!=0)
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("string", $2, get<int>(result), $7);
+                }
+                | BOOL BOOLID '[' expression ']' ';'{
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    string rtype=$4->getType();
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("bool", $2, get<int>(result));
+                } 
+                | BOOL BOOLID '[' expression ']' ASSIGN boolean_expression ';'
+                {
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto result=$4->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    if($4->getType() != "int")
+                    {
+                        cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                        return -1;
+                    }
+
+                    auto valueResult = $7->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(valueResult)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
+                    currentSymTable->addVector("bool", $2, get<int>(result), valueResult);
                 }
                 | TYPE ID ASSIGN CHAR ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
                     }
-                    else
+
+                    if(strcmp($1,"char")!=0)
                     {
-                        currentSymTable->addVar($1, $2, $4);
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got char Line: " << yylineno << endl;
+                        return -1;
                     }
+                    currentSymTable->addVar($1, $2, $4);
                 }
                 | TYPE ID ASSIGN STRING ';'
                 {
-                    if (currentSymTable->isDefined($2)) {
-                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones." << endl;
-                        errorCount++;
+                    if (currentSymTable->isDefined($2, "identifier")) {
+                        cout << "Error: Variable '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                        return -1;
                     }
-                    else {
-                        currentSymTable->addVar($1, $2, $4);
+                    if(strcmp($1,"string")!=0)
+                    {
+                        cout<<"Error: Assignment type mismatch. Expected "<<$1<<" but got string Line: " << yylineno << endl;
+                        return -1;
                     }
+                    currentSymTable->addVar($1, $2, $4);
                 }
                 ;
 
@@ -185,16 +342,20 @@ func_definitions : func_definitions func_definition
 func_definition:
     FUNC TYPE ID '(' parameter_list ')' 
     {
-        if (currentSymTable->isDefined($3)) 
+        if (currentSymTable->isDefined($3, "function")) 
         {
-            cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones." << endl;
-            errorCount++;
+            cout << "Error: Function '" << $3 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+            return -1;
         }
-        else 
+        vector<tuple<string,string,string>> tmp;
+        for(int i=0;i<$5->count;i++)
         {
-            currentSymTable->addFunc($2, $3);
-            currentSymTable->enterScope($3,"function");
+            tmp.push_back(make_tuple($5->params[i].type,$5->params[i].name,to_string($5->params[i].size)));
         }
+        currentSymTable->enterScope($3, "function", tmp, $2);
+        
+        delete($5->params);
+        delete($5);
     }
     BGIN statement_list END 
     {
@@ -264,13 +425,101 @@ constructor_definition:
 
 
  /*__________________________________________*/
-parameter_list : parameter
-               | parameter_list ',' parameter
-               | /* epsilon */
+parameter_list : parameter {
+                    $$ = new ParamListNonSTL;
+                    $$->params = new Param[1];
+                    $$->params[0] = *$1;
+                    $$->count = 1;
+                    delete $1;
+                }
+               | parameter_list ',' parameter {
+                    $$ = $1;
+                    Param* newParams = new Param[$$->count + 1];
+                    for (int i = 0; i < $$->count; ++i) {
+                        newParams[i] = $$->params[i];
+                    }
+                    newParams[$$->count] = *$3;
+                    delete[] $$->params;
+                    $$->params = newParams;
+                    $$->count++;
+                    delete $3;
+               }
+               | /* epsilon */ {
+                    $$ = new ParamListNonSTL;
+                    $$->params = nullptr;
+                    $$->count = 0;
+               }
                ;
 
-parameter : TYPE ID
-          ;
+parameter : TYPE ID {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new Param;
+                $$->type = $1;
+                $$->name = $2;
+            }
+            | TYPE ID '[' expression']' {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto result=$4->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($4->getType() != "int")
+                {
+                    cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                $$ = new Param;
+                $$->size = get<int>(result);
+                $$->type = new char[20];
+                strcpy($$->type,"vector<");
+                strcat($$->type,$1);
+                strcat($$->type,">");
+                $$->name = $2;
+            }
+            | BOOL BOOLID {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                $$ = new Param;
+                $$->type = new char[5];
+                strcpy($$->type,"bool");
+                $$->name = $2;
+            }
+            | BOOL BOOLID '[' expression ']' {
+                if(currentSymTable->isDefined($2, "identifier")){
+                    cout << "Error: Parameter '" << $2 << "' already defined in this scope or previous ones. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto result=$4->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($4->getType() != "int")
+                {
+                    cout<<"Error: Invalid array size! (size has to be of type int) Line: " << yylineno << endl;
+                    return -1;
+                }
+                
+                $$ = new Param;
+                $$->size = get<int>(result);
+                $$->type = new char[20];
+                strcpy($$->type,"vector<bool>");
+                $$->name = $2;
+            }
+            ;
 
  /* 4) Entry Point Main Function______________________________________________________________________________*/
 main_function:
@@ -306,32 +555,182 @@ statement_without_semicolon :
                             | for_statement
                             ;
 
-assignment : left_value ASSIGN expression
-           | left_value ASSIGN boolean_expression
+assignment : left_value ASSIGN expression {
+                auto lResult=$1->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto rResult=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(rResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string ltype=$1->getType();
+                string rtype=$3->getType();
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
+           }
+           | left_value ASSIGN boolean_expression {
+                auto lResult=$1->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto rResult=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(rResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string ltype=$1->getType();
+                string rtype="bool";
+                if (ltype != rtype || strcmp("bool",ltype.c_str())!=0) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
+           }
+           | left_value ASSIGN STRING {
+                auto lResult=$1->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string ltype=$1->getType();
+                if (strcmp("string",ltype.c_str())!=0) {
+                    cout << "Error: Assignment type mismatch. Expected string but got " << $1 << ". Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                Value rResult=$3;
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
+           }
+           | left_value ASSIGN CHAR {
+                auto lResult=$1->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(lResult)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string ltype=$1->getType();
+                string rtype="char";
+                if (ltype != rtype) {
+                    cout << "Error: Assignment type mismatch. Expected " << ltype << " but got " << rtype << ". Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                string idName=$1->getIdName();
+                int index=$1->getVectorIndex();
+
+                Value rResult=$3;
+
+                if(index!=-1){
+                    currentSymTable->changeVectorElement(idName,index,rResult);
+                }
+                else{
+                    currentSymTable->changeVar(idName,rResult);
+                }
+           }
            ;
 
 left_value : ID
-           {
-               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                   errorCount++;
-               }
-               cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-           }
-           | ID '[' expression ']'
-           {
-               if (!currentSymTable->isUsedBeforeDefined($1, "variable")) {
-                   cout << "Error: Variable '" << $1 << "' used before being defined." << endl;
-                   errorCount++;
-               }
-           }
-           | object_access
-           | CHAR
-           | STRING
+            {
+                if (!currentSymTable->isDefined($1, "identifier")) {
+                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$=new ASTNode($1);
+            }
+            | ID '[' expression ']' {
+                if(!currentSymTable->isDefined($1, "identifier")){
+                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode($1, get<int>(result), true);
+            }
+            | BOOLID{
+                if (!currentSymTable->isDefined($1, "identifier")) {
+                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$=new ASTNode($1);
+            }
+            | BOOLID '[' expression ']'
+            {
+                if (!currentSymTable->isDefined($1, "identifier")) {
+                    cout << "Error: Variable '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode($1, get<int>(result), true);
+            }
+            | object_access{
+                if(!currentSymTable->isDefined($1,"class")){
+                    cout << "Error: Class '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$=new ASTNode();
+            }
            ;
 
-object_access : ID '.' ID
-              | ID '.' ID '(' argument_list ')'
+object_access : ID '.' ID {$$=$1;}
+              | ID '.' ID '(' argument_list ')' { $$=$1;}
               ;
 
 if_statement:
@@ -385,12 +784,23 @@ predefined_function_call : print_statement
                          | type_of_statement
                          ;
 
-function_call : ID '(' argument_list ')'
-              {
-                  if (!currentSymTable->isUsedBeforeDefined($1, "function")) {
-                      cout << "Error: Function '" << $1 << "' called before being defined." << endl;
-                      errorCount++;
+function_call : ID '(' argument_list ')' {
+                  if (!currentSymTable->isDefined($1, "function")) {
+                      cout << "Error: Function '" << $1 << "' called before being defined. Line: " << yylineno << endl;
+                      return -1;
                   }
+                  
+                  vector<string> types;
+                  for(int i=0;i<$3->count;i++)
+                  {
+                        types.push_back($3->args[i].type);
+                  }
+                  if(!currentSymTable->checkParamTypes($1, types)){
+                      cout << "Error: Function '" << $1 << "' called with wrong parameters. Line: " << yylineno << endl;
+                      return -1;
+                  }
+                  delete($3->args);
+                  delete($3);
               }
               ;
 
@@ -401,38 +811,85 @@ print_statement : PRINT '(' CHAR ')'{
                     cout << "Print (string): " << $3 << endl;
                 }
                 | PRINT '(' expression ')'{
-                    $3->evaluate(*currentSymTable);
+                    auto result=$3->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     $3->printResult();
                 }
                 | PRINT '(' boolean_expression ')'{
-                    $3->evaluate(*currentSymTable);
+                    auto result=$3->evaluate(*currentSymTable);
+                    if(holds_alternative<monostate>(result)){
+                        cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                        return -1;
+                    }
                     $3->printResult();
-                }
-                | PRINT '(' object_access ')'{
-                    cout<<"Print (object access): 0\n";
                 }
                 ;
 
 type_of_statement : TYPEOF '(' expression ')'{
-                        $3->evaluate(*currentSymTable);
+                        auto result=$3->evaluate(*currentSymTable);
+                        if(holds_alternative<monostate>(result)){
+                            cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                            return -1;
+                        }
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
-                  | TYPEOF '(' boolean_expression ')'{\
-                        $3->evaluate(*currentSymTable);
+                  | TYPEOF '(' boolean_expression ')'{
+                        auto result=$3->evaluate(*currentSymTable);
+                        if(holds_alternative<monostate>(result)){
+                            cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                            return -1;
+                        }
                         cout<<"TypeOf: "<<$3->getType()<<endl;
                   }
-                  | TYPEOF '(' object_access ')'
+                  | TYPEOF '(' STRING ')'{
+                        cout<<"TypeOf: string"<<endl;
+                  }
+                  | TYPEOF '(' CHAR ')'{
+                        cout<<"TypeOf: char"<<endl;
+                  }
                   ;
 
 return_statement : RETURN expression
                  ;
 
-argument_list : argument_list ',' expression
-              | expression
-              | argument_list ',' boolean_expression
-              | boolean_expression
-              | /* epsilon */
+argument_list : argument_list ',' argument {
+                    $$ = $1;
+                    Arg* newArgs = new Arg[$$->count + 1];
+                    for (int i = 0; i < $$->count; ++i) {
+                        newArgs[i] = $$->args[i];
+                    }
+                    newArgs[$$->count] = *$3;
+                    delete[] $$->args;
+                    $$->args = newArgs;
+                    $$->count++;
+                    delete $3;
+                }
+              | argument {
+                    $$ = new ArgList;
+                    $$->args = new Arg[1];
+                    $$->args[0] = *$1;
+                    $$->count = 1;
+                    delete $1;
+                }
+              | /* epsilon */ {
+                    $$ = new ArgList;
+                    $$->args = nullptr;
+                    $$->count = 0;
+                }
               ;
+
+argument : expression {
+                $$ = new Arg;
+                $$->type = strdup($1->getType().c_str());
+            }
+            | boolean_expression {
+                $$ = new Arg;
+                $$->type = strdup("bool");
+            }
+            ;
 
  /* Expressions_____________________________________________________________________________________________*/
 expression : expression '+' expression {
@@ -460,12 +917,30 @@ expression : expression '+' expression {
                $$ = $2;
            }
            | ID {
-                if (!currentSymTable->existsId($1)) 
+                if (!currentSymTable->isDefined($1, "identifier")) 
                 {
-                    cout << "Error: Identifier '" << $1 << "' not defined." << endl;
-                    errorCount++;
+                    cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
+                    return -1;
                 }
-               $$ = new ASTNode($1, true);
+               $$ = new ASTNode($1);
+           }
+           | ID '[' expression ']' {
+                if (!currentSymTable->isDefined($1, "identifier")) 
+                {
+                    cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                auto result=$3->evaluate(*currentSymTable);
+                if(holds_alternative<monostate>(result)){
+                    cout<<"Error: Evaluation error occured! Line: " << yylineno << endl;
+                    return -1;
+                }
+                if($3->getType() != "int")
+                {
+                    cout<<"Error: Invalid array index! (index has to be of type int). Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode($1, get<int>(result),true);
            }
            | INT {
                $$ = new ASTNode($1);
@@ -474,18 +949,37 @@ expression : expression '+' expression {
                $$ = new ASTNode($1);
            }
            | function_call{
-                $$ = nullptr; //tmp
+                if(!currentSymTable->isDefined($1, "function")){
+                    cout << "Error: Function '" << $1 << "' called before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode();
+           }
+           | object_access{
+                if(!currentSymTable->isDefined($1,"class")){
+                    cout << "Error: Class '" << $1 << "' used before being defined. Line: " << yylineno << endl;
+                    return -1;
+                }
+                $$ = new ASTNode();
            }
            ;
 
 boolean_expression : TRUE {
-                       $$ = new ASTNode(true);
+                       $$ = new ASTNode(true,true);
                    }
                    | FALSE {
-                       $$ = new ASTNode(false);
+                       $$ = new ASTNode(false,false);
                    }
                    | '(' boolean_expression ')' {
                        $$ = $2;
+                   }
+                   | BOOLID {
+                        if (!currentSymTable->isDefined($1, "identifier")) 
+                        {
+                            cout << "Error: Identifier '" << $1 << "' not defined. Line: " << yylineno << endl;
+                            return -1;
+                        }
+                        $$ = new ASTNode($1);
                    }
                    | expression '>' expression {
                        $$ = new ASTNode(ASTNode::Operator::GT, $1, $3);
@@ -521,7 +1015,7 @@ boolean_expression : TRUE {
 
 void yyerror(const char * s) {
     cout << "Error: " << s << " at line: " << yylineno <<endl;
-    errorCount++;
+    return;
 }
 
 int main(int argc, char** argv) {
