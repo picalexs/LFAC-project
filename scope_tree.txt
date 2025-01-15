@@ -1,10 +1,9 @@
    >Entering global scope: Global
-      >Entering function scope: f (string)
-         +parameter : int : a
-         +parameter : vector<int> : x[4] = 0 0 0 0 
-         +parameter : vector<string> : s[10] = "" "" "" "" "" "" "" "" "" "" 
+      >Entering function scope: f (int)
+         +parameter : float : a
          +variable a2 : int = 102
       <Leaving function scope: f
       >Entering main scope: main
-         +variable a : int = 1
-         +variable x : float = 10.200000
+         +variable a : float = 1.200000
+         +variable x[4] : vector<int> = 0 0 0 0 
+         +variable s2 : string = ""

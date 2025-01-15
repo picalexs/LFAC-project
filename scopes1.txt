@@ -7,6 +7,4 @@
  Function Scope: f
   parameter: a : int = 0
   variable: a2 : int = 102
-  parameter: s : vector<string> = 0
-  parameter: x : vector<int> = 0
 

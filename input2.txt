@@ -1,12 +1,13 @@
-func string f(int a, int x[4], string s[10]){
+func int f(float a){
    int a2=102;
-   return s+10;
+   return a2;
 }
 
 main
 {
-   int a=1;
-   float x=10.2;
-   int x2=f(a,a);
+   float a=1.2;
+   int x[4];
+   string s2;
+   int x2=f(a);
    Print(x);
 }

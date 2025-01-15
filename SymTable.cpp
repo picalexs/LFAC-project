@@ -678,30 +678,38 @@ bool SymTable::checkParamTypes(const string &funcName, const vector<string> &par
         return false;
     }
 
-    auto &funcInfo = currentVars[funcName];
-    auto &paramList = funcInfo.params;
-
-    if (params.size() != paramList.getTypes().size())
+    auto &funcInfoMap = functionScopes[funcName];
+    
+    int paramCount = 0;
+    int i = 0;
+    for (const auto &scope : funcInfoMap)
     {
-        cout << "Error: Parameter count mismatch for function '" << funcName << "'. Expected "
-             << paramList.getTypes().size() << " parameters, but got " << params.size() << ".\n";
+        if (scope.second.idType == "parameter")
+        {
+            string expectedType = scope.second.type;
+            string actualType = params[i];
+            
+            if (expectedType != actualType)
+            {
+                cout << "Error: Incorrect type for parameter '" << scope.second.name << "' in function '" 
+                     << funcName << "'. Expected " << expectedType << ", but got " << actualType << ".\n";
+                return false;
+            }
+            paramCount++;
+        }
+        i++;
+    }
+    
+    if (paramCount != params.size())
+    {
+        cout << "Error: Incorrect number of parameters for function '" << funcName << "'. Expected " << paramCount
+             << ", but got " << params.size() << ".\n";
         return false;
     }
-
-    for (size_t i = 0; i < params.size(); ++i)
-    {   
-        string expectedType = paramList.getTypes()[i];
-        string actualType = getType(params[i]);
-        if (expectedType != actualType)
-        {
-            cout << "Error: Type mismatch for parameter " << paramList.getNames()[i] << " in function '"
-                 << funcName << "'. Expected " << expectedType << ", but got " << actualType << ".\n";
-            return false;
-        }
-    }
-
     return true;
 }
+
+
 
 
 void SymTable::addClass(const string &name)
